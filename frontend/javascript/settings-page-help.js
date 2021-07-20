@@ -69,6 +69,7 @@ class SettingsPageHelp extends NamedPage {
             }
 
             if (cgi_allowed) {
+                var form;
                 var message;
                 var email;
                 var includeLastFailedCheckBox;
@@ -85,13 +86,18 @@ class SettingsPageHelp extends NamedPage {
                         if (includeUserAgent.checked) {
                             data.append('userAgent', navigator.userAgent);
                         }
-                        callCgi(cgi, data);
+                        callCgi(cgi, data, (is_ok) => {
+                            if (is_ok) {
+                                message.value = '';
+                                form.validate();
+                            }
+                        });
                     }
                     event.stopPropagation();
                     event.preventDefault();
                     PauseManager.resume();
                 }
-                var form = new ManagedForm('feedback-form', submit, localize('Submit'));
+                form = new ManagedForm('feedback-form', submit, localize('Submit'));
 
                 email = form.addEmail(localize('From'), 'feedback-email', undefined, localize('your.address@example.org'));
 
