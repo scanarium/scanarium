@@ -107,8 +107,9 @@ class SettingsPageAdministration extends NamedPage {
             var new_password_validator = function(node) {
                 const password = node.value;
 
-                if (password.length < minimum_password_length) {
-                    return localize('Password is too short (minimum: {count} characters)', {count: minimum_password_length});
+                var result = standard_password_validator(node);
+                if (result !== true) {
+                    return result;
                 }
 
                 if (document.getElementById('new-password').value != document.getElementById('confirm-password').value) {
@@ -117,7 +118,7 @@ class SettingsPageAdministration extends NamedPage {
                 return true;
             }
 
-            oldPasswordInput = form.addPassword(localize('Current password'), 'current-password', old_password_validator);
+            oldPasswordInput = form.addPassword(localize('Current password'), 'current-password', standard_not_empty_validator);
             newPasswordInput = form.addPassword(localize('New password'), 'new-password', new_password_validator);
             confirmPasswordInput = form.addPassword(localize('Confirm new password'), 'confirm-password', new_password_validator);
 

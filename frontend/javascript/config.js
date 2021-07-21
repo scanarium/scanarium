@@ -103,5 +103,3 @@ LayoutManager.register(function(width, height) {
 });
 
 var dynamicConfigMethod = 'GET';
-
-const minimum_password_length = 6;
