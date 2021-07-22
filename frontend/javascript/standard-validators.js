@@ -5,7 +5,7 @@
 // -- Standard checks --------------------------------------------------
 
 function standard_check_not_empty(value) {
-    if (value == '') {
+    if (!value) {
         return localize('Must not be empty');
     }
 
