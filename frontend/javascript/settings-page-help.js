@@ -107,31 +107,30 @@ class SettingsPageHelp extends NamedPage {
                 }
                 form.addFixedTextField(localize('To'), 'feedback-to', scanariumTeamText);
 
-                var textAreaValidator = function (node) {
-                    var result = standard_not_empty_validator(node);
-                    if (result !== true) {
+                var feedbackContentValidator = function (node) {
+                    var messageResult = (!message) || standard_not_empty_validator(message);
+                    if (messageResult !== true) {
                         const checkboxVisible = includeLastFailedCheckBox && !includeLastFailedCheckBox.rowElement.className.includes('hidden');
                         if (checkboxVisible) {
                             if (!includeLastFailedCheckBox.checked) {
                                 return localize('No content provided for feedback. Either provide a message, or attach the last failed image.');
                             }
                         } else {
-                            return result;
+                           // The 'includeLastFailedCheckbox' is not visible, and the message element is not valid.
+                            if (node == message) {
+                                return messageResult;
+                            } else {
+                                return true;
+                            }
                         }
                     }
                     return true;
                 };
-                const placeholder = 'Feedback, comments, issue reports, ...';
-                message = form.addTextArea(localize('Message'), 'feedback-message', textAreaValidator, localize(placeholder));
 
-                var checkBoxValidator = function (node) {
-                    const isVisible = includeLastFailedCheckBox && !includeLastFailedCheckBox.rowElement.className.includes('hidden');
-                    if (isVisible && !includeLastFailedCheckBox.checked && !message.value) {
-                        return localize('No content provided for feedback. Either provide a message, or attach the last failed image.');
-                    }
-                    return true;
-                };
-                includeLastFailedCheckBox = form.addCheckbox(localize('Attachment'), 'feedback-attach-last-failed-upload', checkBoxValidator, localize('Include last failed upload'));
+                const placeholder = 'Feedback, comments, issue reports, ...';
+                message = form.addTextArea(localize('Message'), 'feedback-message', feedbackContentValidator, localize(placeholder));
+
+                includeLastFailedCheckBox = form.addCheckbox(localize('Attachment'), 'feedback-attach-last-failed-upload', feedbackContentValidator, localize('Include last failed upload'));
                 includeLastFailedCheckBox.setChecked(false);
                 includeLastFailedCheckBox.rowElement.classList.add('hidden');
 
