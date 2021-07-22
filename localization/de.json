@@ -168,6 +168,7 @@
     "{method_name} failed": "Fehler beim {method_name}",
     "{method_name} ok": "{method_name} ok",
     "{method_name} started": "{method_name} gestartet",
+    "{method_name} took too long and got aborted": "{method_name} dauerte zu lange und wurde abgebrochen",
     "{month} {day}, {year}": "{day}. {month} {year}",
     "{parameter_name} ({parameter_variant_name})": "{parameter_name} mit {parameter_variant_name}",
     "↓↓↓ Insert coloring pages below ↓↓↓": "↓↓↓ Ausgemalte Bilder hier unten ins Fach einlegen ↓↓↓"
@@ -242,8 +243,11 @@
       "eo": "Esperanto"
     },
     "method_name": {
+      "login": "Einloggen",
       "logout": "Ausloggen",
+      "previous action": "Ausführen der letzten Aktion",
       "regenerate-static-content": "Neu-Erzeugung der statischen Inhalte",
+      "registration": "Registrierung",
       "reindex": "Reindexierung",
       "report-feedback": "Feedback-Einsendung",
       "reset-dynamic-content": "Zurücksetzen aller dynamischen Inhalte",
