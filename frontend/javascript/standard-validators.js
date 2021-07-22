@@ -13,6 +13,11 @@ function standard_check_not_empty(value) {
 }
 
 function standard_check_minimal_length(value, minimal_length) {
+    var result = standard_check_not_empty(value);
+    if (result !== true) {
+        return result;
+    }
+
     if (value.length < minimal_length) {
         return localize('Too short (minimal length: {minimal_length})', {'minimal_length': String(minimal_length)});
     }
