@@ -108,14 +108,15 @@ class SettingsPageHelp extends NamedPage {
                 form.addFixedTextField(localize('To'), 'feedback-to', scanariumTeamText);
 
                 var textAreaValidator = function (node) {
-                    if (!node.value) {
+                    var result = standard_not_empty_validator(node);
+                    if (result !== true) {
                         const checkboxVisible = includeLastFailedCheckBox && !includeLastFailedCheckBox.rowElement.className.includes('hidden');
                         if (checkboxVisible) {
                             if (!includeLastFailedCheckBox.checked) {
                                 return localize('No content provided for feedback. Either provide a message, or attach the last failed image.');
                             }
                         } else {
-                            return localize('This field may not be empty');
+                            return result;
                         }
                     }
                     return true;
