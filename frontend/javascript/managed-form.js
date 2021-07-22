@@ -77,6 +77,8 @@ class ManagedForm {
         validationContainer.className = 'validation-message';
 
         control.oninput = function(event) {
+            control.hasSeenInteraction = true;
+
             self.validate();
 
             if (!validationContainer.hasChildNodes() && control.onChangedAndValid) {
@@ -146,6 +148,9 @@ class ManagedForm {
         var input = document.createElement('input');
         input.type = 'checkbox';
         this.initStandardControl(input, id, explanation, caption);
+        Object.defineProperty(input, 'hasSeenInteraction', { get: function() {
+            return span.hasSeenInteraction;
+        }});
         input.setChecked = function(checked) {
             if (input.checked != checked) {
                 input.checked = checked;
@@ -202,7 +207,7 @@ class ManagedForm {
         return dropDown;
     }
 
-    _validateNode(node, root) {
+    _validateNode(node, hideValidationMessages, root) {
         var result = true;
 
         if (!root) {
@@ -227,6 +232,11 @@ class ManagedForm {
                 if (result !== false && result !== '' && result !== null) {
                     message = result;
                 }
+
+                if (hideValidationMessages) {
+                    message = '';
+                }
+
                 if (node.setCustomValidity) {
                     node.setCustomValidity(message);
                 }
@@ -240,15 +250,25 @@ class ManagedForm {
         }
 
         node.childNodes.forEach(child => {
-            const child_result = this._validateNode(child, root);
+            const child_result = this._validateNode(child, hideValidationMessages, root);
             result &= child_result;
         });
 
         return result;
     }
 
+    hasSeenInteraction() {
+        var hasSeenInteraction = false;
+        var elements = this.getElement().elements;
+        for (var i=0; !hasSeenInteraction && i < elements.length; i++) {
+            var element = elements[i];
+            hasSeenInteraction = element.hasSeenInteraction;
+        }
+        return hasSeenInteraction;
+    }
+
     validate() {
-        var result = this._validateNode(this.getElement());
+        var result = this._validateNode(this.getElement(), !this.hasSeenInteraction());
         if (this.submit_button) {
             this.submit_button.disabled = !result;
         }
