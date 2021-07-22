@@ -203,17 +203,22 @@ class ManagedForm {
         return dropDown;
     }
 
-    _validateNode(node) {
+    _validateNode(node, root) {
         var result = true;
+
+        if (!root) {
+            root = node;
+        }
 
         if (node.scValidation) {
             result = node.scValidation(node);
 
-            var validationContainer = document.getElementById(node.id + '-validation-message');
+            // We cannot use `document.getElementById` here, as the form need
+            // not be hooked into DOM at the time of validation.
+            var validationContainer = root.querySelector('#' + node.id + '-validation-message');
             if (validationContainer) {
                 validationContainer.textContent = '';
             }
-
             if (result === true) {
                 if (node.setCustomValidity) {
                     node.setCustomValidity('');
@@ -236,7 +241,7 @@ class ManagedForm {
         }
 
         node.childNodes.forEach(child => {
-            const child_result = this._validateNode(child);
+            const child_result = this._validateNode(child, root);
             result &= child_result;
         });
 
