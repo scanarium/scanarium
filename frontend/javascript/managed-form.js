@@ -77,9 +77,7 @@ class ManagedForm {
         validationContainer.className = 'validation-message';
 
         control.oninput = function(event) {
-            if (validation) {
-                self.validate();
-            }
+            self.validate();
 
             if (!validationContainer.hasChildNodes() && control.onChangedAndValid) {
                 control.onChangedAndValid(event);
