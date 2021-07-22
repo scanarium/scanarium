@@ -6,7 +6,7 @@ function standard_not_empty_validator(node) {
     const password = node.value;
 
     if (password.length == '') {
-        return localize('This field may not be empty');
+        return localize('Must not be empty');
     }
 
     return true;
