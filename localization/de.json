@@ -97,7 +97,6 @@
     "Only lowercase letters, digits and dashes are allowed": "Nur Kleinbuchstaben, Zahlen und Bindestrich sind erlaubt",
     "Only {supported_formats} files are supported.": "Nur {supported_formats} Dateien werden unterstützt.",
     "Password is not correct": "Das Passwort ist falsch",
-    "Password is too short (minimum: {count} characters)": "Passwort ist zu kurz (mindestens {count} Zeichen)",
     "Pause/Resume": "Pause",
     "Paused": "Pause",
     "QR code contains misformed data": "QR-Code enthält ungültige Daten",

@@ -97,7 +97,6 @@
     "Only lowercase letters, digits and dashes are allowed": "Nur erliteroj, ciferoj kaj streketo estas permesitaj",
     "Only {supported_formats} files are supported.": "Nur {supported_formats} dosieroj tauĝas.",
     "Password is not correct": "Pasvorto estas malkorekta",
-    "Password is too short (minimum: {count} characters)": "Pasvorto estast tro mallonga (minimume: {count} signoj)",
     "Pause/Resume": "(Mal)paŭzu",
     "Paused": "Paŭzita",
     "QR code contains misformed data": "QR-Kodo malvalidas",

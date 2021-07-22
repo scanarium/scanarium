@@ -17,7 +17,7 @@ function standard_password_validator(node) {
     const minimum_password_length = 6;
 
     if (password.length < minimum_password_length) {
-        return localize('Password is too short (minimum: {count} characters)', {count: minimum_password_length});
+        return localize('Too short (minimal length: {minimal_length})', {'minimal_length': String(minimum_password_length)});
     }
     return true;
 }
