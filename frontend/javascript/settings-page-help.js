@@ -130,8 +130,7 @@ class SettingsPageHelp extends NamedPage {
                 const placeholder = 'Feedback, comments, issue reports, ...';
                 message = form.addTextArea(localize('Message'), 'feedback-message', feedbackContentValidator, localize(placeholder));
 
-                includeLastFailedCheckBox = form.addCheckbox(localize('Attachment'), 'feedback-attach-last-failed-upload', feedbackContentValidator, localize('Include last failed upload'));
-                includeLastFailedCheckBox.setChecked(false);
+                includeLastFailedCheckBox = form.addCheckbox(localize('Attachment'), 'feedback-attach-last-failed-upload', feedbackContentValidator, localize('Include last failed upload'), false);
                 includeLastFailedCheckBox.rowElement.classList.add('hidden');
 
                 var lastFailedUploadPreview = document.createElement('img');
@@ -167,8 +166,7 @@ class SettingsPageHelp extends NamedPage {
                 };
                 UploadButton.registerUploadListener(includeLastFailedCheckBox.uploadListener);
 
-                includeUserAgent = form.addCheckbox(localize('Attachment'), 'feedback-attach-user-agent', undefined, localize('Include browser identification'));
-                includeUserAgent.setChecked(true);
+                includeUserAgent = form.addCheckbox(localize('Attachment'), 'feedback-attach-user-agent', undefined, localize('Include browser identification'), true);
 
                 this.appendElement(form.getElement());
             }

@@ -140,13 +140,16 @@ class ManagedForm {
         return textarea;
     }
 
-    addCheckbox(caption, id, validation, explanation) {
+    addCheckbox(caption, id, validation, explanation, initialValue) {
         var span = document.createElement('span');
         span.className = 'form-element';
         span.id = id + '-form-element';
 
         var input = document.createElement('input');
         input.type = 'checkbox';
+        if (typeof initialValue !== 'undefined') {
+            input.checked = initialValue;
+        }
         this.initStandardControl(input, id, explanation, caption);
         Object.defineProperty(input, 'hasSeenInteraction', { get: function() {
             return span.hasSeenInteraction;

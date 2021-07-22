@@ -24,8 +24,12 @@ class SettingsPageAdministration extends NamedPage {
         var form = new ManagedForm('ui-settings', false);
         this.uiForm = form;
 
-        uiFollowScannedActorScene = form.addCheckbox(localize('Switch scene'), 'scanning-actor-switches-scene', undefined, localize('when an actor of a different scene got scanned'));
-        uiFollowScannedActorScene.setChecked(getUrlParameterBoolean(uiFollowScannedActorSceneParameter ,true));
+        uiFollowScannedActorScene = form.addCheckbox(
+            localize('Switch scene'),
+            'scanning-actor-switches-scene',
+            undefined,
+            localize('when an actor of a different scene got scanned'),
+            getUrlParameterBoolean(uiFollowScannedActorSceneParameter ,true));
         uiFollowScannedActorScene.onChangedAndValid = function(event) {
             setUrlParameter(uiFollowScannedActorSceneParameter, uiFollowScannedActorScene.checked);
 
