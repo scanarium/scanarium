@@ -143,6 +143,7 @@ class ManagedForm {
     addCheckbox(caption, id, validation, explanation) {
         var span = document.createElement('span');
         span.className = 'form-element';
+        span.id = id + '-form-element';
 
         var input = document.createElement('input');
         input.type = 'checkbox';
