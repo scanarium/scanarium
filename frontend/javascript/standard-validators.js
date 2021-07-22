@@ -21,3 +21,27 @@ function standard_password_validator(node) {
     }
     return true;
 }
+
+function standard_username_validator(node) {
+  const username = node.value;
+  if (!username.match(/^[a-z0-9][a-z0-9-]{2,37}[a-z0-9]$/)) {
+    if (username.length < 4) {
+      return localize('Too short (minimal length: {minimal_length})', {'minimal_length': '4'});
+    }
+
+    if (username[0] == '-') {
+      return localize('Starting with "{start}" is not allowed', {'start': username[0]});
+    }
+
+    if (username[username.length - 1] == '-') {
+      return localize('Ending with "{end}" is not allowed', {'end': username[username.length - 1]});
+    }
+
+    if (username.length > 39) {
+      return localize('Too long (maximum length: {maximum_length})', {'maximum_length': '39'});
+    }
+
+    return localize('Only lowercase letters, digits and dashes are allowed');
+  }
+  return true;
+}
