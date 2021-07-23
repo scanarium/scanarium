@@ -67,28 +67,26 @@ function standard_password_validator(node) {
 
 function standard_username_validator(node) {
   const username = node.value;
-  if (!username.match(/^[a-z0-9][a-z0-9-]{2,37}[a-z0-9]$/)) {
-    var result = standard_check_minimal_length(username, 4);
 
-    if (result === true) {
-        result = standard_check_maximal_length(username, 39);
-    }
+  var result = standard_check_minimal_length(username, 4);
 
-    if (result === true) {
-        result = standard_check_does_not_start_with(username, '-');
-    }
-
-    if (result === true) {
-        result = standard_check_does_not_end_with(username, '-');
-    }
-
-    if (result !== true) {
-        return result;
-    }
-
-    return localize('Only lowercase letters, digits and dashes are allowed');
+  if (result === true) {
+      result = standard_check_maximal_length(username, 39);
   }
-  return true;
+
+  if (result === true) {
+      result = standard_check_does_not_start_with(username, '-');
+  }
+
+  if (result === true) {
+      result = standard_check_does_not_end_with(username, '-');
+  }
+
+  if (result === true && !username.match(/^[a-z0-9][a-z0-9-]{2,37}[a-z0-9]$/)) {
+    result = localize('Only lowercase letters, digits and dashes are allowed');
+  }
+
+  return result;
 }
 
 function validateCheckboxChecked(node) {
