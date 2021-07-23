@@ -95,7 +95,7 @@
     "Missing configuration entry at \"{key}\" in \"{section}\"": "Konfiguration von \"{key}\" in \"{section}\" fehlt",
     "More about Scanarium": "Mehr zu Scanarium",
     "Must not be empty": "Darf nicht leer sein",
-    "Needs to be checked": "Muss angehackt werden",
+    "Needs to be checked": "Muss angehakt werden",
     "New password": "Neues Passwort",
     "New password and its confirmation do not match": "Das neue Passwort und die Bestätigung unterscheiden sich",
     "Newest Entries": "Neueste Einträge",
