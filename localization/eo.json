@@ -53,7 +53,7 @@
     "Failed to find QR code in image": "Malsukcesis trovi QR-Kodon en bildo",
     "Failed to find black bounding rectangle in image": "Malsukcesis trovi grandan rektangulo en bildo",
     "Failed to find mask {file_name}": "Malsukcesis trovi mask-dosieron \"{file_name}\"",
-    "Failed to find source file {source_file} for generating mask {target_file}": "Masukcesis trovi fonton {source_file} por generado de mask-dosieron {target_file}",
+    "Failed to find source file {source_file} for generating mask {target_file}": "Malsukcesis trovi fonton {source_file} por generado de mask-dosieron {target_file}",
     "Failed to identify sheet on scanned image": "Malsukcesis trovi paĝon en bildon",
     "Failed to load parameters for undistortion from \"{file_name}\"": "Malsukcesis ŝargi maldistord-parametro el \"{file_name}\"",
     "Failed to open camera \"{source}\"": "Malsukcesis malfermi camerao \"{source}\"",
