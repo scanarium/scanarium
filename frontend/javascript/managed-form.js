@@ -175,6 +175,7 @@ class ManagedForm {
 
         if (explanation) {
             var label = document.createElement('label');
+            label.id = id + '-checkbox-label';
             label.for = id;
             label.textContent = explanation;
             label.onclick = input.toggle;
