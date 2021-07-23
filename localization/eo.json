@@ -95,6 +95,7 @@
     "Missing configuration entry at \"{key}\" in \"{section}\"": "Mankas agordo de \"{key}\" en \"{section}\"",
     "More about Scanarium": "Pli pri Scanarium",
     "Must not be empty": "Ne devas esti malplena",
+    "Needs to be checked": "Devas esti alkroĉita",
     "New password": "Nova pasvorto",
     "New password and its confirmation do not match": "Nova pasvorto kaj ĝia konfirmo malsamas",
     "Newest Entries": "Plej novaj anoj",

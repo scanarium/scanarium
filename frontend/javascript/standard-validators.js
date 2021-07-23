@@ -90,3 +90,10 @@ function standard_username_validator(node) {
   }
   return true;
 }
+
+function validateCheckboxChecked(node) {
+  if (node.querySelector('input[type="checkbox"]').checked) {
+    return true;
+  }
+  return localize('Needs to be checked');
+}
