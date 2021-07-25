@@ -47,6 +47,13 @@ function standard_check_does_not_end_with(value, forbidden_end) {
     return true;
 }
 
+function standard_check_does_not_contain(value, forbidden) {
+    if (value && value.indexOf('--') != -1) {
+      return localize('Must not contain "{forbidden}"', {'forbidden': forbidden});
+    }
+
+    return true;
+}
 
 
 
@@ -80,6 +87,10 @@ function standard_username_validator(node) {
 
   if (result === true) {
       result = standard_check_does_not_end_with(username, '-');
+  }
+
+  if (result === true) {
+      result = standard_check_does_not_contain(username, '--');
   }
 
   if (result === true && !username.match(/^[a-z0-9][a-z0-9-]{2,37}[a-z0-9]$/)) {
