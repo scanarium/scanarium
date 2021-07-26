@@ -360,7 +360,36 @@ def rectify_to_biggest_rect(scanarium, image, yield_only_points=False):
                    yield_only_points=yield_only_points)
 
 
-def extract_qr(image):
+def expand_qr(scanarium, data_bytes):
+    data = data_bytes.decode('utf-8')
+
+    mapping_specs = scanarium.get_config('qr-code', 'mappings',
+                                         allow_empty=True)
+    if mapping_specs:
+        mapped = False
+        for mapping_spec in mapping_specs.split(','):
+            if not mapped:
+                mapping_parts = mapping_spec.split('@')
+                prefix = mapping_parts[0].strip()
+                if data.startswith(prefix):
+                    mapped = True
+                    data = data[len(prefix):]
+                    if len(mapping_parts) > 1:
+                        file = mapping_parts[1].strip()
+                        if file.startswith('%CONF_DIR%'):
+                            file = os.path.join(scanarium.get_config_dir_abs(),
+                                                file[11:])
+                        with open(file, 'rt') as f:
+                            code_map = json.load(f)
+
+                        data = code_map.get(data, data)
+
+    data = data.rsplit('/', 1)[-1].rsplit('?', 1)[-1].rsplit('=', 1)[-1]
+    data = re.sub('[^0-9a-zA-Z:_]+', '_', data)
+    return data
+
+
+def extract_qr(scanarium, image):
     # With low light images, the random noise in different color channels is
     # typically in the way of robust detection. So we convert to
     # grey to smoothen out the noise a bit.
@@ -381,17 +410,17 @@ def extract_qr(image):
     code = codes[0]
 
     rect = code.rect
-    data_raw = code.data.decode('utf-8')\
-        .rsplit('/', 1)[-1].rsplit('?', 1)[-1].rsplit('=', 1)[-1]
-    data = re.sub('[^0-9a-zA-Z:_]+', '_', data_raw)
+
+    data = expand_qr(scanarium, code.data)
+
     return (rect, data)
 
 
-def orient_image(image):
+def orient_image(scanarium, image):
     if image.shape[0] > image.shape[1]:
         image = cv2.rotate(image, cv2.ROTATE_90_CLOCKWISE)
 
-    (qr_rect, _) = extract_qr(image)
+    (qr_rect, _) = extract_qr(scanarium, image)
     if qr_rect.left + qr_rect.width / 2 > image.shape[1] / 2:
         # QR Code is not on the left half of the picture. As it's landscape
         # (see above), the qr code is in the top-right corner and we need to
@@ -551,7 +580,7 @@ def actor_image_pipeline(scanarium, image, qr_rect, scene, actor,
             raise create_error_unknown_qr()
 
     image = rectify_to_qr_parent_rect(scanarium, image, qr_rect)
-    image = orient_image(image)
+    image = orient_image(scanarium, image)
     image = mask(scanarium, image, scene, actor,
                  visualized_alpha=visualized_alpha)
     image = crop(image)
@@ -977,8 +1006,8 @@ class Scanner(object):
     def get_brightness_factor(self, scanarium):
         return get_brightness_factor(scanarium)
 
-    def extract_qr(self, image):
-        return extract_qr(image)
+    def extract_qr(self, scanarium, image):
+        return extract_qr(scanarium, image)
 
     def process_image_with_qr_code(self, scanarium, image, qr_rect, data,
                                    should_skip_exception=None):
