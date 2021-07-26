@@ -12,6 +12,7 @@ class SettingsPageHelp extends NamedPage {
         this.initContentOnlineDocumentation();
         this.initContentHelp();
         this.initContentLegalButtons();
+        this.initContentVersion();
     }
 
     initContentOnlineDocumentation() {
@@ -204,6 +205,18 @@ class SettingsPageHelp extends NamedPage {
 
                 this.appendElement(p);
             });
+        }
+    }
+
+    initContentVersion() {
+        var version = getConfig("version");
+        if (version) {
+            // No section header, as the version string does not need
+            // highlighting
+
+            var button = document.createElement('p');
+            button.textContent = localize('Version: {version}', {version: version});
+            this.appendElement(button);
         }
     }
 }

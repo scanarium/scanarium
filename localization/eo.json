@@ -3,6 +3,7 @@
     "maintainer": "christian@scanarium.com"
   },
   "messages": {
+"Version: {version}": "Versio: {version}",
     " All uploads done.": " Ĉiuj alŝutadoj finis.",
     " But {uploads} upload is still in progress.": " Sed {uploads} alŝutado ankoraŭ ne finiĝis.",
     " But {uploads} uploads are still in progress.": " Sed {uploads} alŝutadoj ankoraŭ ne finiĝis.",

@@ -46,6 +46,9 @@ var default_global_config = {
 
   // Legal Buttons
   'legal-buttons': [],
+
+  // Version string
+  'version': '',
 };
 
 var global_config = {};
