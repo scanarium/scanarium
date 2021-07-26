@@ -78,13 +78,21 @@ class ScanDataCanaryTestCase(CanaryTestCase):
         command_log_file = os.path.join(dir, 'dynamic', 'command-log.json')
         self.assertFileContains(command_log_file, code)
 
-    def template_test_file_type(self, file_type, pipeline=None,
-                                variant='optimal'):
-        fixture = f'space-SimpleRocket-{variant}.{file_type}'
-        config = {'scan': {f'permit_file_type_{file_type}': True}}
+    def template_test_file_type(self, file_type='png', pipeline=None,
+                                variant='optimal', fixture=None,
+                                extra_fixture=None, config={}):
+        if fixture is None:
+            fixture = f'space-SimpleRocket-{variant}.{file_type}'
+        test_config = self.update_dict({}, config)
+        test_config = self.update_dict(test_config, {
+                'scan': {f'permit_file_type_{file_type}': True}})
         if pipeline is not None:
-            config['scan'][f'pipeline_file_type_{file_type}'] = pipeline
-        with self.prepared_environment(fixture, test_config=config) as dir:
+            test_config['scan'][f'pipeline_file_type_{file_type}'] = pipeline
+        with self.prepared_environment(fixture,
+                                       test_config=test_config) as dir:
+            if extra_fixture:
+                self.add_fixture(extra_fixture, dir)
+
             self.run_scan_data(dir, fixture)
 
             if file_type == 'pdf':
@@ -153,6 +161,31 @@ class ScanDataCanaryTestCase(CanaryTestCase):
 
     def test_ok_pdf_pdftoppm(self):
         self.template_test_file_type('pdf', pipeline='pdftoppm')
+
+    def test_ok_map_simple_prefix(self):
+        config = {'qr-code': {'mappings': 'foo'}}
+        self.template_test_file_type(
+            fixture='qr-foospace-SimpleRocket.png',
+            config=config,
+            pipeline='native')
+
+    def test_ok_map_proper_map_unmatched(self):
+        config = {'qr-code': {
+                'mappings': 'foo@%TEST_DIR%/qr-code-map-bar.json'}}
+        self.template_test_file_type(
+            fixture='qr-foospace-SimpleRocket.png',
+            config=config,
+            pipeline='native',
+            extra_fixture='qr-code-map-bar.json')
+
+    def test_ok_map_proper_map_matched(self):
+        config = {'qr-code': {
+                'mappings': 'foo@%TEST_DIR%/qr-code-map-bar.json'}}
+        self.template_test_file_type(
+            fixture='qr-fooquux.png',
+            config=config,
+            pipeline='native',
+            extra_fixture='qr-code-map-bar.json')
 
     def test_fail_pipeline_os_error_fine(self):
         fixture = 'space-SimpleRocket-optimal.png'
