@@ -612,8 +612,8 @@ generate_jpg = False
 # Whether or not to set metadata on the generated files.
 #
 # If `True`, the below attribution, license, etc will get set for generated
-# files. Note that Scanarium's shipped images come under CC-BY-SA and AGPL, so
-# when embedding metadata and distributing files, make sure to respect that
+# files. Note that Scanarium's shipped images come under CC-BY-NC-SA and AGPL,
+# so when embedding metadata and distributing files, make sure to respect that
 # license, or drop Scanarium's shipped images beforehand.
 embed_metadata = False
 
