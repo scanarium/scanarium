@@ -3,8 +3,7 @@
 # GNU Affero General Public License v3.0 (See LICENSE.md)
 # SPDX-License-Identifier: AGPL-3.0-only
 
-set -e
-set -o pipefail
+source "$(dirname "$0")/common.inc"
 
 sort_file() {
     local FILE="$1"
