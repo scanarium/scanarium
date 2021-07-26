@@ -3,7 +3,6 @@
     "maintainer": "christian@scanarium.com"
   },
   "messages": {
-"Version: {version}": "Versio: {version}",
     " All uploads done.": " Ĉiuj alŝutadoj finis.",
     " But {uploads} upload is still in progress.": " Sed {uploads} alŝutado ankoraŭ ne finiĝis.",
     " But {uploads} uploads are still in progress.": " Sed {uploads} alŝutadoj ankoraŭ ne finiĝis.",
@@ -165,6 +164,7 @@
     "Upload of \"{image_name}\" started": "Alŝutado de \"{image_name}\" komencita",
     "User interface": "Fasado",
     "Username": "Salutnomo",
+    "Version: {version}": "Versio: {version}",
     "Welcome to Scanarium!": "Bonvenon al Scanarium!",
     "Write us an email!": "Skribu al ni!",
     "Yearly Archives": "Arkivo da individua jaroj",
