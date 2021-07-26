@@ -377,7 +377,7 @@ def register_svg_namespaces():
         ET.register_namespace(k, v)
 
 
-def get_qr_path_string(x, y, x_unit, y_unit, data):
+def get_qr_path_string(scanarium, x, y, x_unit, y_unit, data):
     ret = ''
 
     # While qrcode allows to generate an SVG path element through
@@ -388,6 +388,9 @@ def get_qr_path_string(x, y, x_unit, y_unit, data):
     # them. So we do the image -> svg transformation manually, as it's simple
     # enough, gives us more flexibility and untangles us from qrcode
     # internals.
+    prefix = scanarium.get_config('qr-code', 'prefix', allow_empty=True)
+    if prefix:
+        data = prefix + data
     data_image = qrcode.make(data, box_size=1, border=0,
                              error_correction=qrcode.constants.ERROR_CORRECT_L)
     width = data_image.width
@@ -401,14 +404,14 @@ def get_qr_path_string(x, y, x_unit, y_unit, data):
     return ret
 
 
-def expand_qr_pixel_to_qr_code(element, data):
+def expand_qr_pixel_to_qr_code(scanarium, element, data):
     x = float(element.get("x"))
     y = float(element.get("y"))
     x_unit = float(element.get("width"))
     y_unit = float(element.get("height"))
 
     element.tag = '{http://www.w3.org/2000/svg}path'
-    element.set('d', get_qr_path_string(x, y, x_unit, y_unit, data))
+    element.set('d', get_qr_path_string(scanarium, x, y, x_unit, y_unit, data))
 
     for attrib in [
         "x",
@@ -450,7 +453,7 @@ def localize_command_parameter_variant(localizer, command, parameter, variant):
             localized_parameter_with_variant)
 
 
-def filter_svg_tree(tree, command, parameter, variant, localizer,
+def filter_svg_tree(scanarium, tree, command, parameter, variant, localizer,
                     command_label, parameter_label, href_adjustment=None):
     (localized_command, localized_parameter, localized_variant,
      localized_parameter_with_variant) = localize_command_parameter_variant(
@@ -518,7 +521,7 @@ def filter_svg_tree(tree, command, parameter, variant, localizer,
         if qr_pixel is not None:
             if qr_pixel == command_label:
                 expand_qr_pixel_to_qr_code(
-                    qr_element, '%s:%s' % (command, parameter))
+                    scanarium, qr_element, '%s:%s' % (command, parameter))
             else:
                 # We want to remove this qr-pixel, as it does not match the
                 # needed type. But as it might be linked to other elements, we
@@ -616,8 +619,8 @@ def svg_variant_pipeline(scanarium, dir, command, parameter, variant, tree,
 
     if scanarium.file_needs_update(full_svg_name, sources, force):
         show_only_variant(tree, variant)
-        filter_svg_tree(tree, command, parameter, variant, localizer,
-                        command_label, parameter_label, '../..')
+        filter_svg_tree(scanarium, tree, command, parameter, variant,
+                        localizer, command_label, parameter_label, '../..')
         tree.write(full_svg_name)
 
     pdf_name = generate_pdf(scanarium, dir, full_svg_name, force, metadata={
