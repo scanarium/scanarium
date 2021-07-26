@@ -590,8 +590,18 @@ stroke_color =
 [qr-code]
 
 
-# Value to prepend to the data when generating QR codes
-prefix =
+# Mappings for QR code data
+#
+# If the string contains neither `,` nor '@`, it's taken as prefix to any QR code.
+# If the string contains `,` it's considered a comma-separated list
+# and is matched item by item. First match wins.
+# If an item contains `@`, The item is parsed as `PREFIX@FILE` and the
+# prefix `PREFIX` is only chosen, if json map stored in file `FILE`
+# contains a mapping from abbreviations to data, and there is a
+# matching map.
+# If `FILE` starts with `%%CONF_DIR%%`, it's taken relative to the
+# configuration directory.
+mappings =
 
 
 

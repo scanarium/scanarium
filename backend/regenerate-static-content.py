@@ -5,6 +5,7 @@
 
 import copy
 import os
+import json
 import locale
 import logging
 import re
@@ -377,6 +378,37 @@ def register_svg_namespaces():
         ET.register_namespace(k, v)
 
 
+def abbreviate_qr_data(scanarium, data):
+    prefix = ''
+    mapping_specs = scanarium.get_config('qr-code', 'mappings',
+                                         allow_empty=True)
+    if mapping_specs:
+        for mapping_spec in mapping_specs.split(','):
+            if not prefix:
+                mapping_parts = mapping_spec.split('@')
+                prefix_candidate = mapping_parts[0].strip()
+                if len(mapping_parts) == 1:
+                    prefix = prefix_candidate
+                else:
+                    file = mapping_parts[1].strip()
+                    if file.startswith('%CONF_DIR%'):
+                        file = os.path.join(scanarium.get_config_dir_abs(),
+                                            file[11:])
+
+                    with open(file, 'rt') as f:
+                        code_map = json.load(f)
+
+                    for k, v in code_map.items():
+                        if not prefix and data == v:
+                            prefix = prefix_candidate
+                            data = k
+
+    if prefix:
+        data = prefix + data
+
+    return data
+
+
 def get_qr_path_string(scanarium, x, y, x_unit, y_unit, data):
     ret = ''
 
@@ -388,9 +420,8 @@ def get_qr_path_string(scanarium, x, y, x_unit, y_unit, data):
     # them. So we do the image -> svg transformation manually, as it's simple
     # enough, gives us more flexibility and untangles us from qrcode
     # internals.
-    prefix = scanarium.get_config('qr-code', 'prefix', allow_empty=True)
-    if prefix:
-        data = prefix + data
+
+    data = abbreviate_qr_data(scanarium, data)
     data_image = qrcode.make(data, box_size=1, border=0,
                              error_correction=qrcode.constants.ERROR_CORRECT_L)
     width = data_image.width
