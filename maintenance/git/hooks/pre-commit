@@ -17,12 +17,18 @@ sort_localizations() {
   git add $(find localization -type f -name '*.json' ! -name 'localizations.json')
 }
 
+sort_qr_code_maps() {
+  maintenance/qr-code-maps/sort.sh
+  git add conf/qr-code-maps/*.json
+}
+
 check_copyright_headers() {
   maintenance/copyright/check-headers.sh
 }
 
 pre_commit() {
   sort_localizations
+  sort_qr_code_maps
   check_copyright_headers
 }
 
