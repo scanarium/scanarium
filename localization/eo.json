@@ -104,6 +104,7 @@
     "No content provided for feedback. Either provide a message, or attach the last failed image.": "Neniu enhavo por komento. Enmetu mesaĝon aŭ kunsendu la lastan, malsukcesan bildon.",
     "No image selected. Upload aborted.": "Neniu bildo elektita. Alŝutado nuligita",
     "Online Help": "Retaj help-paĝoj",
+    "Only letters, digits and {additional} are allowed": "Nur literoj, ciferoj kaj {additional} estas permesitaj",
     "Only lowercase letters, digits and dashes are allowed": "Nur erliteroj, ciferoj kaj streketo estas permesitaj",
     "Only {supported_formats} files are supported.": "Nur {supported_formats} dosieroj tauĝas.",
     "Password": "Pasvorto",

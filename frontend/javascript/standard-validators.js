@@ -69,11 +69,23 @@ function standard_password_validator(node) {
     const password = node.value;
     const minimum_password_length = 6;
     const maximum_password_length = 127;
+    const symbols = '!#%&()*+,-./:;<=>?@[]^_{|}~';
+    const allowed_characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' + symbols;
 
     var result = standard_check_minimal_length(password, minimum_password_length)
 
     if (result === true) {
         result = standard_check_maximal_length(password, maximum_password_length);
+    }
+
+    if (result === true) {
+        Array.from(password).forEach(character => {
+            if (result === true) {
+                if (allowed_characters.indexOf(character) == -1) {
+                    result = localize('Only letters, digits and {additional} are allowed', {additional: symbols});
+                }
+            }
+        });
     }
 
     return result;
