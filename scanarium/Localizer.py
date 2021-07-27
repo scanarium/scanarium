@@ -10,10 +10,10 @@ logger = logging.getLogger(__name__)
 
 
 class Localizer(object):
-    def __init__(self, localizations):
+    def __init__(self, localizations, config=None):
         super(Localizer, self).__init__()
         self._localizations = localizations
-        self._message_formatter = MessageFormatter()
+        self._message_formatter = MessageFormatter(config)
 
     def localize_parameter(self, name, value):
         return self._localizations.get('parameters', {}).get(name, {}).get(

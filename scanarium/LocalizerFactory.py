@@ -12,9 +12,10 @@ logger = logging.getLogger(__name__)
 
 
 class LocalizerFactory(object):
-    def __init__(self, localization_dir_abs):
+    def __init__(self, localization_dir_abs, config=None):
         super(LocalizerFactory, self).__init__()
         self._localization_dir_abs = localization_dir_abs
+        self._config = config
         self._instances = {}
 
     def get_localizer(self, language=None):
@@ -29,7 +30,7 @@ class LocalizerFactory(object):
                 if os.path.isfile(json_file_abs):
                     with open(json_file_abs, 'r') as file:
                         translations = json.load(file)
-            ret = Localizer(translations)
+            ret = Localizer(translations, self._config)
             self._instances[language] = ret
 
         return ret

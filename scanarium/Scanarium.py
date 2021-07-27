@@ -16,7 +16,7 @@ class Scanarium(object):
         self._config = scanarium.Config(self.get_config_dir_abs())
         self._dumper = scanarium.Dumper()
         self._localizer_factory = scanarium.LocalizerFactory(
-            self.get_localization_dir_abs())
+            self.get_localization_dir_abs(), self._config)
         self._command_logger = scanarium.CommandLogger(
             self.get_dynamic_directory(), self._dumper)
         self._util = scanarium.Util(self)
