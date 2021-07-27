@@ -68,8 +68,15 @@ function standard_not_empty_validator(node) {
 function standard_password_validator(node) {
     const password = node.value;
     const minimum_password_length = 6;
+    const maximum_password_length = 127;
 
-    return standard_check_minimal_length(password, minimum_password_length)
+    var result = standard_check_minimal_length(password, minimum_password_length)
+
+    if (result === true) {
+        result = standard_check_maximal_length(password, maximum_password_length);
+    }
+
+    return result;
 }
 
 function standard_username_validator(node) {
