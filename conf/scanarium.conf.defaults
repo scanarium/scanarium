@@ -585,6 +585,24 @@ stroke_color =
 
 
 #-------------------------------------------------------------------------------
+# Configuration for placeholders to be shown to the user
+#-------------------------------------------------------------------------------
+[placeholders]
+
+
+# The text to write underneath the QR code on the coloring pages
+qr_subtext =
+
+# Prefix for qr_subtext (written with smaller font size)
+qr_subtext_prefix =
+
+# Suffix for qr_subtext (written with smaller font size)
+qr_subtext_suffix =
+
+
+
+
+#-------------------------------------------------------------------------------
 # Configuration for qr codes
 #-------------------------------------------------------------------------------
 [qr-code]
