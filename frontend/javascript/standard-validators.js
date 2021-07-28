@@ -69,7 +69,7 @@ function standard_password_validator(node) {
     const password = node.value;
     const minimum_password_length = 6;
     const maximum_password_length = 127;
-    const symbols = '!#%&()*+,-./:;<=>?@[]^_{|}~';
+    const symbols = '!#&()*+,-./:;<=>?@[]^_{|}~';
     const allowed_characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' + symbols;
 
     var result = standard_check_minimal_length(password, minimum_password_length)
