@@ -47,6 +47,9 @@ generate_command_log() {
 
 generate_sample_content() {
     cp -a "dynamic.sample/"* "dynamic"
+}
+
+generate_thumbnails() {
     local FILE=
     while read FILE
     do
@@ -64,6 +67,7 @@ step "phaser ${PHASER_VERSION}" "$PHASER_TARGET" curl --output "$PHASER_TARGET" 
 step "example configuration" "$CONF_TARGET" cp "conf/scanarium.conf.example" "$CONF_TARGET"
 step "content directory" "dynamic" mkdir -p "dynamic"
 step "sample content" "dynamic/scenes/space/actors/SimpleRocket/sample.png" generate_sample_content
+step "thumbnails" "@always" generate_thumbnails
 step "global config" "dynamic/config.json" generate_global_config
 step "command log" "dynamic/command-log.json" generate_command_log
 step "static content" "@always" ./regenerate-static-content.sh
