@@ -17,12 +17,18 @@ step() {
     local TARGET="$2"
     shift 2
 
+    local HEADER_SUFFIX=""
+    if [ "$TARGET" != "@always" ]
+    then
+        HEADER_SUFFIX="at '$TARGET' "
+    fi
+
     echo
     echo "#################################################################"
-    echo "Setting up $NAME at '$TARGET' ..."
+    echo "Setting up $NAME $HEADER_SUFFIX..."
     echo
 
-    if [ ! -e "$TARGET" ]
+    if [ "$TARGET" = "@always" -o ! -e "$TARGET" ]
     then
         echo "Running:" "$@"
         "$@"
@@ -61,7 +67,7 @@ step "sample content" "dynamic/scenes/space/actors/SimpleRocket/sample.png" gene
 step "global config" "dynamic/config.json" generate_global_config
 step "command log" "dynamic/command-log.json" generate_command_log
 step "regenerating static content" "scenes/space/scene-bait-thumb.jpg" ./regenerate-static-content.sh
-step "reindexing content" "dynamic/scenes/space/actors-latest.json" ./reindex.sh
+step "content index" "@always" ./reindex.sh
 
 echo
 echo "#################################################################"
