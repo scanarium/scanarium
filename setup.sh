@@ -66,7 +66,7 @@ step "content directory" "dynamic" mkdir -p "dynamic"
 step "sample content" "dynamic/scenes/space/actors/SimpleRocket/sample.png" generate_sample_content
 step "global config" "dynamic/config.json" generate_global_config
 step "command log" "dynamic/command-log.json" generate_command_log
-step "regenerating static content" "scenes/space/scene-bait-thumb.jpg" ./regenerate-static-content.sh
+step "static content" "@always" ./regenerate-static-content.sh
 step "content index" "@always" ./reindex.sh
 
 echo
