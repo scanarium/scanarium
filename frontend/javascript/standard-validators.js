@@ -112,8 +112,8 @@ function standard_username_validator(node) {
       result = standard_check_does_not_contain(username, '--');
   }
 
-  if (result === true && !username.match(/^[a-z0-9][a-z0-9-]{2,37}[a-z0-9]$/)) {
-    result = localize('Only lowercase letters, digits and dashes are allowed');
+  if (result === true && !username.match(/^[a-zA-Z0-9][a-zA-Z0-9-]{2,37}[a-zA-Z0-9]$/)) {
+    result = localize('Only letters, digits and dashes are allowed');
   }
 
   return result;
