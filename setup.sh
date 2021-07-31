@@ -57,6 +57,11 @@ generate_sample_content() {
 }
 
 generate_thumbnails() {
+    local LOG_COMMAND=""
+    if [ "$VERBOSITY" -gt 0 ]
+    then
+        LOG_COMMAND="print('Generating thumbnail for', full_path)"
+    fi
     local FILE=
     while read FILE
     do
@@ -64,7 +69,9 @@ generate_thumbnails() {
 import os
 import sys
 from scanarium import Scanarium
-dir, file = os.path.split(sys.argv[1])
+full_path = sys.argv[1]
+$LOG_COMMAND
+dir, file = os.path.split(full_path)
 Scanarium().generate_thumbnail(dir, file)
 EOF
     done < <(find dynamic/scenes/*/actors -iname '*.png' ! -iname '*thumbnail.*')
