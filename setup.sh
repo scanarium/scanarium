@@ -100,6 +100,12 @@ parse_arguments() {
                 VERBOSITY=$((VERBOSITY + 1))
                 VERBOSE_ARGS+=("--verbose")
                 ;;
+            "-vv" )
+                parse_arguments "-v" "-v"
+                ;;
+            "-vvv" )
+                parse_arguments "-v" "-v" "-v"
+                ;;
             * )
                 error "Unknown argument '$ARGUMENT'"
                 ;;
