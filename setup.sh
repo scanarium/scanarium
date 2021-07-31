@@ -11,6 +11,13 @@ cd "$(dirname "$0")"
 PHASER_VERSION="3.52.0"
 PHASER_TARGET="frontend/phaser-${PHASER_VERSION}.js"
 CONF_TARGET="conf/scanarium.conf"
+VERBOSITY=0
+VERBOSE_ARGS=()
+
+error() {
+    echo "ERROR" "$@" >&2
+    exit 1
+}
 
 step() {
     local NAME="$1"
@@ -82,4 +89,23 @@ run_setup() {
     echo "Now edit '$CONF_TARGET' to your liking and start Scanarium by running ./run-demo-server.sh"
 }
 
+
+parse_arguments() {
+    while [ $# -gt 0 ]
+    do
+        local ARGUMENT="$1"
+        shift
+        case "$ARGUMENT" in
+            "-v" | "--verbose" )
+                VERBOSITY=$((VERBOSITY + 1))
+                VERBOSE_ARGS+=("--verbose")
+                ;;
+            * )
+                error "Unknown argument '$ARGUMENT'"
+                ;;
+        esac
+    done
+}
+
+parse_arguments "$@"
 run_setup
