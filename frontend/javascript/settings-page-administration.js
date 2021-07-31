@@ -75,6 +75,13 @@ class SettingsPageAdministration extends NamedPage {
                 localize('Really reset the scene "{scene_name}", delete this scenes\' scanned actors, and start afresh? (This cannot be undone)', {'scene_name': scene})
             );
             this.appendElement(resetButton);
+
+            resetButton = this.createResetButton(
+                cgi, '',
+                localize('Reset all scenes'),
+                localize('Really reset all scenes, delete all scanned actors, and start afresh? (This cannot be undone)')
+            );
+            this.appendElement(resetButton);
         }
     }
 
