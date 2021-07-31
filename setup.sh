@@ -85,7 +85,7 @@ run_setup() {
     step "thumbnails" "@always" generate_thumbnails
     step "global config" "dynamic/config.json" generate_global_config
     step "command log" "dynamic/command-log.json" generate_command_log
-    step "static content" "@always" ./regenerate-static-content.sh
+    step "static content" "@always" ./regenerate-static-content.sh "${VERBOSE_ARGS[@]}"
     step "content index" "@always" ./reindex.sh
 
     echo
