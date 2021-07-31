@@ -11,13 +11,20 @@ from .environment import CanaryTestCase
 
 
 class ScanDataCanaryTestCase(CanaryTestCase):
-    def run_scan_data(self, dir, file):
+    def run_scan_data(self, dir, file, expected_returncode):
         with open(os.path.join(dir, file), 'rb') as f:
             raw_data = f.read()
 
         encoded = base64.standard_b64encode(raw_data).decode()
 
-        return self.run_cgi(dir, 'scan-data', [encoded])
+        return self.run_cgi(dir, 'scan-data', [encoded],
+                            expected_returncode=expected_returncode)
+
+    def run_scan_data_ok(self, dir, file):
+        return self.run_scan_data(dir, file, expected_returncode=0)
+
+    def run_scan_data_failure(self, dir, file):
+        return self.run_scan_data(dir, file, expected_returncode=1)
 
     def assertRoughlyEqual(self, actual, expected, scale=None,
                            allowed_deviation=0.02):
@@ -93,7 +100,7 @@ class ScanDataCanaryTestCase(CanaryTestCase):
             if extra_fixture:
                 self.add_fixture(extra_fixture, dir)
 
-            self.run_scan_data(dir, fixture)
+            self.run_scan_data_ok(dir, fixture)
 
             if file_type == 'pdf':
                 self.assertScanOk(dir,
@@ -202,7 +209,7 @@ class ScanDataCanaryTestCase(CanaryTestCase):
                 },
             }
         with self.prepared_environment(fixture, test_config=config) as dir:
-            ret = self.run_scan_data(dir, fixture)
+            ret = self.run_scan_data_failure(dir, fixture)
             self.assertErrorCode('SE_PIPELINE_OS_ERROR', ret, dir)
 
     def test_fail_pipeline_os_error(self):
@@ -217,7 +224,7 @@ class ScanDataCanaryTestCase(CanaryTestCase):
                 },
             }
         with self.prepared_environment(fixture, test_config=config) as dir:
-            ret = self.run_scan_data(dir, fixture)
+            ret = self.run_scan_data_failure(dir, fixture)
             self.assertErrorCode('SE_PIPELINE_ERROR', ret, dir)
 
     def test_fail_pipeline_return_value_fine(self):
@@ -235,7 +242,7 @@ class ScanDataCanaryTestCase(CanaryTestCase):
                 },
             }
         with self.prepared_environment(fixture, test_config=config) as dir:
-            ret = self.run_scan_data(dir, fixture)
+            ret = self.run_scan_data_failure(dir, fixture)
             self.assertErrorCode('SE_PIPELINE_RETURN_VALUE', ret, dir)
 
     def test_fail_pipeline_return_value(self):
@@ -250,35 +257,35 @@ class ScanDataCanaryTestCase(CanaryTestCase):
                 },
             }
         with self.prepared_environment(fixture, test_config=config) as dir:
-            ret = self.run_scan_data(dir, fixture)
+            ret = self.run_scan_data_failure(dir, fixture)
             self.assertErrorCode('SE_PIPELINE_ERROR', ret, dir)
 
     def test_fail_no_rectangle(self):
         fixture = 'blank-white.png'
         config = {'scan': {'permit_file_type_png': True}}
         with self.prepared_environment(fixture, test_config=config) as dir:
-            ret = self.run_scan_data(dir, fixture)
+            ret = self.run_scan_data_failure(dir, fixture)
             self.assertErrorCode('SE_SCAN_NO_QR_CODE', ret, dir)
 
     def test_fail_only_rectangle(self):
         fixture = 'only-rect.png'
         config = {'scan': {'permit_file_type_png': True}}
         with self.prepared_environment(fixture, test_config=config) as dir:
-            ret = self.run_scan_data(dir, fixture)
+            ret = self.run_scan_data_failure(dir, fixture)
             self.assertErrorCode('SE_SCAN_NO_QR_CODE', ret, dir)
 
     def test_fail_only_qr(self):
         fixture = 'only-qr.png'
         config = {'scan': {'permit_file_type_png': True}}
         with self.prepared_environment(fixture, test_config=config) as dir:
-            ret = self.run_scan_data(dir, fixture)
+            ret = self.run_scan_data_failure(dir, fixture)
             self.assertErrorCode('SE_SCAN_NO_APPROX', ret, dir)
 
     def test_fail_too_small(self):
         fixture = 'too-small.png'
         config = {'scan': {'permit_file_type_png': True}}
         with self.prepared_environment(fixture, test_config=config) as dir:
-            ret = self.run_scan_data(dir, fixture)
+            ret = self.run_scan_data_failure(dir, fixture)
             self.assertErrorCode('SE_SCAN_IMAGE_TOO_SMALL', ret, dir)
 
     def test_fail_grew_too_small_fine(self):
@@ -288,14 +295,14 @@ class ScanDataCanaryTestCase(CanaryTestCase):
             'debug': {'fine_grained_errors': True},
             }
         with self.prepared_environment(fixture, test_config=config) as dir:
-            ret = self.run_scan_data(dir, fixture)
+            ret = self.run_scan_data_failure(dir, fixture)
             self.assertErrorCode('SE_SCAN_IMAGE_GREW_TOO_SMALL', ret, dir)
 
     def test_fail_grew_too_small_general(self):
         fixture = 'grew-too-small.png'
         config = {'scan': {'permit_file_type_png': True}}
         with self.prepared_environment(fixture, test_config=config) as dir:
-            ret = self.run_scan_data(dir, fixture)
+            ret = self.run_scan_data_failure(dir, fixture)
             self.assertErrorCode('SE_SCAN_NO_QR_CODE', ret, dir)
 
     def test_fail_too_many_iterations_fine(self):
@@ -305,21 +312,21 @@ class ScanDataCanaryTestCase(CanaryTestCase):
             'debug': {'fine_grained_errors': True},
             }
         with self.prepared_environment(fixture, test_config=config) as dir:
-            ret = self.run_scan_data(dir, fixture)
+            ret = self.run_scan_data_failure(dir, fixture)
             self.assertErrorCode('SE_SCAN_IMAGE_TOO_MANY_ITERATIONS', ret, dir)
 
     def test_fail_too_many_iterations_general(self):
         fixture = 'too-many-iterations.png'
         config = {'scan': {'permit_file_type_png': True}}
         with self.prepared_environment(fixture, test_config=config) as dir:
-            ret = self.run_scan_data(dir, fixture)
+            ret = self.run_scan_data_failure(dir, fixture)
             self.assertErrorCode('SE_SCAN_NO_QR_CODE', ret, dir)
 
     def test_fail_too_many_qr_codes(self):
         fixture = 'too-many-qrs.png'
         config = {'scan': {'permit_file_type_png': True}}
         with self.prepared_environment(fixture, test_config=config) as dir:
-            ret = self.run_scan_data(dir, fixture)
+            ret = self.run_scan_data_failure(dir, fixture)
             self.assertErrorCode('SE_SCAN_TOO_MANY_QR_CODES', ret, dir)
 
     def test_fail_qr_foo_fine(self):
@@ -329,14 +336,14 @@ class ScanDataCanaryTestCase(CanaryTestCase):
             'debug': {'fine_grained_errors': True},
             }
         with self.prepared_environment(fixture, test_config=config) as dir:
-            ret = self.run_scan_data(dir, fixture)
+            ret = self.run_scan_data_failure(dir, fixture)
             self.assertErrorCode('SE_SCAN_MISFORMED_QR_CODE', ret, dir)
 
     def test_fail_qr_foo(self):
         fixture = 'qr-foo.png'
         config = {'scan': {'permit_file_type_png': True}}
         with self.prepared_environment(fixture, test_config=config) as dir:
-            ret = self.run_scan_data(dir, fixture)
+            ret = self.run_scan_data_failure(dir, fixture)
             self.assertErrorCode('SE_UNKNOWN_QR_CODE', ret, dir)
 
     def test_fail_qr_foo_bar_baz_fine(self):
@@ -346,14 +353,14 @@ class ScanDataCanaryTestCase(CanaryTestCase):
             'debug': {'fine_grained_errors': True},
             }
         with self.prepared_environment(fixture, test_config=config) as dir:
-            ret = self.run_scan_data(dir, fixture)
+            ret = self.run_scan_data_failure(dir, fixture)
             self.assertErrorCode('SE_UNKNOWN_SCENE', ret, dir)
 
     def test_fail_qr_foo_bar_baz(self):
         fixture = 'qr-foo-bar-baz.png'
         config = {'scan': {'permit_file_type_png': True}}
         with self.prepared_environment(fixture, test_config=config) as dir:
-            ret = self.run_scan_data(dir, fixture)
+            ret = self.run_scan_data_failure(dir, fixture)
             self.assertErrorCode('SE_UNKNOWN_QR_CODE', ret, dir)
 
     def test_fail_qr_space_foo_fine(self):
@@ -363,12 +370,12 @@ class ScanDataCanaryTestCase(CanaryTestCase):
             'debug': {'fine_grained_errors': True},
             }
         with self.prepared_environment(fixture, test_config=config) as dir:
-            ret = self.run_scan_data(dir, fixture)
+            ret = self.run_scan_data_failure(dir, fixture)
             self.assertErrorCode('SE_UNKNOWN_ACTOR', ret, dir)
 
     def test_fail_qr_space_foo(self):
         fixture = 'qr-space-foo.png'
         config = {'scan': {'permit_file_type_png': True}}
         with self.prepared_environment(fixture, test_config=config) as dir:
-            ret = self.run_scan_data(dir, fixture)
+            ret = self.run_scan_data_failure(dir, fixture)
             self.assertErrorCode('SE_UNKNOWN_QR_CODE', ret, dir)

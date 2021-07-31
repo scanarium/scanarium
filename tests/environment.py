@@ -169,19 +169,25 @@ class BasicTestCase(unittest.TestCase):
 
 
 class CanaryTestCase(BasicTestCase):
-    def run_command(self, command):
+    def run_command(self, command, expected_returncode=0):
         process = subprocess.run(command,
-                                 check=True,
+                                 check=False,
                                  timeout=3,
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE,
                                  universal_newlines=True)
+
+        if process.returncode != expected_returncode:
+            raise subprocess.CalledProcessError(
+                process.returncode, process.args, process.stdout,
+                process.stderr)
+
         return {
             'stdout': process.stdout,
             'stderr': process.stderr,
         }
 
-    def run_cgi(self, dir, cgi, arguments=[]):
+    def run_cgi(self, dir, cgi, arguments=[], expected_returncode=0):
         cgi_file = os.path.join('.', 'backend', f'{cgi}.py')
 
         standard_arguments = [
@@ -190,4 +196,5 @@ class CanaryTestCase(BasicTestCase):
 
         command = [cgi_file] + standard_arguments + arguments
 
-        return self.run_command(command)
+        return self.run_command(command,
+                                expected_returncode=expected_returncode)

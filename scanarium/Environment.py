@@ -159,6 +159,7 @@ class Environment(object):
         else:
             result = Result(payload, exc_info)
 
+        exit_code = 0
         if IS_CGI:
             ret = result.as_dict()
         else:
@@ -169,6 +170,7 @@ class Environment(object):
                 print('ERROR: %s' % result.error_code)
                 print(result.error_message)
                 print()
+                exit_code = 1
             ret = result.payload
 
         print(self._dumper.dump_json_string(ret))
@@ -181,7 +183,7 @@ class Environment(object):
                 # Logging failed. There's not much we can do here.
                 pass
 
-        self.cleanup(exit_code=0)
+        self.cleanup(exit_code=exit_code)
 
     def _inject_cgi_arguments(self, fields):
         parameters = cgi.FieldStorage()
