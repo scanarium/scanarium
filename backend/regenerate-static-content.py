@@ -832,6 +832,7 @@ def regenerate_language_matrix(scanarium):
     for l10n_file in os.listdir(l10n_dir):
         if l10n_file.endswith('.json') and l10n_file != data_file:
             l10ns.append(l10n_file[:-5])
+    l10ns.sort()
 
     for ui_l10ns in l10ns:
         localizer = scanarium.get_localizer(ui_l10ns)
