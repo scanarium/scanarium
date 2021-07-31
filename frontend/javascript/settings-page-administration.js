@@ -44,29 +44,37 @@ class SettingsPageAdministration extends NamedPage {
         this.appendElement(form.getElement());
     }
 
+    createResetButton(cgi, scene, label, warning) {
+        var button = document.createElement('button');
+        button.textContent = label;
+        button.style['font-size'] = SettingsButton.button.style['font-size'];
+        button.onclick = function(e) {
+            if (confirm(warning)) {
+                var data = new FormData();
+                data.append('scene', scene);
+                callCgi(cgi, data);
+            }
+            e.stopPropagation();
+            e.preventDefault();
+        };
+
+        var wrapper = document.createElement('p');
+        wrapper.appendChild(button);
+        return wrapper;
+    }
+
     initContentActorReset() {
         const cgi = 'reset-dynamic-content';
         if (!isCgiForbidden(cgi)) {
             this.appendSectionHeader('Delete actors');
 
-            var controls = document.createElement('p');
-
-            var resetSceneButton = document.createElement('button');
-            resetSceneButton.id = 'reset-scene-button';
-            resetSceneButton.textContent = localize('Reset scene "{scene_name}"', {'scene_name': scene});
-            resetSceneButton.style['font-size'] = SettingsButton.button.style['font-size'];
-            resetSceneButton.onclick = function(e) {
-                if (confirm(localize('Really reset the scene "{scene_name}", delete this scenes\' scanned actors, and start afresh? (This cannot be undone)', {'scene_name': scene}))) {
-                    var data = new FormData();
-                    data.append('scene', scene);
-                    callCgi(cgi, data);
-                }
-                e.stopPropagation();
-                e.preventDefault();
-            };
-            controls.appendChild(resetSceneButton);
-
-            this.appendElement(controls);
+            var resetButton;
+            resetButton = this.createResetButton(
+                cgi, scene,
+                localize('Reset scene "{scene_name}"', {'scene_name': scene}),
+                localize('Really reset the scene "{scene_name}", delete this scenes\' scanned actors, and start afresh? (This cannot be undone)', {'scene_name': scene})
+            );
+            this.appendElement(resetButton);
         }
     }
 
