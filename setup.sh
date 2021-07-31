@@ -63,19 +63,23 @@ EOF
     done < <(find dynamic/scenes/*/actors -iname '*.png' ! -iname '*thumbnail.*')
 }
 
-step "phaser ${PHASER_VERSION}" "$PHASER_TARGET" curl --output "$PHASER_TARGET" "https://cdn.jsdelivr.net/npm/phaser@${PHASER_VERSION}/dist/phaser.min.js"
-step "example configuration" "$CONF_TARGET" cp "conf/scanarium.conf.example" "$CONF_TARGET"
-step "content directory" "dynamic" mkdir -p "dynamic"
-step "sample content" "dynamic/scenes/space/actors/SimpleRocket/sample.png" generate_sample_content
-step "thumbnails" "@always" generate_thumbnails
-step "global config" "dynamic/config.json" generate_global_config
-step "command log" "dynamic/command-log.json" generate_command_log
-step "static content" "@always" ./regenerate-static-content.sh
-step "content index" "@always" ./reindex.sh
+run_setup() {
+    step "phaser ${PHASER_VERSION}" "$PHASER_TARGET" curl --output "$PHASER_TARGET" "https://cdn.jsdelivr.net/npm/phaser@${PHASER_VERSION}/dist/phaser.min.js"
+    step "example configuration" "$CONF_TARGET" cp "conf/scanarium.conf.example" "$CONF_TARGET"
+    step "content directory" "dynamic" mkdir -p "dynamic"
+    step "sample content" "dynamic/scenes/space/actors/SimpleRocket/sample.png" generate_sample_content
+    step "thumbnails" "@always" generate_thumbnails
+    step "global config" "dynamic/config.json" generate_global_config
+    step "command log" "dynamic/command-log.json" generate_command_log
+    step "static content" "@always" ./regenerate-static-content.sh
+    step "content index" "@always" ./reindex.sh
 
-echo
-echo "#################################################################"
-echo
-echo "All done."
-echo
-echo "Now edit '$CONF_TARGET' to your liking and start Scanarium by running ./run-demo-server.sh"
+    echo
+    echo "#################################################################"
+    echo
+    echo "All done."
+    echo
+    echo "Now edit '$CONF_TARGET' to your liking and start Scanarium by running ./run-demo-server.sh"
+}
+
+run_setup
