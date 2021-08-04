@@ -59,5 +59,6 @@
   "058": "space:Star",
   "059": "space:Planet",
   "060": "space:FlyingSaucer",
-  "061": "space:Astronaut"
+  "061": "space:Astronaut",
+  "062": "highway:SemiTruckCabOver"
 }
