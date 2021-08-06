@@ -42,7 +42,7 @@ if [ -z "$SKIP_PRE_COMMIT" ]
 then
     if ! pre_commit
     then
-        echo "Found $WARNINGS warnings. Aborting. Set SKIP_PRE_COMMIT to a non-empty value to skip tests" >&2
+        echo "Aborting due to warnings. Set SKIP_PRE_COMMIT to a non-empty value to skip tests" >&2
         exit 1
     fi
 fi
