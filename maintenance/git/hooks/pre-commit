@@ -31,10 +31,11 @@ check_qr_codes_are_mapped() {
 }
 
 pre_commit() {
-  sort_localizations
-  sort_qr_code_maps
-  check_copyright_headers
-  check_qr_codes_are_mapped
+  sort_localizations && \
+  sort_qr_code_maps && \
+  check_copyright_headers && \
+  check_qr_codes_are_mapped && \
+  true
 }
 
 if [ -z "$SKIP_PRE_COMMIT" ]
