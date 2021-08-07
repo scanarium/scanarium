@@ -22,4 +22,4 @@ class FireTruck extends Vehicle {
     }
 }
 
-ActorManager.registerActor(FireTruck);
+actorManager.registerActor(FireTruck);

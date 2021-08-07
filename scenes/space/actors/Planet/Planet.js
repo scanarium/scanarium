@@ -11,4 +11,4 @@ class Planet extends PlanetBase {
     }
 }
 
-ActorManager.registerActor(Planet);
+actorManager.registerActor(Planet);

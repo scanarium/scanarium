@@ -35,4 +35,4 @@ class Tit extends Bird {
     }
 }
 
-ActorManager.registerActor(Tit);
+actorManager.registerActor(Tit);

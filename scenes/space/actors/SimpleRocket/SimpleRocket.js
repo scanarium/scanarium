@@ -23,4 +23,4 @@ class SimpleRocket extends SpaceshipBase {
     }
 }
 
-ActorManager.registerActor(SimpleRocket);
+actorManager.registerActor(SimpleRocket);

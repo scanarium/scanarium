@@ -18,4 +18,4 @@ class BunnyBalloon extends BaseBalloon {
     }
 }
 
-ActorManager.registerActor(BunnyBalloon);
+actorManager.registerActor(BunnyBalloon);

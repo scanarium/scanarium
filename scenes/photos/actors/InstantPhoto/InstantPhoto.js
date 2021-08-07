@@ -9,4 +9,4 @@ class InstantPhoto extends Photo {
     }
 }
 
-ActorManager.registerActor(InstantPhoto);
+actorManager.registerActor(InstantPhoto);

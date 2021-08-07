@@ -18,7 +18,7 @@ function preload() {
 
     scene_preload();
 
-    ActorManager.reloadConfigFiles();
+    actorManager.reloadConfigFiles();
 }
 scanariumConfig.scene["preload"] = preload;
 
@@ -83,7 +83,7 @@ function update (time, delta) {
 
     scene_update(time, delta);
 
-    ActorManager.update(time, delta);
+    actorManager.update(time, delta);
 
     if (typeof MessageManager !== 'undefined') {
       MessageManager.update(time, delta);

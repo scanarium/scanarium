@@ -47,4 +47,4 @@ class FlowerFairy extends Creature {
     }
 }
 
-ActorManager.registerActor(FlowerFairy);
+actorManager.registerActor(FlowerFairy);

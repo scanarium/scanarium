@@ -20,4 +20,4 @@ class SubcompactCar extends Vehicle {
     }
 }
 
-ActorManager.registerActor(SubcompactCar);
+actorManager.registerActor(SubcompactCar);

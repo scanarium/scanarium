@@ -9,4 +9,4 @@ class PlainPassportPhoto35x45mm extends Photo {
     }
 }
 
-ActorManager.registerActor(PlainPassportPhoto35x45mm);
+actorManager.registerActor(PlainPassportPhoto35x45mm);

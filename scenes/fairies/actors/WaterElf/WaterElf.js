@@ -44,4 +44,4 @@ class WaterElf extends Creature {
     }
 }
 
-ActorManager.registerActor(WaterElf);
+actorManager.registerActor(WaterElf);

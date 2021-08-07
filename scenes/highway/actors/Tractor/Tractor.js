@@ -20,4 +20,4 @@ class Tractor extends Vehicle {
     }
 }
 
-ActorManager.registerActor(Tractor);
+actorManager.registerActor(Tractor);

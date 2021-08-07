@@ -20,4 +20,4 @@ class Bus extends Vehicle {
     }
 }
 
-ActorManager.registerActor(Bus);
+actorManager.registerActor(Bus);

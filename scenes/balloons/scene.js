@@ -15,11 +15,11 @@ function scene_preload() {
 
 function spawnCloud() {
     var flavor = tunnel(Math.floor(Math.random()*3) + 1, 1, 3)
-    return ActorManager.addFullyLoadedActor('Cloud', flavor);
+    return actorManager.addFullyLoadedActor('Cloud', flavor);
 }
 
 function spawnClouds(immediate = false) {
-    var existing = ActorManager.getActorCount('Cloud');
+    var existing = actorManager.getActorCount('Cloud');
     var target = 20;
     var needed = target - existing;
     for (var i = 0; i < needed; i++) {
@@ -37,8 +37,8 @@ function birdBalloonCollision(balloon, beak) {
 
 function scene_create() {
     Wind.init();
-    ActorManager.registerActor(Cloud);
-    ActorManager.onActorDestroy(function(actor) {spawnClouds();}, 'Cloud');
+    actorManager.registerActor(Cloud);
+    actorManager.onActorDestroy(function(actor) {spawnClouds();}, 'Cloud');
     LayoutManager.register(function() {spawnClouds(true)});
 
     groupBalloons = game.add.group();
@@ -228,7 +228,7 @@ class BaseBalloon extends WindAffectedSprite {
             const texture = this.flavored_actor + '-shred-' + String(i);
             var shred = new Shred(this.x, this.y, texture, shredSpec, this.spec, this.depth, this.displayWidth, this.displayHeight);
         });
-        ActorManager.deleteActor(this);
+        actorManager.deleteActor(this);
     }
 }
 

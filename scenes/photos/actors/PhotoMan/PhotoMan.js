@@ -9,4 +9,4 @@ class PhotoMan extends Photo {
     }
 }
 
-ActorManager.registerActor(PhotoMan);
+actorManager.registerActor(PhotoMan);

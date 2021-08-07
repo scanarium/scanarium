@@ -26,11 +26,11 @@ var CommandProcessor = {
             template = 'Added new {actor_name}';
             if (command == scene) {
                 var flavor = sanitize_string(capsule.payload, 'flavor')
-                if (typeof ActorManager !== 'undefined') {
+                if (typeof actorManager !== 'undefined') {
                     // We add the actor, even if `replay` is true, as
                     // this will help showing a recently scanned actor
                     // more quickly.
-                    ActorManager.addActor(parameters[0], flavor);
+                    actorManager.addActor(parameters[0], flavor);
                 }
             }
             if (PageInsertionHint != null && getConfig('drop_page_insertion_hint_after_scan')) {

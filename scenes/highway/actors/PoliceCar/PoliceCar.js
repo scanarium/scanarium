@@ -21,4 +21,4 @@ class PoliceCar extends Vehicle {
         super(flavor, x, y, initialMinSpeed, initialMaxSpeed, width, tires, undercarriage, angularShake, yShake, decal, beacon);
     }
 }
-ActorManager.registerActor(PoliceCar);
+actorManager.registerActor(PoliceCar);

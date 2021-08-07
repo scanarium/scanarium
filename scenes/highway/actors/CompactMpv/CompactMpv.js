@@ -20,4 +20,4 @@ class CompactMpv extends Vehicle {
     }
 }
 
-ActorManager.registerActor(CompactMpv);
+actorManager.registerActor(CompactMpv);

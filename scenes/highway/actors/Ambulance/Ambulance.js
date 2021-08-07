@@ -22,4 +22,4 @@ class Ambulance extends Vehicle {
     }
 }
 
-ActorManager.registerActor(Ambulance);
+actorManager.registerActor(Ambulance);

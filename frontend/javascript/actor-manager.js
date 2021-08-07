@@ -2,22 +2,24 @@
 // GNU Affero General Public License v3.0 (See LICENSE.md)
 // SPDX-License-Identifier: AGPL-3.0-only
 
-var ActorManager = {
-    actors_config: null,
-    actors_latest_config: null,
-    nextConfigFetch: 0,
-    configFetches: 0,
+class ActorManager {
+    constructor() {
+        this.actors_config = null;
+        this.actors_latest_config = null;
+        this.nextConfigFetch = 0;
+        this.configFetches = 0;
 
-    created: 0,
-    actors: [],
-    triedActors: {},
-    loadedActorJavascripts: [],
-    loadedActorFlavors: {},
-    registeredActors: {},
-    destroyCallbacks: [],
-    nextSpawn: 999999999999999, // This gets reset once configs are loaded.
+        this.created = 0;
+        this.actors = [];
+        this.triedActors = {};
+        this.loadedActorJavascripts = [];
+        this.loadedActorFlavors = {};
+        this.registeredActors = {};
+        this.destroyCallbacks = [];
+        this.nextSpawn = 999999999999999; // This gets reset once configs are loaded.
+    }
 
-    update: function(time, delta) {
+    update(time, delta) {
         if (time > this.nextConfigFetch) {
             this.nextConfigFetch = time + getConfig('actor-reload-period');
             // If we did not check on loading being blocked, the config reload
@@ -50,42 +52,42 @@ var ActorManager = {
                 that.deleteActor(actor);
             }
         });
-    },
+    }
 
-    isConfigLoaded: function() {
+    isConfigLoaded() {
       return this.actors_config != null && this.actors_latest_config != null;
-    },
+    }
 
-    reloadConfigFiles: function() {
+    reloadConfigFiles() {
         var load = function (url, callback) {
           loadDynamicConfig(dyn_scene_dir + '/' + url, function(payload) {
-            var wasLoaded = ActorManager.isConfigLoaded();
+            var wasLoaded = actorManager.isConfigLoaded();
 
             callback(payload);
 
             if (!wasLoaded) {
-              if (ActorManager.isConfigLoaded()) {
-                ActorManager.nextSpawn = 0;
+              if (actorManager.isConfigLoaded()) {
+                actorManager.nextSpawn = 0;
               }
             }
           });
         };
 
         load('actors-latest.json', function(payload) {
-          ActorManager.actors_latest_config = payload;
+          actorManager.actors_latest_config = payload;
           });
 
-        if ((ActorManager.configFetches % 10) == 0) {
+        if ((actorManager.configFetches % 10) == 0) {
           load('actors.json', function(payload) {
-            ActorManager.actors_config = payload;
+            actorManager.actors_config = payload;
             });
         }
 
 
-        ActorManager.configFetches++;
-    },
+        actorManager.configFetches++;
+    }
 
-    getActorCount: function(actorName) {
+    getActorCount(actorName) {
       var ret = 0;
       this.actors.forEach(function (actor, index) {
         if (actorName == actor.actorName) {
@@ -93,9 +95,9 @@ var ActorManager = {
         }
       });
       return ret;
-    },
+    }
 
-    addActorIfFullyLoaded: function(actor, flavor) {
+    addActorIfFullyLoaded(actor, flavor) {
         if (!(this.loadedActorJavascripts.includes(actor))) {
             // JavaScript for actor not yet fully loaded.
             return;
@@ -107,9 +109,9 @@ var ActorManager = {
 
         // Everything's fully loaded, so we're creating and adding the actor
         this.addFullyLoadedActor(actor, flavor);
-    },
+    }
 
-    addFullyLoadedActor: function(actor, flavor) {
+    addFullyLoadedActor(actor, flavor) {
         var x = scanariumConfig.width * (Math.random() * 0.6 + 0.2);
         var y = scanariumConfig.height * (Math.random() * 0.6 + 0.2);
 
@@ -124,9 +126,9 @@ var ActorManager = {
         this.created += 1
         this.actors.push(actor);
         return actor;
-    },
+    }
 
-    getNewActorNameWithFlavorFromConfig: function(config, forceUntried) {
+    getNewActorNameWithFlavorFromConfig(config, forceUntried) {
         // We iterate over all entries in actors_latest_config.
         // If we find one that we have not tried yet, we try it.
         // If we have already tried all, we pick a random one.
@@ -166,9 +168,9 @@ var ActorManager = {
             }
         });
         return candidates.length ? candidates[Math.min(Math.floor(Math.random() * candidates.length), candidates.length - 1)] : null;
-    },
+    }
 
-    getNewActorNameWithFlavor: function() {
+    getNewActorNameWithFlavor() {
         var config = this.actors_latest_config;
         var forceUntried = true;
         if (Math.random() < 0.3) {
@@ -176,10 +178,10 @@ var ActorManager = {
             forceUntried = false;
         }
         return this.getNewActorNameWithFlavorFromConfig(config, forceUntried);
-    },
+    }
 
-    addActorRandom: function() {
-        var actor_spec = ActorManager.getNewActorNameWithFlavor();
+    addActorRandom() {
+        var actor_spec = actorManager.getNewActorNameWithFlavor();
         if (actor_spec === null) {
             // Configs currently do not provide good actor configs
             return;
@@ -187,10 +189,10 @@ var ActorManager = {
 
         var actor_name = actor_spec[0];
         var flavor = actor_spec[1];
-        ActorManager.addActor(actor_name, flavor);
-    },
+        actorManager.addActor(actor_name, flavor);
+    }
 
-    addActor: function(actor_name, flavor) {
+    addActor(actor_name, flavor) {
         var flavored_actor_name = actor_name + '-' + flavor;
 
         var triedActors = this.triedActors;
@@ -241,7 +243,7 @@ var ActorManager = {
             image.on('filecomplete', onLoaded, this);
             onceLoadingIsAllowed(() => game.load.start());
         }
-    },
+    }
 
     deleteActor(actor) {
         var idx = this.actors.indexOf(actor);
@@ -252,7 +254,7 @@ var ActorManager = {
             }
         });
         actor.destroy();
-    },
+    }
 
     onActorDestroy(callback, actor) {
         if (typeof actor === 'undefined') {
@@ -262,14 +264,15 @@ var ActorManager = {
             callback: callback,
             actor: actor
         });
-    },
+    }
 
     registerActor(clazz) {
         this.registeredActors[clazz.name] = clazz;
-    },
+    }
 
-    actorInfo: function() {
-      return 'ActorManager: created: ' + ActorManager.created + ', active: ' + ActorManager.actors.length;
+    actorInfo() {
+      return 'actorManager: created: ' + actorManager.created + ', active: ' + actorManager.actors.length;
     }
 };
-DeveloperInformation.register(ActorManager.actorInfo);
+var actorManager = new ActorManager();
+DeveloperInformation.register(actorManager.actorInfo);

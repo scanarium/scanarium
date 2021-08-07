@@ -30,4 +30,4 @@ class SimpleButterfly extends Creature {
     }
 }
 
-ActorManager.registerActor(SimpleButterfly);
+actorManager.registerActor(SimpleButterfly);
