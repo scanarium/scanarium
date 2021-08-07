@@ -61,5 +61,6 @@
   "060": "space:FlyingSaucer",
   "061": "space:Astronaut",
   "062": "highway:SemiTruckCabOver",
+  "063": "highway:SemiTrailerBox",
   "ZZZ": "undefined-placeholder-to-get-better-diffs"
 }
