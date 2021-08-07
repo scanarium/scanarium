@@ -49,4 +49,4 @@ class WoodFairy extends Creature {
     }
 }
 
-ScActorManager.registerActor(WoodFairy);
+ActorManager.registerActor(WoodFairy);

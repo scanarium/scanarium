@@ -9,4 +9,4 @@ class PlainPhoto9x13cmPortrait extends Photo {
     }
 }
 
-ScActorManager.registerActor(PlainPhoto9x13cmPortrait);
+ActorManager.registerActor(PlainPhoto9x13cmPortrait);

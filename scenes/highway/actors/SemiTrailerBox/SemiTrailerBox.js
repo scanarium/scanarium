@@ -20,4 +20,4 @@ class SemiTrailerBox extends Vehicle {
     }
 }
 
-ScActorManager.registerActor(SemiTrailerBox);
+ActorManager.registerActor(SemiTrailerBox);

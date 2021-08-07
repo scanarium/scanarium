@@ -18,4 +18,4 @@ class DragonBalloon extends BaseBalloon {
     }
 }
 
-ScActorManager.registerActor(DragonBalloon);
+ActorManager.registerActor(DragonBalloon);

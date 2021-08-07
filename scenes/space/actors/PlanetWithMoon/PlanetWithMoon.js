@@ -57,4 +57,4 @@ class PlanetWithMoon extends PlanetBase {
     }
 }
 
-ScActorManager.registerActor(PlanetWithMoon);
+ActorManager.registerActor(PlanetWithMoon);

@@ -9,4 +9,4 @@ class PhotoFace extends Photo {
     }
 }
 
-ScActorManager.registerActor(PhotoFace);
+ActorManager.registerActor(PhotoFace);

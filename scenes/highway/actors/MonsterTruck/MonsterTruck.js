@@ -20,4 +20,4 @@ class MonsterTruck extends Vehicle {
     }
 }
 
-ScActorManager.registerActor(MonsterTruck);
+ActorManager.registerActor(MonsterTruck);

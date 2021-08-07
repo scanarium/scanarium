@@ -17,4 +17,4 @@ class HeartBalloon extends BaseBalloon {
     }
 }
 
-ScActorManager.registerActor(HeartBalloon);
+ActorManager.registerActor(HeartBalloon);

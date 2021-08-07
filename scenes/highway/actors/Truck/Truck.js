@@ -21,4 +21,4 @@ class Truck extends Vehicle {
     }
 }
 
-ScActorManager.registerActor(Truck);
+ActorManager.registerActor(Truck);

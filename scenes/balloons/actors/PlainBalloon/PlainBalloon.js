@@ -17,4 +17,4 @@ class PlainBalloon extends BaseBalloon {
     }
 }
 
-ScActorManager.registerActor(PlainBalloon);
+ActorManager.registerActor(PlainBalloon);

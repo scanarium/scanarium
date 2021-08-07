@@ -18,4 +18,4 @@ class FlyingSaucer extends SpaceshipBase {
     }
 }
 
-ScActorManager.registerActor(FlyingSaucer);
+ActorManager.registerActor(FlyingSaucer);

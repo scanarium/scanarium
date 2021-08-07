@@ -42,4 +42,4 @@ class Parrot extends Bird {
     }
 }
 
-ScActorManager.registerActor(Parrot);
+ActorManager.registerActor(Parrot);

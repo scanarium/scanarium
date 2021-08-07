@@ -2,7 +2,7 @@
 // GNU Affero General Public License v3.0 (See LICENSE.md)
 // SPDX-License-Identifier: AGPL-3.0-only
 
-var ScActorManager = {
+var ActorManager = {
     init: function(config) {
         this.config = config;
         console.log(localize('ActorManager initialized'));
@@ -63,30 +63,30 @@ var ScActorManager = {
     reloadConfigFiles: function() {
         var load = function (url, callback) {
           loadDynamicConfig(dyn_scene_dir + '/' + url, function(payload) {
-            var wasLoaded = ScActorManager.isConfigLoaded();
+            var wasLoaded = ActorManager.isConfigLoaded();
 
             callback(payload);
 
             if (!wasLoaded) {
-              if (ScActorManager.isConfigLoaded()) {
-                ScActorManager.nextSpawn = 0;
+              if (ActorManager.isConfigLoaded()) {
+                ActorManager.nextSpawn = 0;
               }
             }
           });
         };
 
         load('actors-latest.json', function(payload) {
-          ScActorManager.actors_latest_config = payload;
+          ActorManager.actors_latest_config = payload;
           });
 
-        if ((ScActorManager.configFetches % 10) == 0) {
+        if ((ActorManager.configFetches % 10) == 0) {
           load('actors.json', function(payload) {
-            ScActorManager.actors_config = payload;
+            ActorManager.actors_config = payload;
             });
         }
 
 
-        ScActorManager.configFetches++;
+        ActorManager.configFetches++;
     },
 
     getActorCount: function(actorName) {
@@ -183,7 +183,7 @@ var ScActorManager = {
     },
 
     addActorRandom: function() {
-        var actor_spec = ScActorManager.getNewActorNameWithFlavor();
+        var actor_spec = ActorManager.getNewActorNameWithFlavor();
         if (actor_spec === null) {
             // Configs currently do not provide good actor configs
             return;
@@ -191,7 +191,7 @@ var ScActorManager = {
 
         var actor_name = actor_spec[0];
         var flavor = actor_spec[1];
-        ScActorManager.addActor(actor_name, flavor);
+        ActorManager.addActor(actor_name, flavor);
     },
 
     addActor: function(actor_name, flavor) {
@@ -273,7 +273,7 @@ var ScActorManager = {
     },
 
     actorInfo: function() {
-      return 'ActorManager: created: ' + ScActorManager.created + ', active: ' + ScActorManager.actors.length;
+      return 'ActorManager: created: ' + ActorManager.created + ', active: ' + ActorManager.actors.length;
     }
 };
-DeveloperInformation.register(ScActorManager.actorInfo);
+DeveloperInformation.register(ActorManager.actorInfo);

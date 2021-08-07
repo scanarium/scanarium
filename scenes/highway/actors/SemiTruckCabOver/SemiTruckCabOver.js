@@ -20,4 +20,4 @@ class SemiTruckCabOver extends Vehicle {
     }
 }
 
-ScActorManager.registerActor(SemiTruckCabOver);
+ActorManager.registerActor(SemiTruckCabOver);

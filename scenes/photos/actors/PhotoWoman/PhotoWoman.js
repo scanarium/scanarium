@@ -9,4 +9,4 @@ class PhotoWoman extends Photo {
     }
 }
 
-ScActorManager.registerActor(PhotoWoman);
+ActorManager.registerActor(PhotoWoman);

@@ -9,4 +9,4 @@ class PhotoUnicorn extends Photo {
     }
 }
 
-ScActorManager.registerActor(PhotoUnicorn);
+ActorManager.registerActor(PhotoUnicorn);

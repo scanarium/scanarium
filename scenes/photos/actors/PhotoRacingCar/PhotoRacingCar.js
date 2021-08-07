@@ -9,4 +9,4 @@ class PhotoRacingCar extends Photo {
     }
 }
 
-ScActorManager.registerActor(PhotoRacingCar);
+ActorManager.registerActor(PhotoRacingCar);

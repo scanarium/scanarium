@@ -15,4 +15,4 @@ class PlanetWithRing extends PlanetBase {
     }
 }
 
-ScActorManager.registerActor(PlanetWithRing);
+ActorManager.registerActor(PlanetWithRing);

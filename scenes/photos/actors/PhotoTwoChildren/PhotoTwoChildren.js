@@ -9,4 +9,4 @@ class PhotoTwoChildren extends Photo {
     }
 }
 
-ScActorManager.registerActor(PhotoTwoChildren);
+ActorManager.registerActor(PhotoTwoChildren);

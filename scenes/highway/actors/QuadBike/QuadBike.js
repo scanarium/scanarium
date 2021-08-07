@@ -20,4 +20,4 @@ class QuadBike extends Vehicle {
     }
 }
 
-ScActorManager.registerActor(QuadBike);
+ActorManager.registerActor(QuadBike);

@@ -9,4 +9,4 @@ class PhotoCastleRuin extends Photo {
     }
 }
 
-ScActorManager.registerActor(PhotoCastleRuin);
+ActorManager.registerActor(PhotoCastleRuin);
