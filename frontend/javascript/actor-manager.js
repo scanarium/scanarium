@@ -3,10 +3,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 var ActorManager = {
-    init: function(config) {
-        this.config = config;
-        console.log(localize('ActorManager initialized'));
-    },
     actors_config: null,
     actors_latest_config: null,
     nextConfigFetch: 0,
@@ -114,8 +110,8 @@ var ActorManager = {
     },
 
     addFullyLoadedActor: function(actor, flavor) {
-        var x = this.config.width * (Math.random() * 0.6 + 0.2);
-        var y = this.config.height * (Math.random() * 0.6 + 0.2);
+        var x = scanariumConfig.width * (Math.random() * 0.6 + 0.2);
+        var y = scanariumConfig.height * (Math.random() * 0.6 + 0.2);
 
         var actorName = actor;
         var actor = new this.registeredActors[actor](x, y, flavor);

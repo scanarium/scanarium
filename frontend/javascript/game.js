@@ -28,8 +28,6 @@ function create() {
     // `Phaser.Game` initialization can set it.
     game = this;
 
-    var config = scanariumConfig;
-
     //  A simple background for our game
     background = this.add.image(0, 0, 'background');
     background.setOrigin(0, 0);
@@ -39,8 +37,6 @@ function create() {
     });
 
     MessageManager.init();
-
-    ActorManager.init(config);
 
     scene_create();
 
