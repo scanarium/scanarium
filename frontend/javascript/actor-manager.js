@@ -9,7 +9,6 @@ class ActorManager {
         this.nextConfigFetch = 0;
         this.configFetches = 0;
 
-        this.created = 0;
         this.actors = [];
         this.triedActors = {};
         this.loadedActorJavascripts = [];
@@ -17,6 +16,7 @@ class ActorManager {
         this.registeredActors = {};
         this.destroyCallbacks = [];
         this.nextSpawn = 999999999999999; // This gets reset once configs are loaded.
+        this.statsTracker = new ActorManagerStatsTracker(this);
     }
 
     update(time, delta) {
@@ -123,7 +123,7 @@ class ActorManager {
         actor.actorName = actorName;
         actor.actorFlavor = flavor;
         game.add.existing(actor);
-        this.created += 1
+        this.statsTracker.trackCreation();
         this.actors.push(actor);
         return actor;
     }
@@ -269,10 +269,5 @@ class ActorManager {
     registerActor(clazz) {
         this.registeredActors[clazz.name] = clazz;
     }
-
-    actorInfo() {
-      return 'actorManager: created: ' + actorManager.created + ', active: ' + actorManager.actors.length;
-    }
 };
 var actorManager = new ActorManager();
-DeveloperInformation.register(actorManager.actorInfo);
