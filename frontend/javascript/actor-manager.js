@@ -14,9 +14,9 @@ class ActorManager {
         this.loadedActorJavascripts = [];
         this.loadedActorFlavors = {};
         this.registeredActors = {};
-        this.destroyCallbacks = [];
         this.nextSpawn = 999999999999999; // This gets reset once configs are loaded.
         this.statsTracker = new ActorManagerStatsTracker(this);
+        this.reaper = new ActorManagerActorReaper(this);
     }
 
     update(time, delta) {
@@ -44,14 +44,9 @@ class ActorManager {
         var that = this;
         this.actors.forEach(function (actor, index) {
             actor.update(time, delta);
-
-            if ((actor.x < -actor.destroyOffset)
-                || (actor.x > actor.destroyOffset + scanariumConfig.width)
-                || (actor.y < -actor.destroyOffset)
-                || (actor.y > actor.destroyOffset + scanariumConfig.height)) {
-                that.deleteActor(actor);
-            }
         });
+
+        this.reaper.deleteOutlyingActors();
     }
 
     isConfigLoaded() {
@@ -246,24 +241,11 @@ class ActorManager {
     }
 
     deleteActor(actor) {
-        var idx = this.actors.indexOf(actor);
-        this.actors.splice(idx, 1);
-        this.destroyCallbacks.forEach(function (callbackConfig) {
-            if (callbackConfig.actor == null || callbackConfig.actor == actor.actorName) {
-                callbackConfig.callback(actor);
-            }
-        });
-        actor.destroy();
+        this.reaper.deleteActor(actor);
     }
 
     onActorDestroy(callback, actor) {
-        if (typeof actor === 'undefined') {
-            actor == null;
-        }
-        this.destroyCallbacks.push({
-            callback: callback,
-            actor: actor
-        });
+        this.reaper.onActorDestroy(callback, actor);
     }
 
     registerActor(clazz) {
