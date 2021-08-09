@@ -4,10 +4,7 @@
 
 class ActorManager {
     constructor() {
-        this.actors_config = null;
-        this.actors_latest_config = null;
         this.nextConfigFetch = 0;
-        this.configFetches = 0;
 
         this.actors = [];
         this.triedActors = {};
@@ -17,19 +14,18 @@ class ActorManager {
         this.nextSpawn = 999999999999999; // This gets reset once configs are loaded.
         this.statsTracker = new ActorManagerStatsTracker(this);
         this.reaper = new ActorManagerActorReaper(this);
+        var that = this;
+        this.configLoader = new ActorManagerConfigLoader(this, () => that.nextSpawn = 0);
+    }
+
+    preload() {
+        this.configLoader.reload();
     }
 
     update(time, delta) {
         if (time > this.nextConfigFetch) {
             this.nextConfigFetch = time + getConfig('actor-reload-period');
-            // If we did not check on loading being blocked, the config reload
-            // requests would get queued up and once loading is allowed again,
-            // we'd get 100s of requests to reload the same file. As this only
-            // hurts the whole situation, we simlpy skip reloading during the
-            // block. We'll catch up after the block automatically.
-            if (!isLoadingBlocked()) {
-                this.reloadConfigFiles();
-            }
+            this.configLoader.reload();
         }
 
         if (time > this.nextSpawn) {
@@ -47,39 +43,6 @@ class ActorManager {
         });
 
         this.reaper.deleteOutlyingActors();
-    }
-
-    isConfigLoaded() {
-      return this.actors_config != null && this.actors_latest_config != null;
-    }
-
-    reloadConfigFiles() {
-        var load = function (url, callback) {
-          loadDynamicConfig(dyn_scene_dir + '/' + url, function(payload) {
-            var wasLoaded = actorManager.isConfigLoaded();
-
-            callback(payload);
-
-            if (!wasLoaded) {
-              if (actorManager.isConfigLoaded()) {
-                actorManager.nextSpawn = 0;
-              }
-            }
-          });
-        };
-
-        load('actors-latest.json', function(payload) {
-          actorManager.actors_latest_config = payload;
-          });
-
-        if ((actorManager.configFetches % 10) == 0) {
-          load('actors.json', function(payload) {
-            actorManager.actors_config = payload;
-            });
-        }
-
-
-        actorManager.configFetches++;
     }
 
     getActorCount(actorName) {
@@ -166,10 +129,10 @@ class ActorManager {
     }
 
     getNewActorNameWithFlavor() {
-        var config = this.actors_latest_config;
+        var config = this.configLoader.actors_latest_config;
         var forceUntried = true;
         if (Math.random() < 0.3) {
-            config = this.actors_config;
+            config = this.configLoader.actors_config;
             forceUntried = false;
         }
         return this.getNewActorNameWithFlavorFromConfig(config, forceUntried);

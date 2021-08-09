@@ -18,7 +18,7 @@ function preload() {
 
     scene_preload();
 
-    actorManager.reloadConfigFiles();
+    actorManager.preload();
 }
 scanariumConfig.scene["preload"] = preload;
 
