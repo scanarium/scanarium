@@ -10,7 +10,6 @@ class ActorManagerActorCreator {
         this.registeredActors = {};
         this.triedActors = {};
         this.loadedActorJavascripts = [];
-        this.loadedActorFlavors = {};
     }
 
     registerActor(clazz) {
@@ -23,7 +22,7 @@ class ActorManagerActorCreator {
             // JavaScript for actor not yet fully loaded.
             return;
         }
-        if (!(this.loadedActorFlavors[actor].includes(flavor))) {
+        if (!game.textures.exists(actor + '-' + flavor)) {
             // Flavor image for actor not yet fully loaded.
             return;
         }
@@ -124,21 +123,12 @@ class ActorManagerActorCreator {
             triedActors[actor_name].push(flavor);
         }
 
-        var loadedActorFlavors = this.loadedActorFlavors;
-        if (!(actor_name in loadedActorFlavors)) {
-            loadedActorFlavors[actor_name] = []
-        }
-
         var created = false;
         var that = this;
         var image = null;
 
         var onLoaded = function(key, file) {
             if (key == flavored_actor_name) {
-                if (!(that.loadedActorFlavors[actor_name].includes(flavor))) {
-                    that.loadedActorFlavors[actor_name].push(flavor);
-                }
-
                 if (image != null) {
                     game.events.off('filecomplete', onLoaded);
                 }
@@ -158,7 +148,7 @@ class ActorManagerActorCreator {
             });
         }
 
-        if (!(loadedActorFlavors[actor_name].includes(flavor))) {
+        if (!game.textures.exists(flavored_actor_name)) {
             var path = dyn_scene_dir + '/actors/' + actor_name + '/' + flavor + '.png';
             image = game.load.image(flavored_actor_name, path);
             image.on('filecomplete', onLoaded, this);
