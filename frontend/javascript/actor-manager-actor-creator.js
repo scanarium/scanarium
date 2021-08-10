@@ -9,16 +9,14 @@ class ActorManagerActorCreator {
         this.statsTracker = statsTracker;
         this.registeredActors = {};
         this.triedActors = {};
-        this.loadedActorJavascripts = [];
     }
 
     registerActor(clazz) {
         this.registeredActors[clazz.name] = clazz;
     }
 
-
     addActorIfFullyLoaded(actor, flavor) {
-        if (!(this.loadedActorJavascripts.includes(actor))) {
+        if (!(actor in this.registeredActors)) {
             // JavaScript for actor not yet fully loaded.
             return;
         }
@@ -137,13 +135,12 @@ class ActorManagerActorCreator {
             }
         };
 
-        if (this.loadedActorJavascripts.includes(actor_name)) {
+        if (actor_name in this.registeredActors) {
             this.addActorIfFullyLoaded(actor_name, flavor);
         } else {
             var actor_url = scene_dir + '/actors/' + actor_name;
             var actor_js_url = actor_url + '/' + actor_name + '.js';
             loadJs(actor_js_url, () => {
-                this.loadedActorJavascripts.push(actor_name);
                 this.addActorIfFullyLoaded(actor_name, flavor);
             });
         }
