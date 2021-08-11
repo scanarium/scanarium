@@ -26,7 +26,7 @@ class ActorManagerActorCreator {
         }
 
         // Everything's fully loaded, so we're creating and adding the actor
-        this.addFullyLoadedActor(actor, flavor);
+        return this.addFullyLoadedActor(actor, flavor);
     }
 
     addFullyLoadedActor(actor, flavor) {
@@ -136,7 +136,7 @@ class ActorManagerActorCreator {
         };
 
         if (actor_name in this.registeredActors) {
-            this.addActorIfFullyLoaded(actor_name, flavor);
+            return this.addActorIfFullyLoaded(actor_name, flavor);
         } else {
             var actor_url = scene_dir + '/actors/' + actor_name;
             var actor_js_url = actor_url + '/' + actor_name + '.js';

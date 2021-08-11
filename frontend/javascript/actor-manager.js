@@ -60,10 +60,6 @@ class ActorManager {
         return this.actorCreator.addActorRandom();
     }
 
-    addFullyLoadedActor(actor_name, flavor) {
-        return this.actorCreator.addFullyLoadedActor(actor_name, flavor);
-    }
-
     deleteActor(actor) {
         this.reaper.deleteActor(actor);
     }
