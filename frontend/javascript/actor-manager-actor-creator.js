@@ -15,7 +15,7 @@ class ActorManagerActorCreator {
         this.registeredActors[clazz.name] = clazz;
     }
 
-    addActorIfFullyLoaded(actor, flavor) {
+    addActorIfFullyLoaded(actor, flavor, onCreated) {
         if (!(actor in this.registeredActors)) {
             // JavaScript for actor not yet fully loaded.
             return;
@@ -26,10 +26,10 @@ class ActorManagerActorCreator {
         }
 
         // Everything's fully loaded, so we're creating and adding the actor
-        return this.addFullyLoadedActor(actor, flavor);
+        return this.addFullyLoadedActor(actor, flavor, onCreated);
     }
 
-    addFullyLoadedActor(actor, flavor) {
+    addFullyLoadedActor(actor, flavor, onCreated) {
         var x = scanariumConfig.width * (Math.random() * 0.6 + 0.2);
         var y = scanariumConfig.height * (Math.random() * 0.6 + 0.2);
 
@@ -40,6 +40,9 @@ class ActorManagerActorCreator {
         }
         actor.actorName = actorName;
         actor.actorFlavor = flavor;
+        if (onCreated) {
+            onCreated(actor);
+        }
         game.add.existing(actor);
         this.statsTracker.trackCreation();
         this.actorManager.actors.push(actor);
@@ -110,7 +113,7 @@ class ActorManagerActorCreator {
         this.addActor(actor_name, flavor);
     }
 
-    addActor(actor_name, flavor) {
+    addActor(actor_name, flavor, onCreated) {
         var flavored_actor_name = actor_name + '-' + flavor;
 
         var triedActors = this.triedActors;
@@ -131,17 +134,17 @@ class ActorManagerActorCreator {
                     game.events.off('filecomplete', onLoaded);
                 }
 
-                that.addActorIfFullyLoaded(actor_name, flavor);
+                that.addActorIfFullyLoaded(actor_name, flavor, onCreated);
             }
         };
 
         if (actor_name in this.registeredActors) {
-            return this.addActorIfFullyLoaded(actor_name, flavor);
+            return this.addActorIfFullyLoaded(actor_name, flavor, onCreated);
         } else {
             var actor_url = scene_dir + '/actors/' + actor_name;
             var actor_js_url = actor_url + '/' + actor_name + '.js';
             loadJs(actor_js_url, () => {
-                this.addActorIfFullyLoaded(actor_name, flavor);
+                this.addActorIfFullyLoaded(actor_name, flavor, onCreated);
             });
         }
 
