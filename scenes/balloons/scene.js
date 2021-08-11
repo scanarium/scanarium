@@ -13,9 +13,9 @@ function scene_preload() {
     game.load.image('Cloud-3', scene_dir + '/cloud3.png');
 }
 
-function spawnCloud() {
+function spawnCloud(onCreated) {
     var flavor = tunnel(Math.floor(Math.random()*3) + 1, 1, 3)
-    return actorManager.addActor('Cloud', flavor);
+    actorManager.addActor('Cloud', flavor, onCreated);
 }
 
 function spawnClouds(immediate = false) {
@@ -23,11 +23,12 @@ function spawnClouds(immediate = false) {
     var target = 20;
     var needed = target - existing;
     for (var i = 0; i < needed; i++) {
-        var cloud = spawnCloud();
-        if (immediate) {
-          cloud.alpha = 1;
-          cloud.x = Math.random() * scanariumConfig.width;
-        }
+        spawnCloud(cloud => {
+            if (immediate) {
+                cloud.alpha = 1;
+                cloud.x = Math.random() * scanariumConfig.width;
+            }
+        });
     }
 }
 
