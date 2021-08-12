@@ -53,11 +53,11 @@ class ActorManager {
     }
 
     addActor(actor_name, flavor, onCreated) {
-        return this.actorCreator.addActor(actor_name, flavor, onCreated);
+        this.actorCreator.addActor(actor_name, flavor, onCreated);
     }
 
     addActorRandom() {
-        return this.actorCreator.addActorRandom();
+        this.actorCreator.addActorRandom();
     }
 
     deleteActor(actor) {

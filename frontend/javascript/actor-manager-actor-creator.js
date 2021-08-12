@@ -26,7 +26,7 @@ class ActorManagerActorCreator {
         }
 
         // Everything's fully loaded, so we're creating and adding the actor
-        return this.addFullyLoadedActor(actor, flavor, onCreated);
+        this.addFullyLoadedActor(actor, flavor, onCreated);
     }
 
     addFullyLoadedActor(actor, flavor, onCreated) {
@@ -46,7 +46,6 @@ class ActorManagerActorCreator {
         game.add.existing(actor);
         this.statsTracker.trackCreation();
         this.actorManager.actors.push(actor);
-        return actor;
     }
 
     getNewActorNameWithFlavorFromConfig(config, forceUntried) {
@@ -139,7 +138,7 @@ class ActorManagerActorCreator {
         };
 
         if (actor_name in this.registeredActors) {
-            return this.addActorIfFullyLoaded(actor_name, flavor, onCreated);
+            this.addActorIfFullyLoaded(actor_name, flavor, onCreated);
         } else {
             var actor_url = scene_dir + '/actors/' + actor_name;
             var actor_js_url = actor_url + '/' + actor_name + '.js';
