@@ -21,7 +21,7 @@ var eventMap = {
 var commands = {
     'add-actor-random': {
         description: 'Add another random actor',
-        implementation: actorManager.addActorRandom,
+        implementation: actorManager.addActor,
     },
     'cgi:scan': {
         description: 'Scan image',

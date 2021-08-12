@@ -100,19 +100,17 @@ class ActorManagerActorCreator {
         return this.getNewActorNameWithFlavorFromConfig(config, forceUntried);
     }
 
-    addActorRandom() {
-        var actor_spec = this.getNewActorNameWithFlavor();
-        if (actor_spec === null) {
-            // Configs currently do not provide good actor configs
-            return;
-        }
-
-        var actor_name = actor_spec[0];
-        var flavor = actor_spec[1];
-        this.addActor(actor_name, flavor);
-    }
-
     addActor(actor_name, flavor, onCreated) {
+        if (!actor_name) {
+            var actor_spec = this.getNewActorNameWithFlavor();
+            if (actor_spec === null) {
+                // Configs currently do not provide good actor configs
+                return;
+            }
+
+            actor_name = actor_spec[0];
+            flavor = actor_spec[1];
+        }
         var flavored_actor_name = actor_name + '-' + flavor;
 
         var triedActors = this.triedActors;
