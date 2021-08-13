@@ -46,7 +46,7 @@ var Settings = {
 
     this.element = this.tabbedPage.getElement();
 
-    document.body.appendChild(this.tabbedPage.getElement());
+    document.body.appendChild(this.element);
   },
 
   hide: function() {
