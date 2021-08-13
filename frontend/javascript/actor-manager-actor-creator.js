@@ -48,7 +48,7 @@ class ActorManagerActorCreator {
         this.actorManager.actors.push(actor);
     }
 
-    getNewActorNameWithFlavorFromConfig(config, forceUntried) {
+    getNextFlavoredActorNameFromConfig(config, forceUntried) {
         // We iterate over all entries in actors_latest_config.
         // If we find one that we have not tried yet, we try it.
         // If we have already tried all, we pick a random one.
@@ -90,19 +90,19 @@ class ActorManagerActorCreator {
         return candidates.length ? candidates[Math.min(Math.floor(Math.random() * candidates.length), candidates.length - 1)] : null;
     }
 
-    getNewActorNameWithFlavor() {
+    getNextFlavoredActorName() {
         var config = this.configLoader.actors_latest_config;
         var forceUntried = true;
         if (Math.random() < 0.3) {
             config = this.configLoader.actors_config;
             forceUntried = false;
         }
-        return this.getNewActorNameWithFlavorFromConfig(config, forceUntried);
+        return this.getNextFlavoredActorNameFromConfig(config, forceUntried);
     }
 
     addActor(actor_name, flavor, onCreated) {
         if (!actor_name) {
-            var actor_spec = this.getNewActorNameWithFlavor();
+            var actor_spec = this.getNextFlavoredActorName();
             if (actor_spec === null) {
                 // Configs currently do not provide good actor configs
                 return;
