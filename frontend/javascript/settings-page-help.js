@@ -214,8 +214,16 @@ class SettingsPageHelp extends NamedPage {
             // No section header, as the version string does not need
             // highlighting
 
+            var clickCount = 0;
             var button = document.createElement('p');
             button.textContent = localize('Version: {version}', {version: version});
+            button.onclick = function(e) {
+                if (DeveloperMode.countClick()) {
+                    PauseManager.resume();
+                };
+                e.stopPropagation();
+                e.preventDefault();
+            };
             this.appendElement(button);
         }
     }

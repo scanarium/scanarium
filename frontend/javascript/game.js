@@ -40,13 +40,15 @@ function create() {
 
     scene_create();
 
-    FrameCounter.init();
     PageInsertionHint.init();
     CommandLogInjector.init();
     ScreensaverManager.init();
     PauseManager.init();
-    DeveloperInformation.init();
     Greeter.init();
+
+    DeveloperMode.init();
+    FrameCounter.init();
+    DeveloperInformation.init();
 
     this.scale.on('resize', LayoutManager.onResize, this);
     LayoutManager.onResize();
