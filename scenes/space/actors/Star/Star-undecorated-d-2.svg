@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="297mm"
+   height="210mm"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="Star-undecorated-d-2.svg"
+   inkscape:export-filename="/home/christian/SportsCar.svg.png"
+   inkscape:export-xdpi="138.06"
+   inkscape:export-ydpi="138.06">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="561.25984"
+     inkscape:cy="396.85039"
+     inkscape:document-units="mm"
+     inkscape:current-layer="Mask"
+     showgrid="false"
+     units="mm"
+     inkscape:window-width="1920"
+     inkscape:window-height="1080"
+     inkscape:window-x="1920"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:snap-global="false" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Mask"
+     inkscape:groupmode="layer"
+     id="Mask"
+     style="display:inline;opacity:1"
+     transform="translate(0,-328.81888)">
+    <path
+       sodipodi:type="star"
+       style="fill:#ffffff;fill-opacity:1;stroke:#808080;stroke-width:0.75590551;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="path858"
+       sodipodi:sides="5"
+       sodipodi:cx="561.60937"
+       sodipodi:cy="734.94879"
+       sodipodi:r1="106.63254"
+       sodipodi:r2="56.325687"
+       sodipodi:arg1="0.93127399"
+       sodipodi:arg2="1.5595925"
+       inkscape:flatsided="false"
+       inkscape:rounded="0.2"
+       inkscape:randomized="0"
+       d="m 625.24898,820.50871 c -11.14695,8.29111 -49.11709,-29.39341 -63.00855,-29.23777 -13.89147,0.15565 -51.00773,38.68146 -62.33765,30.64218 -11.32992,-8.03928 12.77677,-55.79619 8.33605,-68.95966 -4.44072,-13.16347 -52.5505,-36.55801 -48.40583,-49.81767 4.14467,-13.25967 57.01357,-5.09054 68.16051,-13.38165 11.14695,-8.29112 18.52974,-61.27555 32.4212,-61.43119 13.89146,-0.15565 22.45955,52.65006 33.78947,60.68934 11.32991,8.03928 64.0025,-1.31236 68.44323,11.85111 4.44072,13.16347 -43.13281,37.63007 -47.27748,50.88973 -4.14467,13.25966 21.02599,60.46446 9.87905,68.75558 z"
+       inkscape:transform-center-x="1.4397074"
+       inkscape:transform-center-y="-2.074873" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer1"
+     inkscape:label="Overlay"
+     style="display:inline"
+     transform="translate(0,-328.81888)" />
+</svg>

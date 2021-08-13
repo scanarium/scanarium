@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="297mm"
+   height="210mm"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="HeartBalloon-undecorated-d-2.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.45649061"
+     inkscape:cx="268.04965"
+     inkscape:cy="810.16693"
+     inkscape:document-units="mm"
+     inkscape:current-layer="Mask"
+     showgrid="false"
+     units="mm"
+     inkscape:window-width="1920"
+     inkscape:window-height="1080"
+     inkscape:window-x="1920"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Mask"
+     inkscape:groupmode="layer"
+     id="Mask"
+     style="display:inline"
+     transform="translate(0,-328.8189)">
+    <path
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#808080;stroke-width:0.75590551;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker:none;enable-background:accumulate"
+       d="m 440.69082,755.26557 116.08793,124.98058 h 0.3 c 0.0536,0.0532 0.11328,0.12309 0.16666,0.16667 l -10.4,18.5 9.4,-2.33333 9.6,5.16666 6.06667,-3.63333 -10.6,-17.6 c 0.70175,-0.55168 1.44854,-1.45383 2.26667,-2.6 0.01,-0.0132 0.0239,-0.02 0.0333,-0.0333 l 111.40945,-122.6 C 774.80045,642.69991 673.31773,526.9076 567.34755,625.59695 474.35891,523.95297 344.11095,645.0464 440.69082,755.26557 Z"
+       id="path2991-3"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccccccccccc" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer1"
+     inkscape:label="Overlay"
+     style="display:inline"
+     transform="translate(0,-328.8189)" />
+</svg>

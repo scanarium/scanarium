@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="297mm"
+   height="210mm"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="poweroff-undecorated-d-2.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.89425539"
+     inkscape:cx="439.80874"
+     inkscape:cy="441.25284"
+     inkscape:document-units="mm"
+     inkscape:current-layer="command-content"
+     showgrid="false"
+     units="mm"
+     inkscape:window-width="1920"
+     inkscape:window-height="1080"
+     inkscape:window-x="1920"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:groupmode="layer"
+     id="command-content"
+     inkscape:label="command-content"
+     style="display:inline"
+     transform="translate(0,-328.81888)">
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot37"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none"
+       transform="translate(-122.4053,414.23971)"><flowRegion
+         id="flowRegion39"><rect
+           id="rect41"
+           width="568.07043"
+           height="131.95335"
+           x="514.39441"
+           y="476.11813" /></flowRegion><flowPara
+         id="flowPara43"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:37.33333206px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;writing-mode:lr-tb;text-anchor:middle">Scan this page to shut Scanarium down savely</flowPara></flowRoot>    <g
+       id="g827"
+       transform="translate(0,87.111502)">
+      <path
+         transform="rotate(-60)"
+         d="m -79.379631,890.99689 a 118.24265,118.24265 0 0 1 -87.639199,114.21361 118.24265,118.24265 0 0 1 -133.0046,-55.09229 118.24265,118.24265 0 0 1 18.79097,-142.73151 118.24265,118.24265 0 0 1 142.73151,-18.79095"
+         sodipodi:open="true"
+         sodipodi:end="5.2359878"
+         sodipodi:start="0"
+         sodipodi:ry="118.24265"
+         sodipodi:rx="118.24265"
+         sodipodi:cy="890.99689"
+         sodipodi:cx="-197.62228"
+         sodipodi:type="arc"
+         style="opacity:1;fill:none;stroke:#000000;stroke-width:26.46648598;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path15" />
+      <path
+         inkscape:connector-curvature="0"
+         id="path4653"
+         d="m 672.81478,474.89981 v 82.2217"
+         style="fill:none;stroke:#000000;stroke-width:26.46648598;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
+  </g>
+</svg>
