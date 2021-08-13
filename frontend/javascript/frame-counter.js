@@ -3,45 +3,59 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 var FrameCounter = {
-    showFrameCount: false,
     frameCountInterval: 1000, //milli-seconds
     frameCount: 0,
-    frameCountSprite: null,
+    sprite: null,
     labelPrefix: 'fps: {fps}',
     urlParameter: 'showFrameCounter',
 
     init: function() {
-        if (getUrlParameterBoolean(this.urlParameter, false)) {
-            this.toggleVisibility();
-        }
+        this.setVisibility(getUrlParameterBoolean(this.urlParameter, false));
     },
 
-    formatCount: function(count) {
-        if (this.frameCountSprite != null) {
-            this.frameCountSprite.setText(localize(this.labelPrefix, {'fps': count}));
+    isVisible: function() {
+        return FrameCounter.sprite != null;
+    },
+
+    setVisibility: function(visibility) {
+        visibility = !!visibility;
+        if (FrameCounter.isVisible() != !!visibility) {
+            if (visibility) {
+                const style =  {
+                    fontSize: Math.ceil(16 * window.devicePixelRatio).toString() + 'px',
+                };
+                FrameCounter.sprite = game.add.text(0, 0, '', style);
+                FrameCounter.relayout();
+                FrameCounter.formatCount('?');
+                bringToFront(FrameCounter.sprite);
+            } else {
+                FrameCounter.sprite.destroy();
+                FrameCounter.sprite = null;
+            }
+            setUrlParameterBoolean(FrameCounter.urlParameter, visibility);
         }
     },
 
     toggleVisibility: function() {
-        FrameCounter.showFrameCount = !(FrameCounter.showFrameCount);
-        if (FrameCounter.showFrameCount) {
-            const style =  {
-              fontSize: Math.ceil(16 * window.devicePixelRatio).toString() + 'px',
-            };
-            FrameCounter.frameCountSprite = game.add.text(0, 0, '', style);
-            FrameCounter.relayout();
-            FrameCounter.formatCount('?');
-            bringToFront(FrameCounter.frameCountSprite);
-        } else {
-            if (FrameCounter.frameCountSprite != null) {
-                FrameCounter.frameCountSprite.destroy();
-            }
+        FrameCounter.setVisibility(!FrameCounter.isVisible());
+    },
+
+    show: function() {
+        FrameCounter.setVisibility(true);
+    },
+
+    hide: function() {
+        FrameCounter.setVisibility(false);
+    },
+
+    formatCount: function(count) {
+        if (this.sprite != null) {
+            this.sprite.setText(localize(this.labelPrefix, {'fps': count}));
         }
-        setUrlParameterBoolean(FrameCounter.urlParameter, FrameCounter.showFrameCount);
     },
 
     update: function(time, lastTime) {
-        if (this.showFrameCount) {
+        if (this.sprite) {
             if (Math.floor(lastTime / this.frameCountInterval) == Math.floor(time / this.frameCountInterval)) {
                 this.frameCount++;
             } else {
@@ -52,9 +66,9 @@ var FrameCounter = {
     },
 
     relayout: function() {
-        if (FrameCounter.showFrameCount) {
-            FrameCounter.frameCountSprite.x = 32 * window.devicePixelRatio;
-            FrameCounter.frameCountSprite.y = scanariumConfig.height - 32 * window.devicePixelRatio;
+        if (FrameCounter.sprite) {
+            FrameCounter.sprite.x = 32 * window.devicePixelRatio;
+            FrameCounter.sprite.y = scanariumConfig.height - 32 * window.devicePixelRatio;
         }
     },
 };

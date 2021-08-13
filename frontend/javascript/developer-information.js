@@ -9,26 +9,43 @@ var DeveloperInformation = {
     start: 0,
 
     init: function() {
-        if (getUrlParameterBoolean(this.urlParameter, false)) {
-            this.toggleVisibility();
-        }
+        this.setVisibility(getUrlParameterBoolean(this.urlParameter, false));
         this.start = Date.now();
     },
 
-    toggleVisibility: function() {
-        if (DeveloperInformation.sprite) {
-            DeveloperInformation.sprite.destroy();
-            DeveloperInformation.sprite = null;
-        } else {
-            const style =  {
-              fontSize: Math.ceil(16 * window.devicePixelRatio).toString() + 'px',
-            };
-            DeveloperInformation.sprite = game.add.text(0, 0, 'Developer Information', style);
-            DeveloperInformation.sprite.setOrigin(0, 1);
-            bringToFront(DeveloperInformation.sprite);
-            DeveloperInformation.relayout();
+    isVisible: function() {
+        return DeveloperInformation.sprite != null;
+    },
+
+    setVisibility: function(visibility) {
+        visibility = !!visibility;
+        if (DeveloperInformation.isVisible() != visibility) {
+            if (visibility) {
+                const style =  {
+                    fontSize: Math.ceil(16 * window.devicePixelRatio).toString() + 'px',
+                };
+                DeveloperInformation.sprite = game.add.text(0, 0, 'Developer Information', style);
+                DeveloperInformation.sprite.setOrigin(0, 1);
+                bringToFront(DeveloperInformation.sprite);
+                DeveloperInformation.relayout();
+            } else {
+                DeveloperInformation.sprite.destroy();
+                DeveloperInformation.sprite = null;
+            }
+            setUrlParameterBoolean(DeveloperInformation.urlParameter, visibility);
         }
-        setUrlParameterBoolean(DeveloperInformation.urlParameter, DeveloperInformation.sprite != null);
+    },
+
+    toggleVisibility: function() {
+        DeveloperInformation.setVisibility(!DeveloperInformation.isVisible());
+    },
+
+    show: function() {
+        DeveloperInformation.setVisibility(true);
+    },
+
+    hide: function() {
+        DeveloperInformation.setVisibility(false);
     },
 
     formatDuration: function() {
