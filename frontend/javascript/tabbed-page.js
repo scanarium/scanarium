@@ -102,20 +102,27 @@ class TabbedPage {
     }
 
     showPage(id) {
-        Object.keys(this.tabs).forEach(tabId => {
-            var tab = this.tabs[tabId];
-            tab.className = tab.className.replace(/(^| )tabbed-page-tab-selected( |$)/, '$1$2');
-        });
-        this.tabs[id].className += ' tabbed-page-tab-selected';
-
-        // Setting content
-        while (this.content.firstChild) {
-            this.content.removeChild(this.content.firstChild);
+        if (!id) {
+            id = this.shownPageId;
         }
-        this.content.appendChild(this.contents[id]);
-        this.content.scrollTop = 0;
 
-        this.pages[id].onShowPage();
+        if (id) {
+            Object.keys(this.tabs).forEach(tabId => {
+                var tab = this.tabs[tabId];
+                tab.className = tab.className.replace(/(^| )tabbed-page-tab-selected( |$)/, '$1$2');
+            });
+            this.tabs[id].className += ' tabbed-page-tab-selected';
+
+            // Setting content
+            while (this.content.firstChild) {
+                this.content.removeChild(this.content.firstChild);
+            }
+            this.content.appendChild(this.contents[id]);
+            this.content.scrollTop = 0;
+
+            this.pages[id].onShowPage();
+            this.shownPageId = id;
+        }
     }
 
     getElement() {
