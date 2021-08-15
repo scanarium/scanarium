@@ -40,9 +40,7 @@ var Settings = {
     this.hide();
     this.prepare();
 
-    if (pageId) {
-        this.tabbedPage.showPage(pageId);
-    }
+    this.tabbedPage.showPage(pageId);
 
     this.element = this.tabbedPage.getElement();
 
