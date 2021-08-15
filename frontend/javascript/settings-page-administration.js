@@ -10,6 +10,7 @@ class SettingsPageAdministration extends NamedPage {
 
     initContent() {
         this.initContentUi();
+        this.initContentDeveloperModeUi();
         this.initContentActorReset();
         this.initContentPasswortSwitch();
     }
@@ -40,6 +41,42 @@ class SettingsPageAdministration extends NamedPage {
         form.addFixedTextField(localize('Language'), 'ui-setting-language', localize('Loading localization data ...'));
 
         this.loadLocalizationsConfig();
+
+        this.appendElement(form.getElement());
+    }
+
+    initContentDeveloperModeUi() {
+        var that = this;
+        this.developerModeHeader = this.appendSectionHeader('Developer Mode');
+        this.developerModeHeader.classList.add('hidden');
+
+        var form = new ManagedForm('developer-mode-settings', false);
+        this.developerModeForm = form.getElement();
+        this.developerModeForm.classList.add('hidden');
+
+        this.developerModeShowFrameCounter = form.addCheckbox(
+            localize('Show frame counter'),
+            'developer-mode-show-frame-counter',
+            undefined,
+            '',
+            FrameCounter.isVisible());
+        this.developerModeShowFrameCounter.onChangedAndValid = function(event) {
+            FrameCounter.setVisibility(that.developerModeShowFrameCounter.checked);
+            event.stopPropagation();
+            event.preventDefault();
+        };
+
+        this.developerModeShowDeveloperInformation = form.addCheckbox(
+            localize('Show developer information'),
+            'developer-mode-show-developer-information',
+            undefined,
+            '',
+            DeveloperInformation.isVisible());
+        this.developerModeShowDeveloperInformation.onChangedAndValid = function(event) {
+            DeveloperInformation.setVisibility(that.developerModeShowDeveloperInformation.checked);
+            event.stopPropagation();
+            event.preventDefault();
+        };
 
         this.appendElement(form.getElement());
     }
@@ -183,5 +220,19 @@ class SettingsPageAdministration extends NamedPage {
             event.stopPropagation();
             event.preventDefault();
         };
+    }
+
+    onShowPage() {
+        if (DeveloperMode.enabled) {
+            this.developerModeHeader.classList.remove('hidden');
+            this.developerModeForm.classList.remove('hidden');
+
+            if (this.developerModeShowFrameCounter) {
+                this.developerModeShowFrameCounter.setChecked(FrameCounter.isVisible());
+            }
+            if (this.developerModeShowDeveloperInformation) {
+                this.developerModeShowDeveloperInformation.setChecked(DeveloperInformation.isVisible());
+            }
+        }
     }
 }
