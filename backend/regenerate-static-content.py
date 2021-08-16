@@ -90,7 +90,7 @@ def get_svg_contour_rect_stroke_width(tree):
     return stroke_width
 
 
-def get_svg_contour_rect_area(scanarium, svg_path):
+def get_svg_export_area_param_contour_inner(scanarium, svg_path):
     # We want to determine the white inner area of the rect with id
     # `contour` in user coordinates. Ideally, Inkscape would allow to access
     # that directly. However, its `--query*` arguments only allow to get the
@@ -182,7 +182,8 @@ def generate_mask(scanarium, dir, file, force):
         generate_adapted_mask_source(scanarium, source, adapted_source)
 
     if scanarium.file_needs_update(target, [adapted_source], force):
-        contour_area = get_svg_contour_rect_area(scanarium, source)
+        contour_area = get_svg_export_area_param_contour_inner(
+            scanarium, source)
         inkscape_args = [
             '--export-id=Mask',
             '--export-id-only',
