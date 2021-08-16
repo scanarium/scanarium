@@ -21,10 +21,7 @@ var FrameCounter = {
         visibility = !!visibility;
         if (FrameCounter.isVisible() != !!visibility) {
             if (visibility) {
-                const style =  {
-                    fontSize: Math.ceil(16 * window.devicePixelRatio).toString() + 'px',
-                };
-                FrameCounter.sprite = game.add.text(0, 0, '', style);
+                FrameCounter.sprite = game.add.text(0, 0, '', getFontStyle());
                 FrameCounter.relayout();
                 FrameCounter.formatCount('?');
                 bringToFront(FrameCounter.sprite);

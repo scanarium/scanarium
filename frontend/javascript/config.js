@@ -105,4 +105,16 @@ LayoutManager.register(function(width, height) {
   scanariumConfig.height = height;
 });
 
+function getFontStyle() {
+    return {
+        fontFamily: 'sans-serif',
+        fontSize: Math.ceil(16 * window.devicePixelRatio).toString() + 'px',
+        fontStyle: 'bold',
+        wordWrap: {
+            width: Math.floor(scanariumConfig.width * 0.95 - 32 * window.devicePixelRatio),
+        },
+        color: getConfig('message-color'),
+    };
+}
+
 var dynamicConfigMethod = 'GET';

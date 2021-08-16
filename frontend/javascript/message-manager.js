@@ -6,17 +6,10 @@ var MessageManager = {
   messages: [],
   offsetY: 10 * window.devicePixelRatio,
   spaceY: 22 * window.devicePixelRatio,
-  fontStyle: {
-        fontSize: Math.ceil(16*window.devicePixelRatio).toString() + 'px',
-        wordWrap: {
-            width: Math.floor(scanariumConfig.width * 0.95 - 32 * window.devicePixelRatio),
-        },
-    },
+  fontStyle: {},
 
   init: function() {
-      this.fontStyle.color = getConfig('message-color');
-      this.fontStyle.fontFamily = 'sans-serif';
-      this.fontStyle.fontStyle = 'bold';
+      this.fontStyle = getFontStyle();
   },
 
   getMessageTargetY: function(i) {

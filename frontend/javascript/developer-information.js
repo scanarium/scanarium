@@ -21,10 +21,7 @@ var DeveloperInformation = {
         visibility = !!visibility;
         if (DeveloperInformation.isVisible() != visibility) {
             if (visibility) {
-                const style =  {
-                    fontSize: Math.ceil(16 * window.devicePixelRatio).toString() + 'px',
-                };
-                DeveloperInformation.sprite = game.add.text(0, 0, 'Developer Information', style);
+                DeveloperInformation.sprite = game.add.text(0, 0, 'Developer Information', getFontStyle());
                 DeveloperInformation.sprite.setOrigin(0, 1);
                 bringToFront(DeveloperInformation.sprite);
                 DeveloperInformation.relayout();
