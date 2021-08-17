@@ -21,6 +21,8 @@ del sys.path[0]
 
 logger = logging.getLogger(__name__)
 
+SVG_DPI = 96  # We assume Inkscape >= 0.92 (otherwise, use 90 here)
+
 BACKGROUND_COLOR = '#ffffff'
 LIGHT_COLOR = '#c0c0c0'
 DARK_COLOR = '#808080'
@@ -75,6 +77,20 @@ def assert_directory(dir):
                              {'file_name': dir})
 
 
+def root_attribute_to_px(tree, name):
+    raw = tree.getroot().attrib.get(name)
+    ret = 0
+    if raw.endswith('mm'):
+        ret = float(raw[:-2]) / 25.4 * SVG_DPI
+    elif raw.endswitch('in'):
+        ret = float(raw[:-2]) * SVG_DPI
+    elif raw.endswitch('px'):
+        ret = float(raw[:-2])
+    else:
+        ret = float(raw)
+    return ret
+
+
 def get_svg_contour_rect_stroke_width(tree):
     stroke_width = 0
     try:
@@ -110,7 +126,7 @@ def get_svg_export_area_param_contour_inner(scanarium, svg_path):
     ]
 
     x = None
-    y = None
+    y_top = None
     width = None
     height = None
     element_sizes = run_inkscape(
@@ -118,16 +134,23 @@ def get_svg_export_area_param_contour_inner(scanarium, svg_path):
     for element_size in element_sizes:
         if x is None or element_size.startswith('contour,'):
             # We're at either the first element (ie.: page), or the contour
-            x, y, width, height = map(float, element_size.split(',')[1:])
+            x, y_top, width, height = map(float, element_size.split(',')[1:])
 
-    # Now x, y, width, height denote the outer dimensions of the relevant
-    # rect/page
+    # When querying through Inkscape (as above), svg uses the top-left corner
+    # as origin (as SVG does), but for `--export-area` it expects the
+    # bottom-left corner as origin. So we need to re-compute the y from the
+    # paper's bottom edge.
+    paper_height = root_attribute_to_px(tree, 'height')
+    y_bottom = paper_height - y_top - height
 
+    # And as Inkscape reports the rect's outer coordinates, but we need the
+    # inner coordinates (as that is what we extract when scanning a user
+    # picture) we need to move the stroke-width inwards.
     return locale.format_string('%f:%f:%f:%f', (
         (x + stroke_width),
-        (y + stroke_width),
+        (y_bottom + stroke_width),
         (x + width - stroke_width),
-        (y + height - stroke_width),
+        (y_bottom + height - stroke_width),
     ))
 
 
