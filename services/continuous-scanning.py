@@ -189,7 +189,11 @@ def scan_forever_with_camera(scanarium, camera, qr_state, image_pause_period):
         try:
             (qr_rect, data) = scanarium.extract_qr(image)
         except ScanariumError as e:
-            if e.code == 'SE_SCAN_NO_QR_CODE':
+            if e.code in [
+                'SE_SCAN_MISFORMED_QR_CODE',
+                'SE_SCAN_NO_QR_CODE',
+                'SE_UNKNOWN_QR_CODE',
+                    ]:
                 data = None
                 qr_rect = None
                 pass

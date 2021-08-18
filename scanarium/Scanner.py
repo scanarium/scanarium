@@ -46,6 +46,14 @@ def create_error_unknown_qr():
         'Unknown QR code')
 
 
+def raise_error_misformed_qr_code(scanarium):
+    if scanarium.get_config('debug', 'fine_grained_errors', kind='boolean'):
+        raise ScanariumError('SE_SCAN_MISFORMED_QR_CODE',
+                             'QR code contains misformed data')
+    else:
+        raise create_error_unknown_qr()
+
+
 def create_error_pipeline():
     return ScanariumError(
         'SE_PIPELINE_ERROR',
@@ -360,9 +368,7 @@ def rectify_to_biggest_rect(scanarium, image, yield_only_points=False):
                    yield_only_points=yield_only_points)
 
 
-def expand_qr(scanarium, data_bytes):
-    data = data_bytes.decode('utf-8')
-
+def expand_qr(scanarium, data):
     mapping_specs = scanarium.get_config('qr-code', 'mappings',
                                          allow_empty=True)
     if mapping_specs:
@@ -383,9 +389,6 @@ def expand_qr(scanarium, data_bytes):
                             code_map = json.load(f)
 
                         data = code_map.get(data, data)
-
-    data = data.rsplit('/', 1)[-1].rsplit('?', 1)[-1].rsplit('=', 1)[-1]
-    data = re.sub('[^0-9a-zA-Z:_]+', '_', data)
     return data
 
 
@@ -411,7 +414,11 @@ def extract_qr(scanarium, image):
 
     rect = code.rect
 
-    data = expand_qr(scanarium, code.data)
+    try:
+        data_bytes = code.data
+        data = data_bytes.decode('utf-8')
+    except Exception:
+        raise_error_misformed_qr_code(scanarium)
 
     return (rect, data)
 
@@ -671,6 +678,20 @@ def process_image_with_qr_code_unlogged(scanarium, command, parameter, image,
     return ret
 
 
+def parse_qr(scanarium, data):
+    command = None
+    parameter = None
+    try:
+        data = expand_qr(scanarium, data)
+        data = data.rsplit('/', 1)[-1].rsplit('?', 1)[-1].rsplit('=', 1)[-1]
+        data = re.sub('[^0-9a-zA-Z:_]+', '_', data)
+        (command, parameter) = data.split(':', 1)
+    except ValueError:
+        raise_error_misformed_qr_code(scanarium)
+
+    return (command, parameter)
+
+
 def process_image_with_qr_code(scanarium, command_logger, image, qr_rect, data,
                                should_skip_exception=None):
     command = None
@@ -679,15 +700,7 @@ def process_image_with_qr_code(scanarium, command_logger, image, qr_rect, data,
     payload = {}
     exc_info = None
     try:
-        try:
-            (command, parameter) = data.split(':', 1)
-        except ValueError:
-            if scanarium.get_config('debug', 'fine_grained_errors',
-                                    kind='boolean'):
-                raise ScanariumError('SE_SCAN_MISFORMED_QR_CODE',
-                                     'QR code contains misformed data')
-            else:
-                raise create_error_unknown_qr()
+        (command, parameter) = parse_qr(scanarium, data)
 
         payload = process_image_with_qr_code_unlogged(
             scanarium, command, parameter, image, qr_rect)
