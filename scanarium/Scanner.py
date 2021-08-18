@@ -602,7 +602,9 @@ def actor_image_pipeline(scanarium, image, qr_rect, scene, actor,
     return image
 
 
-def process_actor_image_with_qr_code(scanarium, image, qr_rect, scene, actor):
+def process_actor_image_with_qr_code(scanarium, image, qr_rect, qr_parsed):
+    scene = qr_parsed['command']
+    actor = qr_parsed['parameter']
     image = actor_image_pipeline(scanarium, image, qr_rect, scene, actor)
     flavor = save_image(scanarium, image, scene, actor)
 
@@ -615,8 +617,9 @@ def process_actor_image_with_qr_code(scanarium, image, qr_rect, scene, actor):
     }
 
 
-def process_image_with_qr_code_unlogged(scanarium, command, parameter, image,
-                                        qr_rect):
+def process_image_with_qr_code_unlogged(scanarium, qr_parsed, image, qr_rect):
+    command = qr_parsed['command']
+    parameter = qr_parsed['parameter']
     if command == 'debug':
         if parameter == 'ok':
             ret = {
@@ -675,43 +678,51 @@ def process_image_with_qr_code_unlogged(scanarium, command, parameter, image,
                 {'command': command, 'parameter': parameter})
     else:
         ret = process_actor_image_with_qr_code(scanarium, image, qr_rect,
-                                               command, parameter)
+                                               qr_parsed)
     return ret
 
 
 def parse_qr(scanarium, data):
-    command = None
-    parameter = None
+    parsed = {}
     try:
         data = expand_qr(scanarium, data)
         data = data.rsplit('/', 1)[-1].rsplit('?', 1)[-1].rsplit('=', 1)[-1]
         data = re.sub('[^0-9a-zA-Z:_]+', '_', data)
-        (command, parameter) = data.split(':', 1)
+        parts = data.split(':')
+        if len(parts) < 2:
+            raise ValueError('Too few : separated parts')
+        parsed['command'] = parts[0]
+        parsed['parameter'] = parts[1]
+        for kv in parts[2:]:
+            (k, v) = kv.split('_', 1)
+            parsed[k] = v
     except ValueError:
         raise_error_misformed_qr_code(scanarium)
 
-    return (command, parameter)
+    return parsed
 
 
 def process_image_with_qr_code(scanarium, command_logger, image, qr_rect, data,
                                should_skip_exception=None):
-    command = None
-    parameter = None
-
+    parsed_qr = {
+        'command': None,
+        'parameter': None,
+        }
     payload = {}
     exc_info = None
     try:
-        (command, parameter) = parse_qr(scanarium, data)
+        parsed_qr = parse_qr(scanarium, data)
 
         payload = process_image_with_qr_code_unlogged(
-            scanarium, command, parameter, image, qr_rect)
+            scanarium, parsed_qr, image, qr_rect)
     except Exception as e:
         if should_skip_exception is not None and should_skip_exception(e):
             raise ScanariumError('SE_SKIPPED_EXCEPTION',
                                  'Exception marked as skipped')
         exc_info = sys.exc_info()
 
-    return command_logger.log(payload, exc_info, command, [parameter])
+    return command_logger.log(payload, exc_info, parsed_qr['command'],
+                              [parsed_qr['parameter']])
 
 
 def set_camera_property(config, cap, property, config_key):

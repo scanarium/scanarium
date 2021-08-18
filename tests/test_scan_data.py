@@ -339,7 +339,7 @@ class ScanDataCanaryTestCase(CanaryTestCase):
             self.run_scan_data_failure('SE_UNKNOWN_QR_CODE', dir, fixture)
 
     def test_fail_qr_foo_bar_baz_fine(self):
-        fixture = 'qr-foo-bar-baz.png'
+        fixture = 'qr-foo-bar.png'
         config = {
             'scan': {'permit_file_type_png': True},
             'debug': {'fine_grained_errors': True},
@@ -348,7 +348,7 @@ class ScanDataCanaryTestCase(CanaryTestCase):
             self.run_scan_data_failure('SE_UNKNOWN_SCENE', dir, fixture)
 
     def test_fail_qr_foo_bar_baz(self):
-        fixture = 'qr-foo-bar-baz.png'
+        fixture = 'qr-foo-bar.png'
         config = {'scan': {'permit_file_type_png': True}}
         with self.prepared_environment(fixture, test_config=config) as dir:
             self.run_scan_data_failure('SE_UNKNOWN_QR_CODE', dir, fixture)

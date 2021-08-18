@@ -10,7 +10,14 @@ import os
 import re
 import shutil
 import subprocess
+import sys
 import tempfile
+import traceback
+
+SCANARIUM_DIR_ABS = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, SCANARIUM_DIR_ABS)
+from scanarium import Scanarium, ScanariumError
+del sys.path[0]
 
 FIXTURE_DIR = os.path.join('tests', 'fixtures')
 
@@ -24,6 +31,31 @@ class NotCleanedUpTemporaryDirectory(object):
 
     def __exit__(self, exc, value, tb):
         pass
+
+
+class AssertRaisesScanariumErrorContext(object):
+    def __init__(self, test_case, expected_code):
+        self.test_case = test_case
+        self.exception = None
+        self.expected_code = expected_code
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type is None:
+            self.test_case.fail(
+                'No exception got thrown, but expected ScanariumError with '
+                f'code "{self.expected_code}"')
+        if issubclass(exc_type, ScanariumError):
+            self.test_case.assertEqual(
+                exc_val.code, self.expected_code,
+                f'Raised ScanariumError has code "{exc_val.code}", but "'
+                f'expected "{self.expected_code}"')
+        else:
+            return False
+        traceback.clear_frames(exc_tb)
+        return True
 
 
 class BasicTestCase(unittest.TestCase):
@@ -101,6 +133,14 @@ class BasicTestCase(unittest.TestCase):
 
         return ctx
 
+    def new_Scanarium(self, dir):
+        sys.argv = [
+            '',
+            '--debug-config-override',
+            os.path.join(dir, 'override.conf'),
+            ]
+        return Scanarium()
+
     def flatten(self, x):
         ret = []
         if isinstance(x, list):
@@ -166,6 +206,9 @@ class BasicTestCase(unittest.TestCase):
             re.fullmatch(pattern, string),
             f'"{string}" does not match "{pattern}" fully'
             )
+
+    def assertRaisesScanariumError(self, code):
+        return AssertRaisesScanariumErrorContext(self, code)
 
 
 class CanaryTestCase(BasicTestCase):
