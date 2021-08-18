@@ -416,6 +416,7 @@ def extract_qr(scanarium, image):
 
     try:
         data_bytes = code.data
+        assert len(data_bytes) <= 64  # Prohibit suspicously long tags
         data = data_bytes.decode('utf-8')
     except Exception:
         raise_error_misformed_qr_code(scanarium)
