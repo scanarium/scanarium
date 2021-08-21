@@ -10,6 +10,7 @@ import shutil
 import cv2
 
 from .ScanariumError import ScanariumError
+from .scanner_util import scale_image_from_config
 
 
 def create_error_pipeline():
@@ -18,21 +19,21 @@ def create_error_pipeline():
         'Server-side image processing failed')
 
 
-def get_camera_type(config):
+def get_camera_type(scanarium):
     ret = 'PROPER-CAMERA'
 
-    file_path = config.get('scan', 'source')
+    file_path = scanarium.get_config('scan', 'source')
     if file_path.startswith('image:'):
         ret = 'STATIC-IMAGE-CAMERA'
 
     return ret
 
 
-def open_camera(config):
+def open_camera(scanarium):
     camera = None
-    camera_type = get_camera_type(config)
+    camera_type = get_camera_type(scanarium)
     if camera_type == 'PROPER-CAMERA':
-        source = config.get('scan', 'source')
+        source = scanarium.get_config('scan', 'source')
         if source.startswith('cam:'):
             stripped = source[4:]
             try:
@@ -51,8 +52,9 @@ def open_camera(config):
 
         # To avoid having to use external programs for basic camera setup, we
         # set the most basic properties right within Scanarium
-        set_camera_property(config, camera, cv2.CAP_PROP_FRAME_WIDTH, 'width')
-        set_camera_property(config, camera, cv2.CAP_PROP_FRAME_HEIGHT,
+        set_camera_property(scanarium, camera, cv2.CAP_PROP_FRAME_WIDTH,
+                            'width')
+        set_camera_property(scanarium, camera, cv2.CAP_PROP_FRAME_HEIGHT,
                             'height')
 
         # Since we do not necessarily need all images, but much rather want to
@@ -61,11 +63,12 @@ def open_camera(config):
         # But as minimizing buffers makes some image pipelines re-initialize
         # themselves, which might throw cameras off, we only minimize buffers
         # if the configuration allows it.
-        if config.get('scan', 'minimize_buffers', 'boolean'):
+        if scanarium.get_config('scan', 'minimize_buffers', 'boolean'):
             camera.set(cv2.CAP_PROP_BUFFERSIZE, 1)
             camera.set(cv2.CAP_PROP_GSTREAMER_QUEUE_LENGTH, 1)
 
-        delay = config.get('scan', 'delay', allow_empty=True, kind='float')
+        delay = scanarium.get_config('scan', 'delay', allow_empty=True,
+                                     kind='float')
         if delay:
             camera.grab()
             time.sleep(delay)
@@ -79,8 +82,8 @@ def open_camera(config):
     return camera
 
 
-def close_camera(config, camera):
-    camera_type = get_camera_type(config)
+def close_camera(scanarium, camera):
+    camera_type = get_camera_type(scanarium)
     if camera_type == 'PROPER-CAMERA':
         camera.release()
     elif camera_type == 'STATIC-IMAGE-CAMERA':
@@ -92,22 +95,24 @@ def close_camera(config, camera):
                              {'camera_type': camera_type})
 
 
-def set_camera_property(config, cap, property, config_key):
-    value = config.get('scan', config_key, allow_empty=True, kind='int')
+def set_camera_property(scanarium, cap, property, config_key):
+    value = scanarium.get_config('scan', config_key, allow_empty=True,
+                                 kind='int')
     if value is not None:
         cap.set(property, value)
 
 
-def get_raw_image(scanarium, config, camera=None, debug_show_image=None):
+def get_raw_image(scanarium, camera=None):
     manage_camera = camera is None
     if manage_camera:
-        camera = open_camera(config)
+        camera = open_camera(scanarium)
 
-    camera_type = get_camera_type(config)
+    camera_type = get_camera_type(scanarium)
     if camera_type == 'PROPER-CAMERA':
         success = True
         duration = -1
-        min_duration = config.get('scan', 'minimum_grab_time', kind='float')
+        min_duration = scanarium.get_config(
+            'scan', 'minimum_grab_time', kind='float')
         while success and duration < min_duration:
             start = time.time()
             success = camera.grab()
@@ -123,9 +128,9 @@ def get_raw_image(scanarium, config, camera=None, debug_show_image=None):
                                  'Failed to retrieve image from camera')
 
     elif camera_type == 'STATIC-IMAGE-CAMERA':
-        file_path = config.get('scan', 'source')[6:]
+        file_path = scanarium.get_config('scan', 'source')[6:]
         if os.path.isfile(file_path):
-            image = get_raw_image_from_file(scanarium, config, file_path)
+            image = get_raw_image_from_file(scanarium, file_path)
         else:
             raise ScanariumError('SE_SCAN_STATIC_SOURCE_MISSING',
                                  'The static source "{file}" does not exist',
@@ -136,11 +141,10 @@ def get_raw_image(scanarium, config, camera=None, debug_show_image=None):
                              {'camera_type': camera_type})
 
     if manage_camera:
-        close_camera(config, camera)
+        close_camera(scanarium, camera)
 
-    store_raw_image(config, image)
-    if debug_show_image:
-        debug_show_image('Raw image', image, config)
+    store_raw_image(scanarium, image)
+    scanarium.debug_show_image('Raw image', image)
 
     min_width = scanarium.get_config('scan', 'min_raw_width_trip', kind='int')
     if image.shape[1] < min_width:
@@ -152,23 +156,23 @@ def get_raw_image(scanarium, config, camera=None, debug_show_image=None):
     return image
 
 
-def get_raw_image_from_file(scanarium, config, file_path):
+def get_raw_image_from_file(scanarium, file_path):
     image = None
     format = scanarium.guess_image_format(file_path)
     log_raw_image(scanarium, format, file_path)
 
     if format is not None and \
-            config.get('scan', f'permit_file_type_{format}', kind='boolean',
-                       allow_missing=True):
-        pipeline = config.get('scan', f'pipeline_file_type_{format}',
-                              allow_missing=True, default='convert')
+            scanarium.get_config('scan', f'permit_file_type_{format}',
+                                 kind='boolean', allow_missing=True):
+        pipeline = scanarium.get_config('scan', f'pipeline_file_type_{format}',
+                                        allow_missing=True, default='convert')
         image = run_get_raw_image_pipeline(scanarium, file_path, pipeline)
 
     if image is None:
         supported_formats = ', '.join(
             [key[17:].upper()
-             for key in config.get_keys('scan')
-             if key.startswith('permit_file_type_') and config.get(
+             for key in scanarium.get_config_keys('scan')
+             if key.startswith('permit_file_type_') and scanarium.get_config(
                     'scan', key, kind='boolean')])
         raise ScanariumError(
             'SE_SCAN_STATIC_UNREADABLE_IMAGE_TYPE',
@@ -264,14 +268,47 @@ def log_raw_image(scanarium, format, file_path):
             pass
 
 
-def store_raw_image(config, image):
+def store_raw_image(scanarium, image):
     global NEXT_RAW_IMAGE_STORE
-    dir_path = config.get('scan', 'raw_image_directory', allow_empty=True)
+    dir_path = scanarium.get_config(
+        'scan', 'raw_image_directory', allow_empty=True)
     if dir_path is not None:
         now = time.time()
         if now >= NEXT_RAW_IMAGE_STORE:
             file_path = os.path.join(dir_path, '%f.png' % (now))
             os.makedirs(dir_path, exist_ok=True)
             cv2.imwrite(file_path, image)
-            NEXT_RAW_IMAGE_STORE = now + config.get(
+            NEXT_RAW_IMAGE_STORE = now + scanarium.get_config(
                 'scan', 'raw_image_period', 'float')
+
+
+def undistort_image(scanarium, image):
+    ret = image
+    param_file = scanarium.get_config(
+        'scan', 'calibration_xml_file', allow_empty=True)
+    if param_file:
+        try:
+            storage = cv2.FileStorage(param_file, cv2.FileStorage_READ)
+            cam_matrix = storage.getNode('cameraMatrix').mat()
+            dist_coeffs = storage.getNode('dist_coeffs').mat()
+        except Exception:
+            raise ScanariumError(
+                'SE_LOAD_UNDISTORT',
+                'Failed to load parameters for undistortion from '
+                '\"{file_name}\"',
+                {'file_name': param_file})
+
+        height, width = image.shape[:2]
+        new_camera_matrix, roi = cv2.getOptimalNewCameraMatrix(
+            cam_matrix, dist_coeffs, (width, height), 1)
+
+        ret = cv2.undistort(ret, cam_matrix, dist_coeffs, None,
+                            new_camera_matrix)
+        scanarium.debug_show_image('Undistorted image', ret)
+    return ret
+
+
+def get_image(scanarium, camera=None):
+    image = get_raw_image(scanarium, camera)
+    (image, _) = scale_image_from_config(scanarium, image, 'raw')
+    return undistort_image(scanarium, image)

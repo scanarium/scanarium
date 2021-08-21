@@ -15,9 +15,10 @@ import numpy as np
 
 from .ScanariumError import ScanariumError
 from .scanner_qr import extract_qr, parse_qr
-from .scanner_camera import open_camera, close_camera, get_raw_image
+from .scanner_camera import open_camera, close_camera, get_image
 from .scanner_rectification import rectify_to_qr_parent_rect, \
-    rectify_to_biggest_rect, scale_image
+    rectify_to_biggest_rect
+from .scanner_util import scale_image_from_config
 
 
 logger = logging.getLogger(__name__)
@@ -41,19 +42,6 @@ def create_error_unknown_qr():
     return ScanariumError(
         'SE_UNKNOWN_QR_CODE',
         'Unknown QR code')
-
-
-def scale_image_from_config(scanarium, image, kind):
-    def get_config(key):
-        return scanarium.get_config('scan', f'max_{kind}_{key}',
-                                    kind='int', allow_empty=True)
-
-    return scale_image(scanarium, image, kind,
-                       scaled_height=get_config('height'),
-                       scaled_width=get_config('width'),
-                       trip_height=get_config('height_trip'),
-                       trip_width=get_config('width_trip'),
-                       )
 
 
 def get_brightness_factor(scanarium):
@@ -375,31 +363,6 @@ def process_image_with_qr_code(scanarium, command_logger, image, qr_rect, data,
                               [parsed_qr['parameter']])
 
 
-def undistort_image(image, config):
-    ret = image
-    param_file = config.get('scan', 'calibration_xml_file', allow_empty=True)
-    if param_file:
-        try:
-            storage = cv2.FileStorage(param_file, cv2.FileStorage_READ)
-            cam_matrix = storage.getNode('cameraMatrix').mat()
-            dist_coeffs = storage.getNode('dist_coeffs').mat()
-        except Exception:
-            raise ScanariumError(
-                'SE_LOAD_UNDISTORT',
-                'Failed to load parameters for undistortion from '
-                '\"{file_name}\"',
-                {'file_name': param_file})
-
-        height, width = image.shape[:2]
-        new_camera_matrix, roi = cv2.getOptimalNewCameraMatrix(
-            cam_matrix, dist_coeffs, (width, height), 1)
-
-        ret = cv2.undistort(ret, cam_matrix, dist_coeffs, None,
-                            new_camera_matrix)
-        debug_show_image('Undistorted image', ret, config)
-    return ret
-
-
 class Scanner(object):
     def __init__(self, config, command_logger):
         super(Scanner, self).__init__()
@@ -409,17 +372,14 @@ class Scanner(object):
     def debug_show_image(self, title, image):
         debug_show_image(title, image, self._config)
 
-    def open_camera(self):
-        return open_camera(self._config)
+    def open_camera(self, scanarium):
+        return open_camera(scanarium)
 
-    def close_camera(self, camera):
-        return close_camera(self._config, camera)
+    def close_camera(self, scanarium, camera):
+        return close_camera(scanarium, camera)
 
     def get_image(self, scanarium, camera=None):
-        image = get_raw_image(
-            scanarium, self._config, camera, debug_show_image)
-        (image, _) = scale_image_from_config(scanarium, image, 'raw')
-        return undistort_image(image, self._config)
+        return get_image(scanarium, camera)
 
     def get_brightness_factor(self, scanarium):
         return get_brightness_factor(scanarium)

@@ -8,6 +8,7 @@ import cv2
 import numpy as np
 
 from .ScanariumError import ScanariumError
+from .scanner_util import scale_image
 
 
 def get_cv_major_version():
@@ -61,33 +62,6 @@ def refine_corners(scanarium, prepared_image, points):
             prepared_image, points, search_window, (-1, -1), criteria)
 
     return points.reshape(4, 2)
-
-
-def scale_image(scanarium, image, description, scaled_height=None,
-                scaled_width=None, trip_height=None, trip_width=None):
-    scaled_image = image
-
-    def get_scale_factor(shape, trip, scaled):
-        factor = 1
-        if trip is None:
-            trip = scaled
-        if trip is not None and shape > trip and scaled is not None:
-            factor = scaled / shape
-        return factor
-
-    height_factor = get_scale_factor(
-        image.shape[0], trip_height, scaled_height)
-    width_factor = get_scale_factor(image.shape[1], trip_width, scaled_width)
-    scale_factor = min(height_factor, width_factor)
-    if scale_factor != 1:
-        scaled_height = int(image.shape[0] * scale_factor)
-        scaled_width = int(image.shape[1] * scale_factor)
-        scaled_dimension = (scaled_width, scaled_height)
-        scaled_image = cv2.resize(image, scaled_dimension, cv2.INTER_AREA)
-
-    scanarium.debug_show_image(f'Scaled image ({description})', scaled_image)
-
-    return (scaled_image, scale_factor)
 
 
 def correct_image_brightness(scanarium, image):
