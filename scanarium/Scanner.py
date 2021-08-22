@@ -143,6 +143,7 @@ def mask(scanarium, image, scene, actor, visualized_alpha=None):
 
 
 def crop(image):
+    # todo: make up for mask.stroke_offset / mask.stroke_color
     y, x = image[:, :, 3].nonzero()
     x_min = np.min(x)
     x_max = np.max(x)
