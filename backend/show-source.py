@@ -14,6 +14,7 @@ import numpy as np
 SCANARIUM_DIR_ABS = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, SCANARIUM_DIR_ABS)
 from scanarium import Scanarium, ScanariumError
+from scanarium.scanner_qr import parse_qr
 del sys.path[0]
 
 logger = logging.getLogger(__name__)
@@ -116,7 +117,9 @@ def show_source(scanarium, mark, store_final):
                 image = add_biggest_rect(scanarium, image, original_image)
                 if qr_rect:
                     try:
-                        (command, parameter) = qr_data.split(':', 1)
+                        qr_parsed = parse_qr(scanarium, qr_data)
+                        command = qr_parsed['command']
+                        parameter = qr_parsed['parameter']
                         for mask_alpha in [0.6, 0.01]:
                             masked_image = scanarium.actor_image_pipeline(
                                 original_image, qr_rect, command, parameter,
