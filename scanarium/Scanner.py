@@ -343,25 +343,25 @@ def process_image_with_qr_code_unlogged(scanarium, qr_parsed, image, qr_rect):
 
 def process_image_with_qr_code(scanarium, command_logger, image, qr_rect, data,
                                should_skip_exception=None):
-    parsed_qr = {
+    qr_parsed = {
         'command': None,
         'parameter': None,
         }
     payload = {}
     exc_info = None
     try:
-        parsed_qr = parse_qr(scanarium, data)
+        qr_parsed = parse_qr(scanarium, data)
 
         payload = process_image_with_qr_code_unlogged(
-            scanarium, parsed_qr, image, qr_rect)
+            scanarium, qr_parsed, image, qr_rect)
     except Exception as e:
         if should_skip_exception is not None and should_skip_exception(e):
             raise ScanariumError('SE_SKIPPED_EXCEPTION',
                                  'Exception marked as skipped')
         exc_info = sys.exc_info()
 
-    return command_logger.log(payload, exc_info, parsed_qr['command'],
-                              [parsed_qr['parameter']])
+    return command_logger.log(payload, exc_info, qr_parsed['command'],
+                              [qr_parsed['parameter']])
 
 
 class Scanner(object):
