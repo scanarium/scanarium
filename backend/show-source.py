@@ -118,11 +118,9 @@ def show_source(scanarium, mark, store_final):
                 if qr_rect:
                     try:
                         qr_parsed = parse_qr(scanarium, qr_data)
-                        command = qr_parsed['command']
-                        parameter = qr_parsed['parameter']
                         for mask_alpha in [0.6, 0.01]:
                             masked_image = scanarium.actor_image_pipeline(
-                                original_image, qr_rect, command, parameter,
+                                original_image, qr_rect, qr_parsed,
                                 visualized_alpha=mask_alpha)
                             scanarium.debug_show_image(
                                 f'Masked@{mask_alpha}', masked_image)

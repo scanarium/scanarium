@@ -130,10 +130,10 @@ class Scanarium(object):
     def extract_qr(self, image):
         return self._scanner.extract_qr(self, image)
 
-    def actor_image_pipeline(self, image, qr_rect, scene, actor,
+    def actor_image_pipeline(self, image, qr_rect, qr_parsed,
                              visualized_alpha=None):
         return self._scanner.actor_image_pipeline(
-            self, image, qr_rect, scene, actor,
+            self, image, qr_rect, qr_parsed,
             visualized_alpha=visualized_alpha)
 
     def process_image_with_qr_code(self, image, qr_rect, data,

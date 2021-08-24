@@ -117,9 +117,31 @@ def align_aspect_ratio(scanarium, image, target):
     return image
 
 
-def mask(scanarium, image, scene, actor, visualized_alpha=None):
-    masked_file_path = os.path.join(scanarium.get_scenes_dir_abs(), scene,
-                                    'actors', actor, '%s-mask.png' % actor)
+def mask(scanarium, image, qr_parsed, visualized_alpha=None):
+    scene = qr_parsed['command']
+    scene_dir = os.path.join(scanarium.get_scenes_dir_abs(), scene)
+    if not os.path.isdir(scene_dir):
+        if scanarium.get_config('debug', 'fine_grained_errors',
+                                kind='boolean'):
+            raise ScanariumError('SE_UNKNOWN_SCENE',
+                                 'Scene "{scene_name}" does not exist',
+                                 {'scene_name': scene})
+        else:
+            raise create_error_unknown_qr()
+
+    actor = qr_parsed['parameter']
+    actor_dir = os.path.join(scene_dir, 'actors', actor)
+    if not os.path.isdir(actor_dir):
+        if scanarium.get_config('debug', 'fine_grained_errors',
+                                kind='boolean'):
+            raise ScanariumError(
+                'SE_UNKNOWN_ACTOR',
+                'Actor "{actor_name}" does not exist in scene "{scene_name}"',
+                {'scene_name': scene, 'actor_name': actor})
+        else:
+            raise create_error_unknown_qr()
+
+    masked_file_path = os.path.join(actor_dir, '%s-mask.png' % actor)
     if not os.path.isfile(masked_file_path):
         raise ScanariumError('SE_SCAN_NO_MASK',
                              'Failed to find mask {file_name}',
@@ -223,32 +245,11 @@ def save_image(scanarium, image, scene, actor):
     return timestamp
 
 
-def actor_image_pipeline(scanarium, image, qr_rect, scene, actor,
+def actor_image_pipeline(scanarium, image, qr_rect, qr_parsed,
                          visualized_alpha=None):
-    scene_dir = os.path.join(scanarium.get_scenes_dir_abs(), scene)
-    if not os.path.isdir(scene_dir):
-        if scanarium.get_config('debug', 'fine_grained_errors',
-                                kind='boolean'):
-            raise ScanariumError('SE_UNKNOWN_SCENE',
-                                 'Scene "{scene_name}" does not exist',
-                                 {'scene_name': scene})
-        else:
-            raise create_error_unknown_qr()
-
-    actor_dir = os.path.join(scene_dir, 'actors', actor)
-    if not os.path.isdir(actor_dir):
-        if scanarium.get_config('debug', 'fine_grained_errors',
-                                kind='boolean'):
-            raise ScanariumError(
-                'SE_UNKNOWN_ACTOR',
-                'Actor "{actor_name}" does not exist in scene "{scene_name}"',
-                {'scene_name': scene, 'actor_name': actor})
-        else:
-            raise create_error_unknown_qr()
-
     image = rectify_to_qr_parent_rect(scanarium, image, qr_rect)
     image = orient_image(scanarium, image)
-    image = mask(scanarium, image, scene, actor,
+    image = mask(scanarium, image, qr_parsed,
                  visualized_alpha=visualized_alpha)
     image = crop(image)
     image = balance(scanarium, image)
@@ -264,7 +265,7 @@ def actor_image_pipeline(scanarium, image, qr_rect, scene, actor,
 def process_actor_image_with_qr_code(scanarium, image, qr_rect, qr_parsed):
     scene = qr_parsed['command']
     actor = qr_parsed['parameter']
-    image = actor_image_pipeline(scanarium, image, qr_rect, scene, actor)
+    image = actor_image_pipeline(scanarium, image, qr_rect, qr_parsed)
     flavor = save_image(scanarium, image, scene, actor)
 
     scanarium.reindex_actors_for_scene(scene)
@@ -394,10 +395,10 @@ class Scanner(object):
             scanarium, self._command_logger, image, qr_rect, data,
             should_skip_exception)
 
-    def actor_image_pipeline(self, scanarium, image, qr_rect, scene, actor,
+    def actor_image_pipeline(self, scanarium, image, qr_rect, qr_parsed,
                              visualized_alpha=None):
         return actor_image_pipeline(
-            scanarium, image, qr_rect, scene, actor,
+            scanarium, image, qr_rect, qr_parsed,
             visualized_alpha=visualized_alpha)
 
     def rectify_to_biggest_rect(self, scanarium, image,
