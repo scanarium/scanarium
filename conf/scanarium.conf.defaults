@@ -51,8 +51,8 @@ hide_image_scaled_image_final = False
 hide_image_prepared_for_detection_contrast_1_0 = True
 
 
-# Whether to hide the image with found contours during debugging
-hide_image_contours = False
+# Whether to hide the image with all found contours during debugging
+hide_image_all_contours = False
 
 
 # Whether to hide the rectified image during debugging

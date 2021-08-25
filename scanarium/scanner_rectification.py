@@ -32,7 +32,7 @@ def add_text(image, text, x=2, y=5, color=None):
     return cv2.putText(image, text, position, font, fontScale, color)
 
 
-def debug_show_contours(scanarium, image, contours, hierarchy):
+def debug_show_contours(scanarium, name, image, contours, hierarchy):
     if scanarium.get_config('general', 'debug', 'boolean'):
         # The contours image should contain the dampened image and allow color
         contours_image = cv2.cvtColor((image * 0.3).astype('uint8'),
@@ -43,7 +43,7 @@ def debug_show_contours(scanarium, image, contours, hierarchy):
             cv2.drawContours(contours_image, contours, i, color, 2,
                              cv2.LINE_8, hierarchy, 0)
         add_text(contours_image, f'Found contours: {len(contours)}')
-        scanarium.debug_show_image('Contours', contours_image)
+        scanarium.debug_show_image(name, contours_image)
 
 
 def refine_corners(scanarium, prepared_image, points):
@@ -129,7 +129,7 @@ def find_rect_points(scanarium, image, decreasingArea=True,
         # So we get rid of that to transparently work on OpenCV 3.x
         _, contours, hierarchy = contours_result
 
-    debug_show_contours(scanarium, image, contours, hierarchy)
+    debug_show_contours(scanarium, 'All contours', image, contours, hierarchy)
 
     good_approx = None
     for contour in sorted(contours, key=cv2.contourArea,
