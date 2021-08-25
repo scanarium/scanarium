@@ -59,6 +59,10 @@ hide_image_all_contours = False
 hide_image_rated_contours = False
 
 
+# Whether to hide the image with approximation ratings during debugging
+hide_image_rated_approximations = False
+
+
 # Whether to hide the rectified image during debugging
 hide_image_rectified_image = False
 

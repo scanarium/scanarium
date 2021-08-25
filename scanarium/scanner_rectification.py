@@ -32,7 +32,8 @@ def add_text(image, text, x=2, y=5, color=None):
     return cv2.putText(image, text, position, font, fontScale, color)
 
 
-def debug_show_contours(scanarium, name, image, contours, hierarchy, ratings=None):
+def debug_show_contours(scanarium, name, image, contours, hierarchy,
+                        ratings=None):
     if scanarium.get_config('general', 'debug', 'boolean'):
         # The contours image should contain the dampened image and allow color
         contours_image = cv2.cvtColor((image * 0.3).astype('uint8'),
@@ -47,15 +48,18 @@ def debug_show_contours(scanarium, name, image, contours, hierarchy, ratings=Non
             }
 
         count = len(ratings if ratings else contours)
+        drawn = 0
         for i in range(count):
             if ratings:
                 color = colors.get(ratings[i], colors['other'])
             else:
                 color = (random.randint(0, 256), random.randint(0, 256),
                          random.randint(0, 256))
-            cv2.drawContours(contours_image, contours, i, color, 2,
-                             cv2.LINE_8, hierarchy, 0)
-        add_text(contours_image, f'Found contours: {count}')
+            if contours[i] is not None:
+                cv2.drawContours(contours_image, contours, i, color, 2,
+                                 cv2.LINE_8, hierarchy, 0)
+                drawn += 1
+        add_text(contours_image, f'Drawn contours: {drawn}')
 
         if ratings:
             y = 5
@@ -154,14 +158,17 @@ def find_rect_points(scanarium, image, decreasingArea=True,
     good_approx = None
     contours.sort(key=cv2.contourArea, reverse=decreasingArea)
     ratings = []
+    approximations = []
     for contour in contours:
         if cv2.contourArea(contour) < contour_min_area:
             # Contour too small, so we skip this contour
             ratings.append('small')
+            approximations.append(None)
             continue
 
         peri = cv2.arcLength(contour, True)
         approx = cv2.approxPolyDP(contour, 0.02 * peri, True)
+        approximations.append(approx)
 
         if len(approx) == 4:
             # 4 points ... that looks should be turned into a rectangle
@@ -182,6 +189,8 @@ def find_rect_points(scanarium, image, decreasingArea=True,
 
     debug_show_contours(scanarium, 'Rated contours', image, contours,
                         hierarchy, ratings=ratings)
+    debug_show_contours(scanarium, 'Rated approximations', image,
+                        approximations, hierarchy, ratings=ratings)
 
     return good_approx
 
