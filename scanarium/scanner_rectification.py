@@ -32,17 +32,37 @@ def add_text(image, text, x=2, y=5, color=None):
     return cv2.putText(image, text, position, font, fontScale, color)
 
 
-def debug_show_contours(scanarium, name, image, contours, hierarchy):
+def debug_show_contours(scanarium, name, image, contours, hierarchy, ratings=None):
     if scanarium.get_config('general', 'debug', 'boolean'):
         # The contours image should contain the dampened image and allow color
         contours_image = cv2.cvtColor((image * 0.3).astype('uint8'),
                                       cv2.COLOR_GRAY2BGR)
-        for i in range(len(contours)):
-            color = (random.randint(0, 256), random.randint(0, 256),
-                     random.randint(0, 256))
+
+        colors = {
+            'small': (0, 0, random.randint(200, 256)),
+            'non-rect': (0, random.randint(100, 140), 255),
+            'outside-point': (0, 255, random.randint(200, 256)),
+            'good': (0, 255, 0),
+            'other': (255, 128, 128)
+            }
+
+        count = len(ratings if ratings else contours)
+        for i in range(count):
+            if ratings:
+                color = colors.get(ratings[i], colors['other'])
+            else:
+                color = (random.randint(0, 256), random.randint(0, 256),
+                         random.randint(0, 256))
             cv2.drawContours(contours_image, contours, i, color, 2,
                              cv2.LINE_8, hierarchy, 0)
-        add_text(contours_image, f'Found contours: {len(contours)}')
+        add_text(contours_image, f'Found contours: {count}')
+
+        if ratings:
+            y = 5
+            for k, v in sorted(colors.items()):
+                y += 5
+                add_text(contours_image, k, x=2, y=y, color=v)
+
         scanarium.debug_show_image(name, contours_image)
 
 
@@ -132,10 +152,12 @@ def find_rect_points(scanarium, image, decreasingArea=True,
     debug_show_contours(scanarium, 'All contours', image, contours, hierarchy)
 
     good_approx = None
-    for contour in sorted(contours, key=cv2.contourArea,
-                          reverse=decreasingArea):
+    contours.sort(key=cv2.contourArea, reverse=decreasingArea)
+    ratings = []
+    for contour in contours:
         if cv2.contourArea(contour) < contour_min_area:
             # Contour too small, so we skip this contour
+            ratings.append('small')
             continue
 
         peri = cv2.arcLength(contour, True)
@@ -147,12 +169,19 @@ def find_rect_points(scanarium, image, decreasingArea=True,
             if any(cv2.pointPolygonTest(approx, point, False) < 0
                    for point in required_points):
                 # A required point is outside, so we skip this contour.
+                ratings.append('outside-point')
                 continue
 
             # The contour is big enough, looks like a rect, and contains all
             # required points. That's the contour to continue with.
             good_approx = approx
+            ratings.append('good')
             break
+        else:
+            ratings.append('non-rect')
+
+    debug_show_contours(scanarium, 'Rated contours', image, contours,
+                        hierarchy, ratings=ratings)
 
     return good_approx
 

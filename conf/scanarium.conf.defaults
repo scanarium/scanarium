@@ -55,6 +55,10 @@ hide_image_prepared_for_detection_contrast_1_0 = True
 hide_image_all_contours = False
 
 
+# Whether to hide the image with contour ratings during debugging
+hide_image_rated_contours = False
+
+
 # Whether to hide the rectified image during debugging
 hide_image_rectified_image = False
 
