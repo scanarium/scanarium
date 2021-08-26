@@ -231,11 +231,12 @@ def rectify(scanarium, image, decreasingArea=True, required_points=[],
             (prepared_image, scale_factor) = prepare_image(scanarium, image,
                                                            contrast)
 
-            scaled_points = [(int(point[0] * scale_factor),
-                              int(point[1] * scale_factor)
-                              ) for point in required_points]
+            required_points_scaled = [(int(point[0] * scale_factor),
+                                       int(point[1] * scale_factor)
+                                       ) for point in required_points]
             found_points_scaled = find_rect_points(
-                scanarium, prepared_image, decreasingArea, scaled_points)
+                scanarium, prepared_image, decreasingArea,
+                required_points_scaled)
 
     if found_points_scaled is None:
         raise ScanariumError(
