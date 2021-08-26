@@ -196,6 +196,18 @@ class ScanDataCanaryTestCase(CanaryTestCase):
             pipeline='native',
             extra_fixture='qr-code-map-bar.json')
 
+    def test_fail_png_contrast_selection_only_high_contrast(self):
+        with self.assertRaises(AssertionError):
+            config = {'scan': {'contrasts': '10'}}
+            self.template_test_file_type('png', pipeline='native',
+                                         variant='contrast-check',
+                                         config=config)
+
+    def test_ok_png_contrast_selection(self):
+        config = {'scan': {'contrasts': '10, 1'}}
+        self.template_test_file_type('png', pipeline='native',
+                                     variant='contrast-check', config=config)
+
     def test_fail_pipeline_os_error_fine(self):
         fixture = 'space-SimpleRocket-optimal.png'
         config = {

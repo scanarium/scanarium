@@ -222,30 +222,34 @@ def rectify_by_rect_points(scanarium, image, points):
 
 def rectify(scanarium, image, decreasingArea=True, required_points=[],
             yield_only_points=False):
-    found_points_scaled = None
+    found_points_scaled_list = []
     contrasts = [float(contrast.strip())
                  for contrast in
                  scanarium.get_config('scan', 'contrasts').split(',')]
     for contrast in contrasts:
-        if contrast and found_points_scaled is None:
-            (prepared_image, scale_factor) = prepare_image(scanarium, image,
-                                                           contrast)
+        (prepared_image, scale_factor) = prepare_image(scanarium, image,
+                                                       contrast)
 
-            required_points_scaled = [(int(point[0] * scale_factor),
-                                       int(point[1] * scale_factor)
-                                       ) for point in required_points]
-            found_points_scaled = find_rect_points(
-                scanarium, prepared_image, decreasingArea,
-                required_points_scaled)
+        required_points_scaled = [(int(point[0] * scale_factor),
+                                   int(point[1] * scale_factor)
+                                   ) for point in required_points]
+        found_points_scaled = find_rect_points(
+            scanarium, prepared_image, decreasingArea, required_points_scaled)
+        if found_points_scaled is not None:
+            found_points_scaled_list.append(found_points_scaled)
 
-    if found_points_scaled is None:
+    if not found_points_scaled_list:
         raise ScanariumError(
             'SE_SCAN_NO_APPROX',
             'Failed to find black bounding rectangle in image')
 
-    found_points = (found_points_scaled / scale_factor).astype('float32')
+    found_points_scaled_list.sort(key=cv2.contourArea)
+    best_found_points_scaled = found_points_scaled_list[0]
+    best_found_points = (best_found_points_scaled / scale_factor)\
+        .astype('float32')
 
-    rectify_points = refine_corners(scanarium, prepared_image, found_points)
+    rectify_points = refine_corners(
+        scanarium, prepared_image, best_found_points)
 
     if yield_only_points:
         ret = rectify_points
