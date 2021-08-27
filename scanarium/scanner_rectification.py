@@ -33,7 +33,7 @@ def add_text(image, text, x=2, y=5, color=None):
 
 
 def debug_show_contours(scanarium, name, image, contours, hierarchy,
-                        ratings=None):
+                        ratings=None, points=[]):
     if scanarium.get_config('general', 'debug', 'boolean'):
         # The contours image should contain the dampened image and allow color
         contours_image = cv2.cvtColor((image * 0.3).astype('uint8'),
@@ -60,6 +60,9 @@ def debug_show_contours(scanarium, name, image, contours, hierarchy,
                                  cv2.LINE_8, hierarchy, 0)
                 drawn += 1
         add_text(contours_image, f'Drawn contours: {drawn}')
+
+        for point in points:
+            cv2.drawMarker(contours_image, point, colors.get('good'))
 
         if ratings:
             y = 5
@@ -153,7 +156,8 @@ def find_rect_points(scanarium, image, decreasingArea=True,
         # So we get rid of that to transparently work on OpenCV 3.x
         _, contours, hierarchy = contours_result
 
-    debug_show_contours(scanarium, 'All contours', image, contours, hierarchy)
+    debug_show_contours(scanarium, 'All contours', image, contours, hierarchy,
+                        points=required_points)
 
     good_approx = None
     contours.sort(key=cv2.contourArea, reverse=decreasingArea)
@@ -188,9 +192,10 @@ def find_rect_points(scanarium, image, decreasingArea=True,
             ratings.append('non-rect')
 
     debug_show_contours(scanarium, 'Rated contours', image, contours,
-                        hierarchy, ratings=ratings)
+                        hierarchy, ratings=ratings, points=required_points)
     debug_show_contours(scanarium, 'Rated approximations', image,
-                        approximations, hierarchy, ratings=ratings)
+                        approximations, hierarchy, ratings=ratings,
+                        points=required_points)
 
     return good_approx
 
