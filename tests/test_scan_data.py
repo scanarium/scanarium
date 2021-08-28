@@ -208,6 +208,9 @@ class ScanDataCanaryTestCase(CanaryTestCase):
         self.template_test_file_type('png', pipeline='native',
                                      variant='contrast-check', config=config)
 
+    def test_ok_decoration_version_1(self):
+        self.template_test_file_type('png', pipeline='native', variant='d-1')
+
     def test_fail_pipeline_os_error_fine(self):
         fixture = 'space-SimpleRocket-optimal.png'
         config = {

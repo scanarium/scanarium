@@ -15,7 +15,7 @@ __pycache__
 /images/book.png
 /scenes/*/actors/*/*.svg
 !/scenes/*/actors/*/*-undecorated.svg
-/scenes/*/actors/*/*-mask.png
+/scenes/*/actors/*/*-mask-d-*.png
 /scenes/*/actors/*/*-thumb.jpg
 /scenes/*/actors/*/*.pdf
 /scenes/*/actors/*/pdfs

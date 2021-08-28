@@ -21,7 +21,11 @@ assert_qr_code_is_mapped() {
 }
 
 list_qr_codes() {
-    find commands/* scenes/*/actors -mindepth 1 -maxdepth 1 | sed -e 's@^\(commands\|scenes\)/@@' -e 's@actors/@@' -e 's@/@:@'
+    find \
+        commands/* scenes/*/actors \
+        -mindepth 1 -maxdepth 1 \
+        ! -name 'extra-decoration-*.svg' \
+        | sed -e 's@^\(commands\|scenes\)/@@' -e 's@actors/@@' -e 's@/@:@'
 }
 
 assert_all_qr_codes_are_mapped() {

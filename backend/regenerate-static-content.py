@@ -187,7 +187,7 @@ def generate_adapted_mask_source(scanarium, source, target):
 
 def get_mask_name(dir, file, suffix='png'):
     basename = os.path.basename(file).rsplit('.', 1)[0]
-    return os.path.join(dir, f'{basename}-mask.{suffix}')
+    return os.path.join(dir, f'{basename}-mask-d-1.{suffix}')
 
 
 def generate_mask(scanarium, dir, file, force):
@@ -575,8 +575,8 @@ def filter_svg_tree(scanarium, tree, command, parameter, variant, localizer,
         qr_pixel = qr_element.attrib.get('qr-pixel', None)
         if qr_pixel is not None:
             if qr_pixel == command_label:
-                expand_qr_pixel_to_qr_code(
-                    scanarium, qr_element, '%s:%s' % (command, parameter))
+                qr_data = '%s:%s:d_1' % (command, parameter)
+                expand_qr_pixel_to_qr_code(scanarium, qr_element, qr_data)
             else:
                 # We want to remove this qr-pixel, as it does not match the
                 # needed type. But as it might be linked to other elements, we
@@ -645,7 +645,7 @@ def append_svg_layers(base, addition):
 def generate_full_svg_tree(scanarium, dir, parameter, extra_decoration_name):
     undecorated_name = os.path.join(dir, parameter + '-undecorated.svg')
     decoration_name = os.path.join(scanarium.get_config_dir_abs(),
-                                   'decoration.svg')
+                                   'decoration-1.svg')
     sources = [undecorated_name, decoration_name]
     register_svg_namespaces()
     tree = ET.parse(undecorated_name)
@@ -829,7 +829,7 @@ def regenerate_static_content_commands(
             command_dir = os.path.join(dir, command)
             if os.path.isdir(command_dir):
                 extra_decoration_name = os.path.join(
-                    command_dir, 'extra-decoration.svg')
+                    command_dir, 'extra-decoration-1.svg')
                 if not os.path.isfile(extra_decoration_name):
                     extra_decoration_name = None
                 if is_actor:

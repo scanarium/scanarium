@@ -141,7 +141,7 @@ def mask(scanarium, image, qr_parsed, visualized_alpha=None):
         else:
             raise create_error_unknown_qr()
 
-    masked_file_path = os.path.join(actor_dir, '%s-mask.png' % actor)
+    masked_file_path = os.path.join(actor_dir, '%s-mask-d-1.png' % actor)
     if not os.path.isfile(masked_file_path):
         raise ScanariumError('SE_SCAN_NO_MASK',
                              'Failed to find mask {file_name}',
