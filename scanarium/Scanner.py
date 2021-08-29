@@ -141,11 +141,20 @@ def mask(scanarium, image, qr_parsed, visualized_alpha=None):
         else:
             raise create_error_unknown_qr()
 
-    masked_file_path = os.path.join(actor_dir, '%s-mask-d-1.png' % actor)
+    try:
+        decoration_version = int(qr_parsed.get('d', 1))
+    except Exception:
+        raise create_error_unknown_qr()
+    masked_file_path = os.path.join(actor_dir,
+                                    f'{actor}-mask-d-{decoration_version}.png')
     if not os.path.isfile(masked_file_path):
-        raise ScanariumError('SE_SCAN_NO_MASK',
-                             'Failed to find mask {file_name}',
-                             {'file_name': masked_file_path})
+        if scanarium.get_config('debug', 'fine_grained_errors',
+                                kind='boolean'):
+            raise ScanariumError('SE_SCAN_NO_MASK',
+                                 'Failed to find mask {file_name}',
+                                 {'file_name': masked_file_path})
+        else:
+            raise create_error_unknown_qr()
 
     mask = cv2.imread(masked_file_path, 0)
 
