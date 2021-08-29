@@ -642,15 +642,19 @@ def append_svg_layers(base, addition):
         root.append(layer)
 
 
-def generate_full_svg_tree(scanarium, dir, parameter, extra_decoration_name):
+def generate_full_svg_tree(scanarium, dir, parameter):
     undecorated_name = os.path.join(dir, parameter + '-undecorated.svg')
+    decoration_version = 1
     decoration_name = os.path.join(scanarium.get_config_dir_abs(),
-                                   'decoration-1.svg')
+                                   f'decoration-{decoration_version}.svg')
     sources = [undecorated_name, decoration_name]
     register_svg_namespaces()
     tree = ET.parse(undecorated_name)
     append_svg_layers(tree, ET.parse(decoration_name))
-    if extra_decoration_name:
+
+    extra_decoration_name = os.path.join(
+        dir, '..', f'extra-decoration-{decoration_version}.svg')
+    if os.path.isfile(extra_decoration_name):
         sources.append(extra_decoration_name)
         append_svg_layers(tree, ET.parse(extra_decoration_name))
 
@@ -740,8 +744,7 @@ def regenerate_pdf_actor_books(scanarium, dir, scene, pdfs_by_language, force):
 
 
 def regenerate_static_content_command_parameter(
-        scanarium, dir, command, parameter, is_actor, language, force,
-        extra_decoration_name):
+        scanarium, dir, command, parameter, is_actor, language, force):
     command_label = 'scene' if is_actor else 'command'
     parameter_label = 'actor' if is_actor else 'parameter'
     logging.debug(f'Regenerating content for {command_label} "{command}", '
@@ -749,8 +752,7 @@ def regenerate_static_content_command_parameter(
 
     assert_directory(dir)
 
-    raw_tree, sources = generate_full_svg_tree(scanarium, dir, parameter,
-                                               extra_decoration_name)
+    raw_tree, sources = generate_full_svg_tree(scanarium, dir, parameter)
     variants = extract_variants(raw_tree)
     variants.sort()
     pdfs_by_language = {}
@@ -766,8 +768,7 @@ def regenerate_static_content_command_parameter(
 
 
 def regenerate_static_content_command_parameters(
-        scanarium, dir, command, parameter_arg, is_actor, language, force,
-        extra_decoration_name):
+        scanarium, dir, command, parameter_arg, is_actor, language, force):
     parameters = os.listdir(dir) if parameter_arg is None else [parameter_arg]
     parameters.sort()
     command_variants = {}
@@ -778,7 +779,7 @@ def regenerate_static_content_command_parameters(
             variants, pdfs_by_language = \
                 regenerate_static_content_command_parameter(
                     scanarium, parameter_dir, command, parameter, is_actor,
-                    language, force, extra_decoration_name)
+                    language, force)
             if not os.path.exists(os.path.join(parameter_dir, 'hidden')):
                 command_variants[parameter] = variants
                 for pdf_language, pdfs in pdfs_by_language.items():
@@ -828,10 +829,6 @@ def regenerate_static_content_commands(
         for command in commands:
             command_dir = os.path.join(dir, command)
             if os.path.isdir(command_dir):
-                extra_decoration_name = os.path.join(
-                    command_dir, 'extra-decoration-1.svg')
-                if not os.path.isfile(extra_decoration_name):
-                    extra_decoration_name = None
                 if is_actor:
                     regenerate_static_scene_content(scanarium, command_dir,
                                                     force)
@@ -840,7 +837,7 @@ def regenerate_static_content_commands(
                 if os.path.isdir(command_dir):
                     regenerate_static_content_command_parameters(
                         scanarium, command_dir, command, parameter, is_actor,
-                        language, force, extra_decoration_name)
+                        language, force)
         if is_actor and command_arg is None:
             file = os.path.join(scanarium.get_scenes_dir_abs(), 'scenes.json')
             scanarium.dump_json(file, scenes)
