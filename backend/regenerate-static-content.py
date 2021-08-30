@@ -154,7 +154,7 @@ def get_svg_export_area_param_contour_inner(scanarium, svg_path):
     ))
 
 
-def generate_adapted_mask_source(scanarium, source, target):
+def generate_adapted_mask_source(scanarium, tree, target):
     offset = scanarium.get_config('mask', 'stroke_offset', 'float')
     color = scanarium.get_config('mask', 'stroke_color', allow_empty=True)
 
@@ -177,7 +177,6 @@ def generate_adapted_mask_source(scanarium, source, target):
         return ';'.join([adapt_style_element(style_element)
                          for style_element in style.split(';')])
 
-    tree = ET.parse(source)
     for element in tree.findall('.//*[@id="Mask"]//'):
         style = element.get('style')
         if style:
@@ -190,23 +189,18 @@ def get_mask_name(dir, file, suffix='png'):
     return os.path.join(dir, f'{basename}-mask-d-1.{suffix}')
 
 
-def generate_mask(scanarium, dir, file, force):
-    source = os.path.join(dir, file)
-    adapted_source = get_mask_name(dir, file, 'svg')
-    target = get_mask_name(dir, file)
+def regenerate_mask(scanarium, dir, name, force):
+    (tree, sources) = generate_full_svg_tree(scanarium, dir, name)
 
-    if not os.path.isfile(source):
-        raise ScanariumError('SE_SCAN_NO_SOURCE_FOR_MASK',
-                             'Failed to find source file {source_file} for '
-                             'generating mask {target_file}',
-                             {'source_file': source, 'target_file': target})
+    adapted_source = get_mask_name(dir, name, 'svg')
+    target = get_mask_name(dir, name)
 
-    if scanarium.file_needs_update(adapted_source, [source], force):
-        generate_adapted_mask_source(scanarium, source, adapted_source)
+    if scanarium.file_needs_update(adapted_source, sources, force):
+        generate_adapted_mask_source(scanarium, tree, adapted_source)
 
     if scanarium.file_needs_update(target, [adapted_source], force):
         contour_area = get_svg_export_area_param_contour_inner(
-            scanarium, source)
+            scanarium, adapted_source)
         inkscape_args = [
             '--export-id=Mask',
             '--export-id-only',
@@ -692,8 +686,6 @@ def svg_variant_pipeline(scanarium, dir, command, parameter, variant, tree,
             })
 
     if is_actor:
-        if variant == '' and language == 'fallback':
-            generate_mask(scanarium, dir, full_svg_name, force)
         scanarium.generate_thumbnail(dir, full_svg_name, force,
                                      level=['90%', '100%'])
     return pdf_name
@@ -743,6 +735,10 @@ def regenerate_pdf_actor_books(scanarium, dir, scene, pdfs_by_language, force):
                                                 language, pdfs, force)
 
 
+def regenerate_masks(scanarium, dir, name, force):
+    regenerate_mask(scanarium, dir, name, force)
+
+
 def regenerate_static_content_command_parameter(
         scanarium, dir, command, parameter, is_actor, language, force):
     command_label = 'scene' if is_actor else 'command'
@@ -764,6 +760,10 @@ def regenerate_static_content_command_parameter(
                 command_label, parameter_label)
             pdfs_by_language[language] = pdfs_by_language.get(language, []) + \
                 [variant_pdf_name]
+
+    if is_actor:
+        regenerate_masks(scanarium, dir, parameter, force)
+
     return variants, pdfs_by_language
 
 
