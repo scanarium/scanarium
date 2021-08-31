@@ -192,5 +192,9 @@ class Scanarium(object):
     def get_timestamp_for_filename(self):
         return self._util.get_timestamp_for_filename()
 
+    def get_versioned_filename(self, dir, file, suffix, decoration_version):
+        return self._util.get_versioned_filename(
+            dir, file, suffix, decoration_version)
+
     def get_command_logger(self):
         return self._command_logger

@@ -144,6 +144,10 @@ def get_timestamp_for_filename():
     return f'{get_now().timestamp():.3f}'
 
 
+def get_versioned_filename(dir, file, suffix, decoration_version):
+    return os.path.join(dir, f'{file}-d-{decoration_version}.{suffix}')
+
+
 class Util(object):
     def __init__(self, scanarium):
         self._scanarium = scanarium
@@ -171,3 +175,6 @@ class Util(object):
 
     def get_timestamp_for_filename(self):
         return get_timestamp_for_filename()
+
+    def get_versioned_filename(self, dir, file, suffix, decoration_version):
+        return get_versioned_filename(dir, file, suffix, decoration_version)

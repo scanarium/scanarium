@@ -2,7 +2,7 @@ __pycache__
 /.tox
 /cache
 /commands/*/*/*.svg
-!/commands/*/*/*-undecorated.svg
+!/commands/*/*/*-undecorated-d-[1-9].svg
 /commands/*/*/*.pdf
 /commands/*/*/pdfs
 /conf/scanarium.conf
@@ -14,8 +14,8 @@ __pycache__
 /frontend/phaser-3.*.js
 /images/book.png
 /scenes/*/actors/*/*.svg
-!/scenes/*/actors/*/*-undecorated.svg
-/scenes/*/actors/*/*-mask-d-*.png
+!/scenes/*/actors/*/*-undecorated-d-[1-9].svg
+/scenes/*/actors/*/*-mask-d-[1-9].png
 /scenes/*/actors/*/*-thumb.jpg
 /scenes/*/actors/*/*.pdf
 /scenes/*/actors/*/pdfs

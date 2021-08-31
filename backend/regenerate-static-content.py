@@ -637,17 +637,19 @@ def append_svg_layers(base, addition):
 
 
 def generate_full_svg_tree(scanarium, dir, parameter):
-    undecorated_name = os.path.join(dir, parameter + '-undecorated.svg')
     decoration_version = 1
-    decoration_name = os.path.join(scanarium.get_config_dir_abs(),
-                                   f'decoration-{decoration_version}.svg')
+    undecorated_name = scanarium.get_versioned_filename(
+        dir, parameter + '-undecorated', 'svg', decoration_version)
+    decoration_name = scanarium.get_versioned_filename(
+        scanarium.get_config_dir_abs(), 'decoration', 'svg',
+        decoration_version)
     sources = [undecorated_name, decoration_name]
     register_svg_namespaces()
     tree = ET.parse(undecorated_name)
     append_svg_layers(tree, ET.parse(decoration_name))
 
-    extra_decoration_name = os.path.join(
-        dir, '..', f'extra-decoration-{decoration_version}.svg')
+    extra_decoration_name = scanarium.get_versioned_filename(
+        os.path.join(dir, '..'), 'extra-decoration', 'svg', decoration_version)
     if os.path.isfile(extra_decoration_name):
         sources.append(extra_decoration_name)
         append_svg_layers(tree, ET.parse(extra_decoration_name))

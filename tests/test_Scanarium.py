@@ -50,3 +50,7 @@ class ScanariumTest(BasicTestCase):
     def test_to_safe_filename_punctuation(self):
         actual = Scanarium().to_safe_filename('F.o/,o')
         self.assertEqual(actual, 'F-o-o')
+
+    def test_get_versioned_filename(self):
+        actual = Scanarium().get_versioned_filename('foo', 'bar', 'baz', 42)
+        self.assertEqual(actual, os.path.join('foo', 'bar-d-42.baz'))

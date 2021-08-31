@@ -145,8 +145,8 @@ def mask(scanarium, image, qr_parsed, visualized_alpha=None):
         decoration_version = int(qr_parsed.get('d', 1))
     except Exception:
         raise create_error_unknown_qr()
-    masked_file_path = os.path.join(actor_dir,
-                                    f'{actor}-mask-d-{decoration_version}.png')
+    masked_file_path = scanarium.get_versioned_filename(
+        actor_dir, f'{actor}-mask', 'png', decoration_version)
     if not os.path.isfile(masked_file_path):
         if scanarium.get_config('debug', 'fine_grained_errors',
                                 kind='boolean'):
