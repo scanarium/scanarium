@@ -25,10 +25,12 @@ SCENE="$(basename "$(dirname "$(dirname "$TEMPLATE")")")"
 
 FULL_TARGET_DIR="$SCENE_DIR/$SCENE/$ACTORS_DIR/$NEW_NAME"
 
+DECORATION_VERSION="$(ls -1 conf/decoration-d-*.svg | sed -e 's@^.*/decoration-d-0*\([1-9][0-9]*\)\.svg@\1@' | sort -n | tail -n 1)"
+
 update_qr_map() {
     NEXT_ID=$(($(grep '"[0-9][0-9]*":' conf/qr-code-maps/SCANARIUM.COM.json | sort | tail -n 1 | sed -e 's/^ *"0*\([1-9][0-9]*\)\":.*/\1/') + 1))
     NEXT_ID_FORMATTED=$(printf "%03d" "$NEXT_ID")
-    sed -e 's/^\( *"001":.*\)/"'"$(printf "%03d" "$NEXT_ID")"'":"'"$SCENE:$NEW_NAME"'",\n\1/' -i conf/qr-code-maps/SCANARIUM.COM.json
+    sed -e 's/^\( *"001":.*\)/"'"$(printf "%03d" "$NEXT_ID")"'":"'"$SCENE:$NEW_NAME:d_$DECORATION_VERSION"'",\n\1/' -i conf/qr-code-maps/SCANARIUM.COM.json
     maintenance/qr-code-maps/sort.sh
 }
 
@@ -37,7 +39,7 @@ create_actor_files() {
 
     for VARIANT in \
         ".js" \
-        "-undecorated.svg" \
+        "-undecorated-d-${DECORATION_VERSION}.svg" \
 
     do
         cp "$TEMPLATE/$OLD_NAME$VARIANT" "$FULL_TARGET_DIR/$NEW_NAME$VARIANT"
