@@ -60,6 +60,24 @@ SVG_VARIANT_SETTINGS = {
 }
 SVG_VARIANTS = [key for key in SVG_VARIANT_SETTINGS.keys() if key]
 
+LATEST_DECORATION_VERSION = None
+
+
+def get_latest_decoration_version(scanarium):
+    global LATEST_DECORATION_VERSION
+    if LATEST_DECORATION_VERSION is None:
+        best_version = None
+        for item in os.listdir(scanarium.get_config_dir_abs()):
+            match = re.match('^decoration-d-([0-9]*[1-9][0-9]*).svg$', item)
+            if match:
+                version = int(match.group(1).lstrip('0'))
+                if best_version:
+                    best_version = max(version, best_version)
+                else:
+                    best_version = version
+        LATEST_DECORATION_VERSION = best_version
+    return LATEST_DECORATION_VERSION
+
 
 def run_inkscape(scanarium, arguments):
     command = [
@@ -189,8 +207,9 @@ def get_mask_name(dir, file, suffix='png'):
     return os.path.join(dir, f'{basename}-mask-d-1.{suffix}')
 
 
-def regenerate_mask(scanarium, dir, name, force):
-    (tree, sources) = generate_full_svg_tree(scanarium, dir, name)
+def regenerate_mask(scanarium, dir, name, decoration_level, force):
+    (tree, sources) = generate_full_svg_tree(
+        scanarium, dir, name, decoration_level)
 
     adapted_source = get_mask_name(dir, name, 'svg')
     target = get_mask_name(dir, name)
@@ -503,7 +522,8 @@ def localize_command_parameter_variant(localizer, command, parameter, variant):
 
 
 def filter_svg_tree(scanarium, tree, command, parameter, variant, localizer,
-                    command_label, parameter_label, href_adjustment=None):
+                    command_label, parameter_label, decoration_version,
+                    href_adjustment=None):
     (localized_command, localized_parameter, localized_variant,
      localized_parameter_with_variant) = localize_command_parameter_variant(
         localizer, command, parameter, variant)
@@ -569,7 +589,7 @@ def filter_svg_tree(scanarium, tree, command, parameter, variant, localizer,
         qr_pixel = qr_element.attrib.get('qr-pixel', None)
         if qr_pixel is not None:
             if qr_pixel == command_label:
-                qr_data = '%s:%s:d_1' % (command, parameter)
+                qr_data = f'{command}:{parameter}:d_{decoration_version}'
                 expand_qr_pixel_to_qr_code(scanarium, qr_element, qr_data)
             else:
                 # We want to remove this qr-pixel, as it does not match the
@@ -636,8 +656,7 @@ def append_svg_layers(base, addition):
         root.append(layer)
 
 
-def generate_full_svg_tree(scanarium, dir, parameter):
-    decoration_version = 1
+def generate_full_svg_tree(scanarium, dir, parameter, decoration_version):
     undecorated_name = scanarium.get_versioned_filename(
         dir, parameter + '-undecorated', 'svg', decoration_version)
     decoration_name = scanarium.get_versioned_filename(
@@ -659,7 +678,7 @@ def generate_full_svg_tree(scanarium, dir, parameter):
 
 def svg_variant_pipeline(scanarium, dir, command, parameter, variant, tree,
                          sources, is_actor, language, force, command_label,
-                         parameter_label):
+                         parameter_label, decoration_version):
     localizer = scanarium.get_localizer(language)
     (localized_command, _, _, localized_parameter_with_variant) = \
         localize_command_parameter_variant(localizer, command, parameter,
@@ -675,7 +694,8 @@ def svg_variant_pipeline(scanarium, dir, command, parameter, variant, tree,
     if scanarium.file_needs_update(full_svg_name, sources, force):
         show_only_variant(tree, variant)
         filter_svg_tree(scanarium, tree, command, parameter, variant,
-                        localizer, command_label, parameter_label, '../..')
+                        localizer, command_label, parameter_label,
+                        decoration_version, '../..')
         tree.write(full_svg_name)
 
     pdf_name = generate_pdf(scanarium, dir, full_svg_name, force, metadata={
@@ -738,7 +758,9 @@ def regenerate_pdf_actor_books(scanarium, dir, scene, pdfs_by_language, force):
 
 
 def regenerate_masks(scanarium, dir, name, force):
-    regenerate_mask(scanarium, dir, name, force)
+    latest_decoration_version = get_latest_decoration_version(scanarium)
+    for decoration_level in range(1, latest_decoration_version + 1):
+        regenerate_mask(scanarium, dir, name, decoration_level, force)
 
 
 def regenerate_static_content_command_parameter(
@@ -750,7 +772,9 @@ def regenerate_static_content_command_parameter(
 
     assert_directory(dir)
 
-    raw_tree, sources = generate_full_svg_tree(scanarium, dir, parameter)
+    decoration_version = get_latest_decoration_version(scanarium)
+    raw_tree, sources = generate_full_svg_tree(
+        scanarium, dir, parameter, decoration_version)
     variants = extract_variants(raw_tree)
     variants.sort()
     pdfs_by_language = {}
@@ -759,7 +783,7 @@ def regenerate_static_content_command_parameter(
             variant_pdf_name = svg_variant_pipeline(
                 scanarium, dir, command, parameter, variant,
                 copy.deepcopy(raw_tree), sources, is_actor, language, force,
-                command_label, parameter_label)
+                command_label, parameter_label, decoration_version)
             pdfs_by_language[language] = pdfs_by_language.get(language, []) + \
                 [variant_pdf_name]
 
