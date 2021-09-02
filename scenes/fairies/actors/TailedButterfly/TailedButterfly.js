@@ -2,7 +2,7 @@
 // GNU Affero General Public License v3.0 (See LICENSE.md)
 // SPDX-License-Identifier: AGPL-3.0-only
 
-class TailedButterfly extends Creature {
+class TailedButterfly extends BackFlapCreature {
     constructor(x, y, flavor) {
         const minWidthRef = 210;
         const maxWidthRef = 330;

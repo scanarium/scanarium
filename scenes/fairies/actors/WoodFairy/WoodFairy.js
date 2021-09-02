@@ -2,7 +2,7 @@
 // GNU Affero General Public License v3.0 (See LICENSE.md)
 // SPDX-License-Identifier: AGPL-3.0-only
 
-class WoodFairy extends Creature {
+class WoodFairy extends BackFlapCreature {
     constructor(x, y, flavor) {
         const minWidthRef = 154;
         const maxWidthRef = 231;

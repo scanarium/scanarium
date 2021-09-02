@@ -2,7 +2,7 @@
 // GNU Affero General Public License v3.0 (See LICENSE.md)
 // SPDX-License-Identifier: AGPL-3.0-only
 
-class WaterElf extends Creature {
+class WaterElf extends BackFlapCreature {
     constructor(x, y, flavor) {
         const minWidthRef = 231;
         const maxWidthRef = 350;

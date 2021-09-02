@@ -34,7 +34,7 @@ function getBorderPosition(defaultX, defaultY) {
   return [x, y];
 }
 
-class Wings extends Phaser.Physics.Arcade.Sprite {
+class BackFlapWings extends Phaser.Physics.Arcade.Sprite {
   constructor(x, y, image_name, body, minCycleLength, maxCycleLength) {
     super(game, x, y, image_name);
 
@@ -83,9 +83,10 @@ class Creature extends Phaser.GameObjects.Container {
     body.setDisplaySize(width, height);
     this.destroyOffset = Math.max(width, height) + 20;
 
-    var wings = new Wings(0, 0, flavored_actor + '-wings', body, minFlapCycleLength, maxFlapCycleLength);
-    this.add(wings);
-    this.wings = wings;
+    var that = this;
+    this.wings = [];
+    this.addWings(flavored_actor, body, minFlapCycleLength, maxFlapCycleLength);
+    this.wings.forEach(wing => that.add(wing));
 
     this.add(body);
     game.physics.world.enable(this);
@@ -94,6 +95,9 @@ class Creature extends Phaser.GameObjects.Container {
     this.x = startPosition[0];
     this.y = startPosition[1];
     this.addTimeline();
+  }
+
+  addWings() {
   }
 
   addTimeline() {
@@ -163,6 +167,36 @@ class Creature extends Phaser.GameObjects.Container {
     const full_width = full_source.width;
     const full_height = full_source.height;
 
+    var body = game.make.renderTexture({
+      width: full_width,
+      height: full_height,
+    }, false);
+
+    body.draw(flavored_actor);
+    body.saveTexture(flavored_actor + '-body');
+  }
+
+  update(time, delta) {
+    this.x += randomBetween(-this.wiggleX, this.wiggleX) * refToScreen;
+    this.y += randomBetween(-this.wiggleY, this.wiggleY) * refToScreen;
+    this.angle += randomBetween(-this.wiggleAngle, this.wiggleAngle);
+    this.wings.forEach(wing => wing.update(time, delta));
+  }
+}
+
+class BackFlapCreature extends Creature {
+  addWings(flavored_actor, body, minFlapCycleLength, maxFlapCycleLength) {
+    var wings = new BackFlapWings(0, 0, flavored_actor + '-wings', body, minFlapCycleLength, maxFlapCycleLength);
+    this.wings.push(wings);
+  }
+
+  createTexturesForce(flavored_actor, bodySpec) {
+    const full_texture = game.textures.get(flavored_actor);
+    const full_texture_source_index = 0;
+    const full_source = full_texture.source[full_texture_source_index];
+    const full_width = full_source.width;
+    const full_height = full_source.height;
+
     var wings = game.make.renderTexture({
       width: full_width,
       height: full_height,
@@ -201,12 +235,5 @@ class Creature extends Phaser.GameObjects.Container {
 
     body.erase(eraser);
     body.saveTexture(flavored_actor + '-body');
-  }
-
-  update(time, delta) {
-    this.x += randomBetween(-this.wiggleX, this.wiggleX) * refToScreen;
-    this.y += randomBetween(-this.wiggleY, this.wiggleY) * refToScreen;
-    this.angle += randomBetween(-this.wiggleAngle, this.wiggleAngle);
-    this.wings.update(time, delta);
   }
 }
