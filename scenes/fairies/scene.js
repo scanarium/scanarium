@@ -63,6 +63,47 @@ class BackFlapWings extends Phaser.Physics.Arcade.Sprite {
   }
 }
 
+class WiggleWing extends Phaser.Physics.Arcade.Sprite {
+  constructor(x, y, image_name, body, centerYPercent, minCycleLength, maxCycleLength, wing, points_width, points_height, syncToWing) {
+    super(game, x, y, image_name);
+
+    game.physics.world.enableBody(this);
+    game.sys.updateList.add(this);
+
+    this.x = body.x + ((wing.axis[0] + wing.shift[0])/points_width - 0.5) * body.width;
+    this.y = body.y + ((wing.axis[1] + wing.shift[1])/points_height - centerYPercent) * body.height;
+    this.fullWidth = body.width;
+    this.fullHeight = body.height;
+    this.setOrigin(body.originX + (wing.axis[0]/points_width - 0.5), body.originY + (wing.axis[1]/points_height - centerYPercent));
+    this.cycleLength = randomBetween(minCycleLength, maxCycleLength);
+    this.cycleOffset = randomBetween(0, this.cycleLength);
+    this.minAngle = wing.minAngle;
+    this.angleWidth = wing.maxAngle - wing.minAngle;
+    this.setSize(this.fullWidth, this.fullHeight);
+    this.setDisplaySize(this.fullWidth, this.fullHeight);
+
+    if (syncToWing) {
+      this.syncToWing = syncToWing;
+      this.cycleLength = syncToWing.cycleLength;
+      this.cycleOffset = syncToWing.cycleOffset;
+    }
+
+    this.update(0, 0);
+  }
+
+  update(time, delta) {
+    var phase = 0;
+    if (this.syncToWing) {
+      phase = this.syncToWing.phase;
+    } else {
+      phase = ((time + this.cycleOffset) % this.cycleLength) / this.cycleLength;
+    }
+    this.phase = phase;
+    phase = Math.abs(phase - 0.5) * 2;
+    this.angle = phase * this.angleWidth + this.minAngle;
+  }
+}
+
 class Creature extends Phaser.GameObjects.Container {
   constructor(flavor, x, y, minWidthRef, maxWidthRef, bodySpec, wiggleX, wiggleY, wiggleAngle, minFlapCycleLength, maxFlapCycleLength) {
     super(game, 0, 0);
@@ -83,9 +124,17 @@ class Creature extends Phaser.GameObjects.Container {
     body.setDisplaySize(width, height);
     this.destroyOffset = Math.max(width, height) + 20;
 
+    if (game.textures.exists(flavored_actor + '-background')) {
+        var background = game.add.image(0, 0, flavored_actor + '-background');
+        background.setOrigin(body.originX, body.originY);
+        background.setSize(width, height);
+        background.setDisplaySize(width, height);
+        this.add(background);
+    }
+
     var that = this;
     this.wings = [];
-    this.addWings(flavored_actor, body, minFlapCycleLength, maxFlapCycleLength);
+    this.addWings(flavored_actor, body, bodySpec, minFlapCycleLength, maxFlapCycleLength);
     this.wings.forEach(wing => that.add(wing));
 
     this.add(body);
@@ -97,7 +146,7 @@ class Creature extends Phaser.GameObjects.Container {
     this.addTimeline();
   }
 
-  addWings() {
+  addWings(flavored_actor, body, bodySpec, minFlapCycleLength, maxFlapCycleLength) {
   }
 
   addTimeline() {
@@ -185,7 +234,7 @@ class Creature extends Phaser.GameObjects.Container {
 }
 
 class BackFlapCreature extends Creature {
-  addWings(flavored_actor, body, minFlapCycleLength, maxFlapCycleLength) {
+  addWings(flavored_actor, body, bodySpec, minFlapCycleLength, maxFlapCycleLength) {
     var wings = new BackFlapWings(0, 0, flavored_actor + '-wings', body, minFlapCycleLength, maxFlapCycleLength);
     this.wings.push(wings);
   }
@@ -234,6 +283,77 @@ class BackFlapCreature extends Creature {
     eraser.erase(bodyEraser);
 
     body.erase(eraser);
+    body.saveTexture(flavored_actor + '-body');
+  }
+}
+
+class WingWiggleCreature extends Creature {
+  addWings(flavored_actor, body, bodySpec, minFlapCycleLength, maxFlapCycleLength) {
+    var last_wing = null;
+    bodySpec.wings.forEach((wing, i) => {
+        var wing = new WiggleWing(0, 0, flavored_actor + '-wing-' + i, body, bodySpec.centerY / bodySpec.height, minFlapCycleLength, maxFlapCycleLength, wing, bodySpec.width, bodySpec.height, last_wing);
+        this.wings.push(wing);
+
+        last_wing = wing;
+    });
+  }
+
+  extractTexture(flavored_actor, name, points, points_width, points_height, full_width, full_height, background) {
+    const extractionMask = game.make.graphics();
+    extractionMask.fillStyle(0xffffff, 1);
+    extractionMask.beginPath();
+    const factorX = full_width / points_width;
+    const factorY = full_height / points_height;
+    extractionMask.moveTo(points[points.length-1][0] * factorX, points[points.length-1][1] * factorY);
+    points.forEach((point) => {
+      extractionMask.lineTo(point[0] * factorX, point[1] * factorY);
+    });
+    extractionMask.closePath();
+    extractionMask.fillPath();
+
+    if (background) {
+      background.erase(extractionMask);
+    }
+
+    var invertedExtractionMask = game.make.renderTexture({
+      width: full_width,
+      height: full_height,
+    }, false);
+    invertedExtractionMask.fill(0xffffff, 1);
+    invertedExtractionMask.erase(extractionMask);
+
+    var extracted = game.make.renderTexture({
+      width: full_width,
+      height: full_height,
+    }, false);
+
+    extracted.draw(flavored_actor);
+    extracted.erase(invertedExtractionMask);
+
+    extracted.saveTexture(flavored_actor + '-' + name);
+  }
+
+  createTexturesForce(flavored_actor, bodySpec) {
+    const full_texture = game.textures.get(flavored_actor);
+    const full_texture_source_index = 0;
+    const full_source = full_texture.source[full_texture_source_index];
+    const full_width = full_source.width;
+    const full_height = full_source.height;
+
+    var body = game.make.renderTexture({
+      width: full_width,
+      height: full_height,
+    }, false);
+
+    body.draw(flavored_actor);
+
+    var that = this;
+    bodySpec.wings.forEach((wing, i) => {
+        that.extractTexture(flavored_actor, 'wing-' + i, wing.points, bodySpec.width, bodySpec.height, full_width, full_height, body);
+    });
+
+    that.extractTexture(flavored_actor, 'background', bodySpec.background_points, bodySpec.width, bodySpec.height, full_width, full_height, body);
+
     body.saveTexture(flavored_actor + '-body');
   }
 }
