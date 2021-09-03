@@ -63,5 +63,6 @@
   "062": "highway:SemiTruckCabOver",
   "063": "highway:SemiTrailerBox",
   "064": "fairies:RoundBug",
+  "065": "fairies:LongBug",
   "ZZZ": "undefined-placeholder-to-get-better-diffs"
 }
