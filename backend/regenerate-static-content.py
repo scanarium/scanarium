@@ -21,6 +21,9 @@ del sys.path[0]
 
 logger = logging.getLogger(__name__)
 
+COMMAND_LABEL_SCENE = 'scene'
+PARAMETER_LABEL_ACTOR = 'actor'
+
 SVG_DPI = 96  # We assume Inkscape >= 0.92 (otherwise, use 90 here)
 
 BACKGROUND_COLOR = '#ffffff'
@@ -207,7 +210,7 @@ def get_mask_name(dir, file, suffix='png'):
     return os.path.join(dir, f'{basename}-mask-d-1.{suffix}')
 
 
-def regenerate_mask(scanarium, dir, name, decoration_level, force):
+def regenerate_mask(scanarium, dir, scene, name, decoration_level, force):
     (tree, sources) = generate_full_svg_tree(
         scanarium, dir, name, decoration_level)
 
@@ -215,6 +218,12 @@ def regenerate_mask(scanarium, dir, name, decoration_level, force):
     target = get_mask_name(dir, name)
 
     if scanarium.file_needs_update(adapted_source, sources, force):
+        variant = ''
+        localizer = scanarium.get_localizer('fallback')
+        show_only_variant(tree, variant)
+        filter_svg_tree(scanarium, tree, scene, name, variant,
+                        localizer, COMMAND_LABEL_SCENE, PARAMETER_LABEL_ACTOR,
+                        decoration_level, '../..')
         generate_adapted_mask_source(scanarium, tree, adapted_source)
 
     if scanarium.file_needs_update(target, [adapted_source], force):
@@ -757,16 +766,16 @@ def regenerate_pdf_actor_books(scanarium, dir, scene, pdfs_by_language, force):
                                                 language, pdfs, force)
 
 
-def regenerate_masks(scanarium, dir, name, force):
+def regenerate_masks(scanarium, dir, scene, name, force):
     latest_decoration_version = get_latest_decoration_version(scanarium)
     for decoration_level in range(1, latest_decoration_version + 1):
-        regenerate_mask(scanarium, dir, name, decoration_level, force)
+        regenerate_mask(scanarium, dir, scene, name, decoration_level, force)
 
 
 def regenerate_static_content_command_parameter(
         scanarium, dir, command, parameter, is_actor, language, force):
-    command_label = 'scene' if is_actor else 'command'
-    parameter_label = 'actor' if is_actor else 'parameter'
+    command_label = COMMAND_LABEL_SCENE if is_actor else 'command'
+    parameter_label = PARAMETER_LABEL_ACTOR if is_actor else 'parameter'
     logging.debug(f'Regenerating content for {command_label} "{command}", '
                   f'{parameter_label} "{parameter}" ...')
 
@@ -788,7 +797,7 @@ def regenerate_static_content_command_parameter(
                 [variant_pdf_name]
 
     if is_actor:
-        regenerate_masks(scanarium, dir, parameter, force)
+        regenerate_masks(scanarium, dir, command, parameter, force)
 
     return variants, pdfs_by_language
 

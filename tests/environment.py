@@ -217,7 +217,7 @@ class BasicTestCase(unittest.TestCase):
         self.assertGreaterEqual(actual, expected - scale * allowed_deviation)
         self.assertLessEqual(actual, expected + scale * allowed_deviation)
 
-    def assertColor(self, image, x, y, expected):
+    def assertColor(self, image, x, y, expected, allowed_deviation=5):
         pixel = image[y][x]
         if expected == 'red':
             expected = [0, 0, 255]
@@ -225,11 +225,15 @@ class BasicTestCase(unittest.TestCase):
             expected = [0, 255, 0]
         elif expected == 'blue':
             expected = [255, 0, 0]
+        elif expected == 'white':
+            expected = [255, 255, 255]
+        elif expected == 'black':
+            expected = [0, 0, 0]
 
         for i in range(3):
             try:
                 self.assertRoughlyEqual(pixel[i], expected[i], scale=255,
-                                        allowed_deviation=5)
+                                        allowed_deviation=allowed_deviation)
             except self.failureException as e:
                 self.fail(f'Pixel at x: {x}, y: {y} is {pixel} and does not '
                           f'match {expected} ({e.args})')
@@ -257,9 +261,11 @@ class CanaryTestCase(BasicTestCase):
     def run_cgi(self, dir, cgi, arguments=[], expected_returncode=0):
         cgi_file = os.path.join('.', 'backend', f'{cgi}.py')
 
-        standard_arguments = [
-            '--debug-config-override', os.path.join(dir, 'override.conf')
-        ]
+        standard_arguments = []
+
+        if dir is not None:
+            standard_arguments += [
+                '--debug-config-override', os.path.join(dir, 'override.conf')]
 
         command = [cgi_file] + standard_arguments + arguments
 
