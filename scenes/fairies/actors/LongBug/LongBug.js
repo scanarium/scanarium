@@ -4,8 +4,8 @@
 
 class LongBug extends WingWiggleCreature {
     constructor(x, y, flavor) {
-        const minWidthRef = 200;
-        const maxWidthRef = 300;
+        const minWidthRef = 250;
+        const maxWidthRef = 350;
         const body = {
           wings: [
             {
