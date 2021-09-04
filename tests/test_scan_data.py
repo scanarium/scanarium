@@ -28,30 +28,6 @@ class ScanDataCanaryTestCase(CanaryTestCase):
         self.assertErrorCode(error_code, ret, dir)
         return ret
 
-    def assertRoughlyEqual(self, actual, expected, scale=None,
-                           allowed_deviation=0.02):
-        if scale is None:
-            scale = expected
-        self.assertGreaterEqual(actual, expected - scale * allowed_deviation)
-        self.assertLessEqual(actual, expected + scale * allowed_deviation)
-
-    def assertColor(self, image, x, y, expected):
-        pixel = image[y][x]
-        if expected == 'red':
-            expected = [0, 0, 255]
-        elif expected == 'green':
-            expected = [0, 255, 0]
-        elif expected == 'blue':
-            expected = [255, 0, 0]
-
-        for i in range(3):
-            try:
-                self.assertRoughlyEqual(pixel[i], expected[i], scale=255,
-                                        allowed_deviation=5)
-            except self.failureException as e:
-                self.fail(f'Pixel at x: {x}, y: {y} is {pixel} and does not '
-                          f'match {expected} ({e.args})')
-
     def assertMarker(self, image, marker, x_factor, y_factor):
         unscaled_center_x, unscaled_center_y, unscaled_width, color = marker
         center_x = round(unscaled_center_x * x_factor)

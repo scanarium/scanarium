@@ -210,6 +210,30 @@ class BasicTestCase(unittest.TestCase):
     def assertRaisesScanariumError(self, code):
         return AssertRaisesScanariumErrorContext(self, code)
 
+    def assertRoughlyEqual(self, actual, expected, scale=None,
+                           allowed_deviation=0.02):
+        if scale is None:
+            scale = expected
+        self.assertGreaterEqual(actual, expected - scale * allowed_deviation)
+        self.assertLessEqual(actual, expected + scale * allowed_deviation)
+
+    def assertColor(self, image, x, y, expected):
+        pixel = image[y][x]
+        if expected == 'red':
+            expected = [0, 0, 255]
+        elif expected == 'green':
+            expected = [0, 255, 0]
+        elif expected == 'blue':
+            expected = [255, 0, 0]
+
+        for i in range(3):
+            try:
+                self.assertRoughlyEqual(pixel[i], expected[i], scale=255,
+                                        allowed_deviation=5)
+            except self.failureException as e:
+                self.fail(f'Pixel at x: {x}, y: {y} is {pixel} and does not '
+                          f'match {expected} ({e.args})')
+
 
 class CanaryTestCase(BasicTestCase):
     def run_command(self, command, expected_returncode=0):
