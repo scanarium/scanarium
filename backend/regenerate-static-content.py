@@ -210,9 +210,9 @@ def get_mask_name(dir, file, suffix='png'):
     return os.path.join(dir, f'{basename}-mask-d-1.{suffix}')
 
 
-def regenerate_mask(scanarium, dir, scene, name, decoration_level, force):
+def regenerate_mask(scanarium, dir, scene, name, decoration_version, force):
     (tree, sources) = generate_full_svg_tree(
-        scanarium, dir, name, decoration_level)
+        scanarium, dir, name, decoration_version)
 
     adapted_source = get_mask_name(dir, name, 'svg')
     target = get_mask_name(dir, name)
@@ -223,7 +223,7 @@ def regenerate_mask(scanarium, dir, scene, name, decoration_level, force):
         show_only_variant(tree, variant)
         filter_svg_tree(scanarium, tree, scene, name, variant,
                         localizer, COMMAND_LABEL_SCENE, PARAMETER_LABEL_ACTOR,
-                        decoration_level, '../..')
+                        decoration_version, '../..')
         generate_adapted_mask_source(scanarium, tree, adapted_source)
 
     if scanarium.file_needs_update(target, [adapted_source], force):
@@ -768,8 +768,8 @@ def regenerate_pdf_actor_books(scanarium, dir, scene, pdfs_by_language, force):
 
 def regenerate_masks(scanarium, dir, scene, name, force):
     latest_decoration_version = get_latest_decoration_version(scanarium)
-    for decoration_level in range(1, latest_decoration_version + 1):
-        regenerate_mask(scanarium, dir, scene, name, decoration_level, force)
+    for decoration_version in range(1, latest_decoration_version + 1):
+        regenerate_mask(scanarium, dir, scene, name, decoration_version, force)
 
 
 def regenerate_static_content_command_parameter(
