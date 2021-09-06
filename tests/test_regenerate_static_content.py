@@ -3,7 +3,6 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 import os
-import cv2
 
 from .environment import CanaryTestCase
 
@@ -19,7 +18,7 @@ class RegenerateStaticContentTestCase(CanaryTestCase):
         self.run_scan_data([scene, actor])
         mask_file = os.path.join('scenes', scene, 'actors', actor,
                                  actor + '-mask-d-1.png')
-        image = cv2.imread(mask_file)
+        image = self.readImage(mask_file)
         self.assertColor(image, 352, 348, 'white', allowed_deviation=0)
         self.assertColor(image, 820, 334, 'white', allowed_deviation=0)
         self.assertColor(image, 528, 545, 'white', allowed_deviation=0)
@@ -35,7 +34,7 @@ class RegenerateStaticContentTestCase(CanaryTestCase):
         self.run_scan_data([scene, actor])
         mask_file = os.path.join('scenes', scene, 'actors', actor,
                                  actor + '-mask-d-1.png')
-        image = cv2.imread(mask_file)
+        image = self.readImage(mask_file)
         self.assertColor(image, 645, 355, 'white', allowed_deviation=0)
         self.assertColor(image, 641, 258, 'white', allowed_deviation=0)
         self.assertColor(image, 704, 444, 'white', allowed_deviation=0)

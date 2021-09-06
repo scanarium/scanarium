@@ -5,7 +5,6 @@
 import unittest
 import base64
 import os
-import cv2
 
 from .environment import CanaryTestCase
 
@@ -46,7 +45,7 @@ class ScanDataCanaryTestCase(CanaryTestCase):
                 scan_result_file = os.path.join(scan_target_dir, file)
 
         self.assertIsNotNone(scan_result_file)
-        image = cv2.imread(scan_result_file)
+        image = self.readImage(scan_result_file)
 
         # Scanned image has been loaded. Now on to testing the scan result
         # (image.shape is (height, width, ...), dimension is (width, height).

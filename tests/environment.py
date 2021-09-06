@@ -14,6 +14,8 @@ import sys
 import tempfile
 import traceback
 
+import cv2
+
 SCANARIUM_DIR_ABS = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, SCANARIUM_DIR_ABS)
 from scanarium import Scanarium, ScanariumError
@@ -238,6 +240,9 @@ class BasicTestCase(unittest.TestCase):
             except self.failureException as e:
                 self.fail(f'Pixel at x: {x}, y: {y} is {pixel} and does not '
                           f'match {expected} ({e.args})')
+
+    def readImage(self, file):
+        return cv2.imread(file)
 
 
 class CanaryTestCase(BasicTestCase):
