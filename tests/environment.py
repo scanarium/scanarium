@@ -20,6 +20,13 @@ from scanarium import Scanarium, ScanariumError
 del sys.path[0]
 
 FIXTURE_DIR = os.path.join('tests', 'fixtures')
+COLORS = {
+    'red': [0, 0, 255],
+    'green': [0, 255, 0],
+    'blue': [255, 0, 0],
+    'white': [255, 255, 255],
+    'black': [0, 0, 0],
+}
 
 
 class NotCleanedUpTemporaryDirectory(object):
@@ -217,18 +224,12 @@ class BasicTestCase(unittest.TestCase):
         self.assertGreaterEqual(actual, expected - scale * allowed_deviation)
         self.assertLessEqual(actual, expected + scale * allowed_deviation)
 
+    def resolveColor(self, color):
+        return COLORS.get(color, color)
+
     def assertColor(self, image, x, y, expected, allowed_deviation=5):
         pixel = image[y][x]
-        if expected == 'red':
-            expected = [0, 0, 255]
-        elif expected == 'green':
-            expected = [0, 255, 0]
-        elif expected == 'blue':
-            expected = [255, 0, 0]
-        elif expected == 'white':
-            expected = [255, 255, 255]
-        elif expected == 'black':
-            expected = [0, 0, 0]
+        expected = self.resolveColor(expected)
 
         for i in range(3):
             try:
