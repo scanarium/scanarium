@@ -227,13 +227,21 @@ class BasicTestCase(unittest.TestCase):
         self.assertLessEqual(actual, expected + scale * allowed_deviation)
 
     def resolveColor(self, color):
-        return COLORS.get(color, color)
+        color = COLORS.get(color, color)
+        if len(color) < 4:
+            color.append(255)
+        return color
 
     def assertColor(self, image, x, y, expected, allowed_deviation=5):
         pixel = image[y][x]
         expected = self.resolveColor(expected)
 
-        for i in range(3):
+        pixel_len = len(pixel)
+        if pixel_len < 4 and expected[3] != 255:
+            self.fail('Expecting non-opaque alpha, but pixel has only '
+                      f'{pixel_len} channels')
+
+        for i in range(pixel_len):
             try:
                 self.assertRoughlyEqual(pixel[i], expected[i], scale=255,
                                         allowed_deviation=allowed_deviation)
@@ -242,7 +250,7 @@ class BasicTestCase(unittest.TestCase):
                           f'match {expected} ({e.args})')
 
     def readImage(self, file):
-        return cv2.imread(file)
+        return cv2.imread(file, cv2.IMREAD_UNCHANGED)
 
 
 class CanaryTestCase(BasicTestCase):
