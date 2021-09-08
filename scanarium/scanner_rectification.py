@@ -275,7 +275,9 @@ def rectify_to_qr_parent_rect(scanarium, image, qr_rect,
         return (qr_rect.left + x_factor * qr_rect.width,
                 qr_rect.top + y_factor * qr_rect.height)
 
-    inset_factor = 0.2
+    inset_factor = 0.25  # 0.25 to make sure the points we're checking for are
+    # within the QR code, even for 45° rotated images taken straight from top.
+    inset_factor += 0.05  # Adding 0.05 to have some wiggle room.
     top_left_inset = qr_rect_point(inset_factor, inset_factor)
     top_right_inset = qr_rect_point(1. - inset_factor, inset_factor)
     bottom_left_inset = qr_rect_point(inset_factor, 1. - inset_factor)
