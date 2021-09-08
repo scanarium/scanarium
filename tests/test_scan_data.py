@@ -31,7 +31,7 @@ class ScanDataCanaryTestCase(CanaryTestCase):
         unscaled_center_x, unscaled_center_y, unscaled_width, color = marker
         center_x = round(unscaled_center_x * x_factor)
         center_y = round(unscaled_center_y * y_factor)
-        self.assertColor(image, center_x, center_y, color)
+        self.assertColorApproximately(image, center_x, center_y, color)
 
     def assertScanOk(self, dir, scene='space', actor='SimpleRocket',
                      dimension=[0, 0], markers=[]):

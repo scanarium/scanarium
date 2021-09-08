@@ -232,7 +232,8 @@ class BasicTestCase(unittest.TestCase):
             color.append(255)
         return color
 
-    def assertColor(self, image, x, y, expected, allowed_deviation=5):
+    def assertColorApproximately(self, image, x, y, expected,
+                                 allowed_deviation=5):
         pixel = image[y][x]
         expected = self.resolveColor(expected)
 
@@ -248,6 +249,10 @@ class BasicTestCase(unittest.TestCase):
             except self.failureException as e:
                 self.fail(f'Pixel at x: {x}, y: {y} is {pixel} and does not '
                           f'match {expected} ({e.args})')
+
+    def assertColor(self, image, x, y, expected):
+        self.assertColorApproximately(
+            image, x, y, expected, allowed_deviation=0)
 
     def readImage(self, file):
         return cv2.imread(file, cv2.IMREAD_UNCHANGED)
