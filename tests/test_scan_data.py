@@ -84,8 +84,8 @@ class ScanDataCanaryTestCase(CanaryTestCase):
                                   dimension=[539, 371],
                                   markers=[
                                       [4, 185, 5, 'red'],
-                                      [335, 365, 5, 'green'],
-                                      [335, 5, 5, 'blue'],
+                                      [536, 5, 5, 'green'],
+                                      [536, 365, 5, 'blue'],
                                   ])
             elif variant == '35':
                 self.assertScanOk(dir,
