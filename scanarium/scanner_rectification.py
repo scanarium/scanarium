@@ -200,7 +200,7 @@ def find_rect_points(scanarium, image, decreasingArea=True,
     return good_approx
 
 
-def rectify_by_rect_points(scanarium, image, points):
+def sort_points_assume_xy_mostly_aligned(points):
     # The following heuristics of classifying the 4 points is based on the
     # assumption that the rectangle is not distorted too much. So if the
     # camera angle is skew, it will fail.
@@ -211,6 +211,12 @@ def rectify_by_rect_points(scanarium, image, points):
     d = np.diff(points, axis=1)
     s_tr = points[np.argmin(d)]  # smallest difference, is top right
     s_bl = points[np.argmax(d)]  # biggest difference, is bottom left
+
+    return (s_tl, s_tr, s_br, s_bl)
+
+
+def rectify_by_rect_points(scanarium, image, points):
+    (s_tl, s_tr, s_br, s_bl) = sort_points_assume_xy_mostly_aligned(points)
 
     source = np.array([s_tl, s_tr, s_br, s_bl], dtype="float32")
 
