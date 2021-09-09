@@ -18,3 +18,6 @@ class ScanariumError(RuntimeError):
         self.message = MessageFormatter().format_message(
             self.template, self.parameters)
         self.uuid = uuid.uuid4()
+
+    def __str__(self):
+        return self.code + ': ' + self.message
