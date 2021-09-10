@@ -115,11 +115,11 @@ class ScanDataCanaryTestCase(CanaryTestCase):
     def test_ok_png_35_native(self):
         self.template_test_file_type(
             'png', pipeline='native', variant='35',
-            expected_dimension=[304, 209],
+            expected_dimension=[298, 205],
             expected_markers=[
-                [2, 104, 5, 'red'],
-                [300, 3, 5, 'green'],
-                [300, 206, 5, 'blue'],
+                [2, 103, 5, 'red'],
+                [297, 3, 5, 'green'],
+                [297, 203, 5, 'blue'],
                 ])
 
     def test_ok_png_90_native(self):

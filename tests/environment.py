@@ -233,7 +233,7 @@ class BasicTestCase(unittest.TestCase):
         return color
 
     def assertColorApproximately(self, image, x, y, expected,
-                                 allowed_deviation=5):
+                                 allowed_deviation=0.25):
         pixel = image[y][x]
         expected = self.resolveColor(expected)
 
