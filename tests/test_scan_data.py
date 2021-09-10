@@ -64,7 +64,8 @@ class ScanDataCanaryTestCase(CanaryTestCase):
 
     def template_test_file_type(self, file_type='png', pipeline=None,
                                 variant='optimal', fixture=None,
-                                extra_fixture=None, config={}):
+                                extra_fixture=None, config={},
+                                expected_dimension=None, expected_markers=None):
         if fixture is None:
             fixture = f'space-SimpleRocket-{variant}.{file_type}'
         test_config = self.update_dict({}, config)
@@ -79,30 +80,28 @@ class ScanDataCanaryTestCase(CanaryTestCase):
 
             self.run_scan_data_ok(dir, fixture)
 
-            if file_type == 'pdf':
-                self.assertScanOk(dir,
-                                  dimension=[539, 371],
-                                  markers=[
-                                      [4, 185, 5, 'red'],
-                                      [536, 5, 5, 'green'],
-                                      [536, 365, 5, 'blue'],
-                                  ])
-            elif variant == '35':
-                self.assertScanOk(dir,
-                                  dimension=[304, 209],
-                                  markers=[
-                                      [2, 104, 5, 'red'],
-                                      [300, 3, 5, 'green'],
-                                      [300, 206, 5, 'blue'],
-                                  ])
-            else:
-                self.assertScanOk(dir,
-                                  dimension=[455, 313],
-                                  markers=[
-                                      [3, 155, 5, 'red'],
-                                      [451, 3, 5, 'green'],
-                                      [451, 308, 5, 'blue'],
-                                  ])
+            if expected_dimension is None:
+                if file_type == 'pdf':
+                    expected_dimension = [539, 371]
+                else:
+                    expected_dimension = [455, 313]
+
+            if expected_markers is None:
+                if file_type == 'pdf':
+                    expected_markers=[
+                        [4, 185, 5, 'red'],
+                        [536, 5, 5, 'green'],
+                        [536, 365, 5, 'blue'],
+                        ]
+                else:
+                    expected_markers=[
+                        [3, 155, 5, 'red'],
+                        [451, 3, 5, 'green'],
+                        [451, 308, 5, 'blue'],
+                    ]
+
+            self.assertScanOk(
+                dir, dimension=expected_dimension, markers=expected_markers)
 
             command_log_file = os.path.join(dir, 'dynamic', 'command-log.json')
             logged_result = self.get_json_file_contents(command_log_file)[0]
@@ -114,7 +113,14 @@ class ScanDataCanaryTestCase(CanaryTestCase):
         self.template_test_file_type('png', pipeline='native')
 
     def test_ok_png_35_native(self):
-        self.template_test_file_type('png', pipeline='native', variant='35')
+        self.template_test_file_type(
+            'png', pipeline='native', variant='35',
+            expected_dimension=[304, 209],
+            expected_markers=[
+                [2, 104, 5, 'red'],
+                [300, 3, 5, 'green'],
+                [300, 206, 5, 'blue'],
+                ])
 
     def test_ok_png_90_native(self):
         self.template_test_file_type('png', pipeline='native', variant='90')
