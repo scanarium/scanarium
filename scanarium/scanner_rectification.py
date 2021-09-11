@@ -215,17 +215,55 @@ def sort_points_assume_xy_mostly_aligned(points):
     return (s_tl, s_tr, s_br, s_bl)
 
 
+def sort_points_assume_roughly_45_degrees(points):
+    # We assume the picture is rotated roughly 45 degrees
+
+    y_sort = points[:, 1].argsort()
+    s_tl = points[y_sort[0]]  # smallest y, is top left
+    s_br = points[y_sort[3]]  # largest y, is bottom_right
+
+    # Of the remaining 2 points, pick the one with smaller x as bottom left,
+    # and the other as top right.
+    if points[y_sort[1]][0] < points[y_sort[2]][0]:
+        s_bl = points[y_sort[1]]
+        s_tr = points[y_sort[2]]
+    else:
+        s_tr = points[y_sort[1]]
+        s_bl = points[y_sort[2]]
+
+    return (s_tl, s_tr, s_br, s_bl)
+
+
 def rectify_by_rect_points(scanarium, image, points):
-    (s_tl, s_tr, s_br, s_bl) = sort_points_assume_xy_mostly_aligned(points)
+    M = None
+    for sort_function in [
+        sort_points_assume_xy_mostly_aligned,
+        sort_points_assume_roughly_45_degrees,
+            ]:
+        if M is None:
+            (s_tl, s_tr, s_br, s_bl) = sort_function(points)
 
-    source = np.array([s_tl, s_tr, s_br, s_bl], dtype="float32")
+            source = np.array([s_tl, s_tr, s_br, s_bl], dtype="float32")
 
-    d_w = int(max(distance(s_br, s_bl), distance(s_tr, s_tl))) - 1
-    d_h = int(max(distance(s_tr, s_br), distance(s_tl, s_bl))) - 1
+            # Computing minimal distances between points for sanity checking
+            min_dist = min([distance(source[i], source[j])
+                            for i in range(4) for j in range(i + 1, 4)])
+            if min_dist > min(image.shape[0], image.shape[1]) * 0.1:
+                # Points are sufficiently far apparent to be plausible
 
-    dest = np.array([[0, 0], [d_w, 0], [d_w, d_h], [0, d_h]], dtype="float32")
+                d_w = int(max(distance(s_br, s_bl), distance(s_tr, s_tl))) - 1
+                d_h = int(max(distance(s_tr, s_br), distance(s_tl, s_bl))) - 1
 
-    M = cv2.getPerspectiveTransform(source, dest)
+                dest = np.array([[0, 0], [d_w, 0], [d_w, d_h], [0, d_h]],
+                                dtype="float32")
+
+                M = cv2.getPerspectiveTransform(source, dest)
+
+    if M is None:
+        raise ScanariumError(
+            'SE_SCAN_NO_APPROX',
+            'Failed to find black bounding rectangle in image')
+
     image = cv2.warpPerspective(image, M, (d_w, d_h))
     scanarium.debug_show_image('Rectified image', image)
     return image

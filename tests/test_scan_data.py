@@ -112,24 +112,39 @@ class ScanDataCanaryTestCase(CanaryTestCase):
     def test_ok_png_native(self):
         self.template_test_file_type('png', pipeline='native')
 
+    def test_ok_png_10_native(self):
+        self.template_test_file_type('png', pipeline='native', variant='10')
+
     def test_ok_png_35_native(self):
-        self.template_test_file_type(
-            'png', pipeline='native', variant='35',
-            expected_dimension=[298, 205],
-            expected_markers=[
-                [2, 103, 5, 'red'],
-                [297, 3, 5, 'green'],
-                [297, 203, 5, 'blue'],
-                ])
+        self.template_test_file_type('png', pipeline='native', variant='35')
+
+    def test_ok_png_45_native(self):
+        self.template_test_file_type('png', pipeline='native', variant='45')
+
+    def test_ok_png_55_native(self):
+        self.template_test_file_type('png', pipeline='native', variant='55')
 
     def test_ok_png_90_native(self):
         self.template_test_file_type('png', pipeline='native', variant='90')
+
+    def test_ok_png_170_native(self):
+        self.template_test_file_type('png', pipeline='native', variant='170')
 
     def test_ok_png_180_native(self):
         self.template_test_file_type('png', pipeline='native', variant='180')
 
     def test_ok_png_270_native(self):
         self.template_test_file_type('png', pipeline='native', variant='270')
+
+    def test_ok_png_skew_native(self):
+        self.template_test_file_type(
+            'png', pipeline='native', variant='skew',
+            expected_dimension=[434, 298],
+            expected_markers=[
+                [4, 149, 5, 'red'],
+                [431, 3, 5, 'green'],
+                [431, 295, 5, 'blue'],
+                ])
 
     def test_ok_png_convert(self):
         self.template_test_file_type('png', pipeline='convert')
