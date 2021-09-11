@@ -62,10 +62,10 @@ class ScanDataCanaryTestCase(CanaryTestCase):
         command_log_file = os.path.join(dir, 'dynamic', 'command-log.json')
         self.assertFileContains(command_log_file, code)
 
-    def template_test_file_type(self, file_type='png', pipeline=None,
-                                variant='optimal', fixture=None,
-                                extra_fixture=None, config={},
-                                expected_dimension=None, expected_markers=None):
+    def template_test_file_type(
+            self, file_type='png', pipeline=None, variant='optimal',
+            fixture=None, extra_fixture=None, config={},
+            expected_dimension=None, expected_markers=None):
         if fixture is None:
             fixture = f'space-SimpleRocket-{variant}.{file_type}'
         test_config = self.update_dict({}, config)
@@ -88,13 +88,13 @@ class ScanDataCanaryTestCase(CanaryTestCase):
 
             if expected_markers is None:
                 if file_type == 'pdf':
-                    expected_markers=[
+                    expected_markers = [
                         [4, 185, 5, 'red'],
                         [536, 5, 5, 'green'],
                         [536, 365, 5, 'blue'],
                         ]
                 else:
-                    expected_markers=[
+                    expected_markers = [
                         [3, 155, 5, 'red'],
                         [451, 3, 5, 'green'],
                         [451, 308, 5, 'blue'],
