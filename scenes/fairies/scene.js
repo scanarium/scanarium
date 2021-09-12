@@ -210,18 +210,7 @@ class Creature extends Phaser.GameObjects.Container {
   }
 
   createTexturesForce(flavored_actor, bodySpec) {
-    const full_texture = game.textures.get(flavored_actor);
-    const full_texture_source_index = 0;
-    const full_source = full_texture.source[full_texture_source_index];
-    const full_width = full_source.width;
-    const full_height = full_source.height;
-
-    var body = game.make.renderTexture({
-      width: full_width,
-      height: full_height,
-    }, false);
-
-    body.draw(flavored_actor);
+    var body = renderTextureFromTexture(flavored_actor);
     body.saveTexture(flavored_actor + '-body');
   }
 
@@ -246,12 +235,7 @@ class BackFlapCreature extends Creature {
     const full_width = full_source.width;
     const full_height = full_source.height;
 
-    var wings = game.make.renderTexture({
-      width: full_width,
-      height: full_height,
-    }, false);
-
-    wings.draw(flavored_actor);
+    var wings = renderTextureFromTexture(flavored_actor);
 
     const bodyEraser = game.make.graphics();
     bodyEraser.fillStyle(0xffffff, 1);
@@ -268,12 +252,7 @@ class BackFlapCreature extends Creature {
     wings.erase(bodyEraser);
     wings.saveTexture(flavored_actor + '-wings');
 
-    var body = game.make.renderTexture({
-      width: full_width,
-      height: full_height,
-    }, false);
-
-    body.draw(flavored_actor);
+    var body = renderTextureFromTexture(flavored_actor);
 
     var eraser = game.make.renderTexture({
       width: full_width,
@@ -322,12 +301,7 @@ class WingWiggleCreature extends Creature {
     invertedExtractionMask.fill(0xffffff, 1);
     invertedExtractionMask.erase(extractionMask);
 
-    var extracted = game.make.renderTexture({
-      width: full_width,
-      height: full_height,
-    }, false);
-
-    extracted.draw(flavored_actor);
+    var extracted = renderTextureFromTexture(flavored_actor);
     extracted.erase(invertedExtractionMask);
 
     extracted.saveTexture(flavored_actor + '-' + name);
@@ -340,12 +314,7 @@ class WingWiggleCreature extends Creature {
     const full_width = full_source.width;
     const full_height = full_source.height;
 
-    var body = game.make.renderTexture({
-      width: full_width,
-      height: full_height,
-    }, false);
-
-    body.draw(flavored_actor);
+    var body = renderTextureFromTexture(flavored_actor);
 
     var that = this;
     bodySpec.wings.forEach((wing, i) => {

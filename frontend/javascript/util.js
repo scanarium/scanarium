@@ -58,3 +58,23 @@ function computedPxLength(element, property) {
   const lengthStr = window.getComputedStyle(element)[property];
   return parseFloat(lengthStr.substring(0, lengthStr.length - 2));
 }
+
+
+// Graphics related functions -------------------------------------------------
+
+
+function renderTextureFromTexture(textureName) {
+    const texture = game.textures.get(textureName);
+    const source_index = 0;
+    const source = texture.source[source_index];
+    const full_width = source.width;
+    const full_height = source.height;
+
+    var ret = game.make.renderTexture({
+      width: full_width,
+      height: full_height,
+    }, false);
+
+    ret.draw(textureName);
+    return ret;
+}
