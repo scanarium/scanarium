@@ -63,18 +63,63 @@ function computedPxLength(element, property) {
 // Graphics related functions -------------------------------------------------
 
 
-function renderTextureFromTexture(textureName) {
+function getTextureDimension(textureName) {
     const texture = game.textures.get(textureName);
     const source_index = 0;
     const source = texture.source[source_index];
     const full_width = source.width;
     const full_height = source.height;
 
+    return {
+        width: source.width,
+        height: source.height,
+    }
+}
+
+function createRenderTexture(dimension) {
     var ret = game.make.renderTexture({
-      width: full_width,
-      height: full_height,
+      width: dimension.width,
+      height: dimension.height,
     }, false);
 
-    ret.draw(textureName);
     return ret;
 }
+
+function createRenderTextureFromTexture(textureName) {
+    var dimension = getTextureDimension(textureName);
+    var ret = createRenderTexture(dimension);
+
+    ret.draw(textureName);
+
+    return ret;
+}
+
+function extractTexture(source, appendix, points, points_width, points_height, eraseFrom) {
+    const dimension = getTextureDimension(source);
+
+    const extractionMask = game.make.graphics();
+    extractionMask.fillStyle(0xffffff, 1);
+    extractionMask.beginPath();
+    const factorX = dimension.width / points_width;
+    const factorY = dimension.height / points_height;
+    extractionMask.moveTo(points[points.length-1][0] * factorX, points[points.length-1][1] * factorY);
+    points.forEach((point) => {
+        extractionMask.lineTo(point[0] * factorX, point[1] * factorY);
+    });
+    extractionMask.closePath();
+    extractionMask.fillPath();
+
+    if (eraseFrom) {
+        eraseFrom.erase(extractionMask);
+    }
+
+    var invertedExtractionMask = createRenderTexture(dimension);
+    invertedExtractionMask.fill(0xffffff, 1);
+    invertedExtractionMask.erase(extractionMask);
+
+    var extracted = createRenderTextureFromTexture(source);
+    extracted.erase(invertedExtractionMask);
+
+    extracted.saveTexture(source + '-' + appendix);
+}
+

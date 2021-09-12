@@ -210,7 +210,7 @@ class Creature extends Phaser.GameObjects.Container {
   }
 
   createTexturesForce(flavored_actor, bodySpec) {
-    var body = renderTextureFromTexture(flavored_actor);
+    var body = createRenderTextureFromTexture(flavored_actor);
     body.saveTexture(flavored_actor + '-body');
   }
 
@@ -235,7 +235,7 @@ class BackFlapCreature extends Creature {
     const full_width = full_source.width;
     const full_height = full_source.height;
 
-    var wings = renderTextureFromTexture(flavored_actor);
+    var wings = createRenderTextureFromTexture(flavored_actor);
 
     const bodyEraser = game.make.graphics();
     bodyEraser.fillStyle(0xffffff, 1);
@@ -252,7 +252,7 @@ class BackFlapCreature extends Creature {
     wings.erase(bodyEraser);
     wings.saveTexture(flavored_actor + '-wings');
 
-    var body = renderTextureFromTexture(flavored_actor);
+    var body = createRenderTextureFromTexture(flavored_actor);
 
     var eraser = game.make.renderTexture({
       width: full_width,
@@ -277,36 +277,6 @@ class WingWiggleCreature extends Creature {
     });
   }
 
-  extractTexture(flavored_actor, name, points, points_width, points_height, full_width, full_height, background) {
-    const extractionMask = game.make.graphics();
-    extractionMask.fillStyle(0xffffff, 1);
-    extractionMask.beginPath();
-    const factorX = full_width / points_width;
-    const factorY = full_height / points_height;
-    extractionMask.moveTo(points[points.length-1][0] * factorX, points[points.length-1][1] * factorY);
-    points.forEach((point) => {
-      extractionMask.lineTo(point[0] * factorX, point[1] * factorY);
-    });
-    extractionMask.closePath();
-    extractionMask.fillPath();
-
-    if (background) {
-      background.erase(extractionMask);
-    }
-
-    var invertedExtractionMask = game.make.renderTexture({
-      width: full_width,
-      height: full_height,
-    }, false);
-    invertedExtractionMask.fill(0xffffff, 1);
-    invertedExtractionMask.erase(extractionMask);
-
-    var extracted = renderTextureFromTexture(flavored_actor);
-    extracted.erase(invertedExtractionMask);
-
-    extracted.saveTexture(flavored_actor + '-' + name);
-  }
-
   createTexturesForce(flavored_actor, bodySpec) {
     const full_texture = game.textures.get(flavored_actor);
     const full_texture_source_index = 0;
@@ -314,14 +284,13 @@ class WingWiggleCreature extends Creature {
     const full_width = full_source.width;
     const full_height = full_source.height;
 
-    var body = renderTextureFromTexture(flavored_actor);
+    var body = createRenderTextureFromTexture(flavored_actor);
 
-    var that = this;
     bodySpec.wings.forEach((wing, i) => {
-        that.extractTexture(flavored_actor, 'wing-' + i, wing.points, bodySpec.width, bodySpec.height, full_width, full_height, body);
+        extractTexture(flavored_actor, 'wing-' + i, wing.points, bodySpec.width, bodySpec.height, body);
     });
 
-    that.extractTexture(flavored_actor, 'background', bodySpec.background_points, bodySpec.width, bodySpec.height, full_width, full_height, body);
+    extractTexture(flavored_actor, 'background', bodySpec.background_points, bodySpec.width, bodySpec.height, body);
 
     body.saveTexture(flavored_actor + '-body');
   }
