@@ -229,40 +229,11 @@ class BackFlapCreature extends Creature {
   }
 
   createTexturesForce(flavored_actor, bodySpec) {
-    const full_texture = game.textures.get(flavored_actor);
-    const full_texture_source_index = 0;
-    const full_source = full_texture.source[full_texture_source_index];
-    const full_width = full_source.width;
-    const full_height = full_source.height;
-
     var wings = createRenderTextureFromTexture(flavored_actor);
 
-    const bodyEraser = game.make.graphics();
-    bodyEraser.fillStyle(0xffffff, 1);
-    bodyEraser.beginPath();
-    const factorX = full_width / bodySpec.width;
-    const factorY = full_height / bodySpec.height;
-    const points = bodySpec.points;
-    bodyEraser.moveTo(points[points.length-1][0] * factorX, points[points.length-1][1] * factorY);
-    points.forEach((point) => {
-      bodyEraser.lineTo(point[0] * factorX, point[1] * factorY);
-    });
-    bodyEraser.closePath();
-    bodyEraser.fillPath();
-    wings.erase(bodyEraser);
+    extractTexture(flavored_actor, 'body', bodySpec.points, bodySpec.width, bodySpec.height, wings);
+
     wings.saveTexture(flavored_actor + '-wings');
-
-    var body = createRenderTextureFromTexture(flavored_actor);
-
-    var eraser = game.make.renderTexture({
-      width: full_width,
-      height: full_height,
-    }, false);
-    eraser.fill(0xffffff, 1);
-    eraser.erase(bodyEraser);
-
-    body.erase(eraser);
-    body.saveTexture(flavored_actor + '-body');
   }
 }
 
