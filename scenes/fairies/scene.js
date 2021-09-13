@@ -249,12 +249,6 @@ class WingWiggleCreature extends Creature {
   }
 
   createTexturesForce(flavored_actor, bodySpec) {
-    const full_texture = game.textures.get(flavored_actor);
-    const full_texture_source_index = 0;
-    const full_source = full_texture.source[full_texture_source_index];
-    const full_width = full_source.width;
-    const full_height = full_source.height;
-
     var body = createRenderTextureFromTexture(flavored_actor);
 
     bodySpec.wings.forEach((wing, i) => {
