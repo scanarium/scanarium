@@ -34,7 +34,7 @@ function getBorderPosition(defaultX, defaultY) {
   return [x, y];
 }
 
-class BackFlapWings extends Phaser.Physics.Arcade.Sprite {
+class Wing extends Phaser.Physics.Arcade.Sprite {
   constructor(x, y, image_name, body, minCycleLength, maxCycleLength) {
     super(game, x, y, image_name);
 
@@ -46,14 +46,35 @@ class BackFlapWings extends Phaser.Physics.Arcade.Sprite {
     this.fullWidth = body.width;
     this.fullHeight = body.height;
     this.setOrigin(body.originX, body.originY);
+    this.setSize(this.fullWidth, this.fullHeight);
+    this.setDisplaySize(this.fullWidth, this.fullHeight);
     this.cycleLength = randomBetween(minCycleLength, maxCycleLength);
     this.cycleOffset = randomBetween(0, this.cycleLength);
+    this.phase = 0;
+  }
+
+  update(time, delta) {
+    if (this.syncToWing) {
+      this.phase = this.syncToWing.phase;
+    } else {
+      this.phase = ((time + this.cycleOffset) % this.cycleLength) / this.cycleLength;
+    }
+  }
+}
+
+class BackFlapWings extends Wing {
+  constructor(x, y, image_name, body, minCycleLength, maxCycleLength) {
+    super(x, y, image_name, body, minCycleLength, maxCycleLength);
+
     this.angleFactor = 100 / 360 * 2 * Math.PI;
+
     this.update(0, 0);
   }
 
   update(time, delta) {
-    var phase = Math.abs(((time + this.cycleOffset) % this.cycleLength) / (this.cycleLength / 2) - 1);
+    super.update(time, delta);
+
+    const phase = Math.abs(2 * this.phase - 1);
 
     // Pushing up factor 0 up to 0.001, as width 0 makes the sprite vanish from
     // the scene, even for later frames with width > 0.
@@ -63,24 +84,16 @@ class BackFlapWings extends Phaser.Physics.Arcade.Sprite {
   }
 }
 
-class WiggleWing extends Phaser.Physics.Arcade.Sprite {
+class WiggleWing extends Wing {
   constructor(x, y, image_name, body, centerYPercent, minCycleLength, maxCycleLength, wing, points_width, points_height, syncToWing) {
-    super(game, x, y, image_name);
+    super(x, y, image_name, body, minCycleLength, maxCycleLength);
 
-    game.physics.world.enableBody(this);
-    game.sys.updateList.add(this);
-
-    this.x = body.x + ((wing.axis[0] + wing.shift[0])/points_width - 0.5) * body.width;
-    this.y = body.y + ((wing.axis[1] + wing.shift[1])/points_height - centerYPercent) * body.height;
-    this.fullWidth = body.width;
-    this.fullHeight = body.height;
+    this.x += ((wing.axis[0] + wing.shift[0])/points_width - 0.5) * body.width;
+    this.y += ((wing.axis[1] + wing.shift[1])/points_height - centerYPercent) * body.height;
     this.setOrigin(body.originX + (wing.axis[0]/points_width - 0.5), body.originY + (wing.axis[1]/points_height - centerYPercent));
-    this.cycleLength = randomBetween(minCycleLength, maxCycleLength);
-    this.cycleOffset = randomBetween(0, this.cycleLength);
+
     this.minAngle = wing.minAngle;
     this.angleWidth = wing.maxAngle - wing.minAngle;
-    this.setSize(this.fullWidth, this.fullHeight);
-    this.setDisplaySize(this.fullWidth, this.fullHeight);
 
     if (syncToWing) {
       this.syncToWing = syncToWing;
@@ -92,14 +105,10 @@ class WiggleWing extends Phaser.Physics.Arcade.Sprite {
   }
 
   update(time, delta) {
-    var phase = 0;
-    if (this.syncToWing) {
-      phase = this.syncToWing.phase;
-    } else {
-      phase = ((time + this.cycleOffset) % this.cycleLength) / this.cycleLength;
-    }
-    this.phase = phase;
-    phase = Math.abs(phase - 0.5) * 2;
+    super.update(time, delta);
+
+    const phase = Math.abs(2 * this.phase - 1);
+
     this.angle = phase * this.angleWidth + this.minAngle;
   }
 }
