@@ -90,7 +90,7 @@ class WiggleWing extends Wing {
 
     this.x += ((wing.axis[0] + wing.shift[0])/points_width - 0.5) * body.width;
     this.y += ((wing.axis[1] + wing.shift[1])/points_height - centerYPercent) * body.height;
-    this.setOrigin(body.originX + (wing.axis[0]/points_width - 0.5), body.originY + (wing.axis[1]/points_height - centerYPercent));
+    this.setOrigin(wing.axis[0]/points_width, wing.axis[1]/points_height);
 
     this.minAngle = wing.minAngle;
     this.angleWidth = wing.maxAngle - wing.minAngle;
