@@ -35,7 +35,7 @@ function getBorderPosition(defaultX, defaultY) {
 }
 
 class Wing extends Phaser.Physics.Arcade.Sprite {
-  constructor(x, y, image_name, body, minCycleLength, maxCycleLength) {
+  constructor(x, y, image_name, body, minCycleLength, maxCycleLength, syncToWing) {
     super(game, x, y, image_name);
 
     game.physics.world.enableBody(this);
@@ -50,6 +50,7 @@ class Wing extends Phaser.Physics.Arcade.Sprite {
     this.setDisplaySize(this.fullWidth, this.fullHeight);
     this.cycleLength = randomBetween(minCycleLength, maxCycleLength);
     this.cycleOffset = randomBetween(0, this.cycleLength);
+    this.syncToWing = syncToWing;
     this.phase = 0;
   }
 
@@ -64,7 +65,7 @@ class Wing extends Phaser.Physics.Arcade.Sprite {
 
 class BackFlapWings extends Wing {
   constructor(x, y, image_name, body, minCycleLength, maxCycleLength) {
-    super(x, y, image_name, body, minCycleLength, maxCycleLength);
+    super(x, y, image_name, body, minCycleLength, maxCycleLength, null);
 
     this.angleFactor = 100 / 360 * 2 * Math.PI;
 
@@ -86,7 +87,7 @@ class BackFlapWings extends Wing {
 
 class WiggleWing extends Wing {
   constructor(x, y, image_name, body, centerYPercent, minCycleLength, maxCycleLength, wing, points_width, points_height, syncToWing) {
-    super(x, y, image_name, body, minCycleLength, maxCycleLength);
+    super(x, y, image_name, body, minCycleLength, maxCycleLength, syncToWing);
 
     this.x += ((wing.axis[0] + wing.shift[0])/points_width - 0.5) * body.width;
     this.y += ((wing.axis[1] + wing.shift[1])/points_height - centerYPercent) * body.height;
@@ -94,12 +95,6 @@ class WiggleWing extends Wing {
 
     this.minAngle = wing.minAngle;
     this.angleWidth = wing.maxAngle - wing.minAngle;
-
-    if (syncToWing) {
-      this.syncToWing = syncToWing;
-      this.cycleLength = syncToWing.cycleLength;
-      this.cycleOffset = syncToWing.cycleOffset;
-    }
 
     this.update(0, 0);
   }
