@@ -15,6 +15,7 @@ import tempfile
 import traceback
 
 import cv2
+import numpy as np
 
 SCANARIUM_DIR_ABS = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, SCANARIUM_DIR_ABS)
@@ -236,6 +237,10 @@ class BasicTestCase(unittest.TestCase):
                                  allowed_deviation=0.25):
         pixel = image[y][x]
         expected = self.resolveColor(expected)
+
+        if isinstance(pixel, np.uint8):
+            # 8-bit grayscale data:
+            pixel = [pixel, pixel, pixel, 255]
 
         pixel_len = len(pixel)
         if pixel_len < 4 and expected[3] != 255:
