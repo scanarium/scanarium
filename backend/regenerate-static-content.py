@@ -365,7 +365,8 @@ def generate_pdf(scanarium, dir, file, force, metadata={}):
     for format in formats:
         target = os.path.join(
             dir, file.rsplit('.', 1)[0] + '.' + format)
-        target_tmp = target + '.tmp'
+        target_tmp = target + '.tmp.' + format  # Appending format to make sure
+        # `convert` and colleagues can figure out the expected file format
         if format in ['pdf', 'png']:
             source = svg_source
             if scanarium.file_needs_update(target, [source], force):
