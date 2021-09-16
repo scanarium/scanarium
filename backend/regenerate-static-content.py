@@ -374,8 +374,11 @@ def generate_pdf(scanarium, dir, file, force, metadata={}):
                     '--export-area-page',
                     f'--export-dpi={dpi}',
                     '--export-%s=%s' % (format, target_tmp),
-                    source,
                     ]
+                if format == 'png':
+                    inkscape_args.append('--export-background=white')
+
+                inkscape_args.append(source)
 
                 run_inkscape(scanarium, inkscape_args)
             if format == 'pdf':
