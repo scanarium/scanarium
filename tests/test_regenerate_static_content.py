@@ -42,3 +42,57 @@ class RegenerateStaticContentTestCase(CanaryTestCase):
         self.assertColor(image, 606, 313, 'black')
         self.assertColor(image, 644, 420, 'black')
         self.assertColor(image, 677, 309, 'black')
+
+    def test_generated_jpg(self):
+        scene = 'space'
+        actor = 'SimpleRocket'
+        name = 'Einfache-Rakete.jpg'
+
+        actor_dir = os.path.join('scenes', scene, 'actors', actor)
+        file = os.path.join(actor_dir, 'pdfs', 'de', name)
+        image = self.readImage(file)
+
+        self.assertColor(image, 13, 15, 'white')
+        self.assertColor(image, 95, 65, 'black')
+        self.assertColor(image, 540, 336, 'white')
+        self.assertColor(image, 1036, 616, 'white')
+
+    def test_generated_png(self):
+        scene = 'space'
+        actor = 'SimpleRocket'
+        name = 'Einfache-Rakete.png'
+
+        actor_dir = os.path.join('scenes', scene, 'actors', actor)
+        file = os.path.join(actor_dir, 'pdfs', 'de', name)
+        image = self.readImage(file)
+
+        self.assertColor(image, 13, 15, 'white')
+        self.assertColor(image, 95, 65, 'black')
+        self.assertColor(image, 540, 336, 'white')
+        self.assertColor(image, 1036, 616, 'white')
+
+    def test_generated_pdf(self):
+        scene = 'space'
+        actor = 'SimpleRocket'
+        name = 'Einfache-Rakete.pdf'
+
+        actor_dir = os.path.join('scenes', scene, 'actors', actor)
+        file = os.path.join(actor_dir, 'pdfs', 'de', name)
+
+        scanarium = self.new_Scanarium()
+        actual_format = scanarium.guess_image_format(file)
+        self.assertEqual(actual_format, 'pdf')
+
+    def test_generated_thumbnail(self):
+        scene = 'space'
+        actor = 'SimpleRocket'
+        name = 'Einfache-Rakete-thumb.jpg'
+
+        actor_dir = os.path.join('scenes', scene, 'actors', actor)
+        file = os.path.join(actor_dir, 'pdfs', 'de', name)
+        image = self.readImage(file)
+
+        self.assertColor(image, 3, 33, 'white')
+        self.assertColorApproximately(image, 7, 33, 'black')
+        self.assertColor(image, 16, 33, 'white')
+        self.assertColor(image, 82, 50, 'white')
