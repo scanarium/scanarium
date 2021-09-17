@@ -143,12 +143,13 @@ class BasicTestCase(unittest.TestCase):
 
         return ctx
 
-    def new_Scanarium(self, dir):
-        sys.argv = [
-            '',
-            '--debug-config-override',
-            os.path.join(dir, 'override.conf'),
-            ]
+    def new_Scanarium(self, dir=None):
+        if dir is not None:
+            sys.argv = [
+                '',
+                '--debug-config-override',
+                os.path.join(dir, 'override.conf'),
+                ]
         return Scanarium()
 
     def flatten(self, x):
@@ -260,6 +261,10 @@ class BasicTestCase(unittest.TestCase):
             image, x, y, expected, allowed_deviation=0)
 
     def readImage(self, file):
+        expected_format = file.rsplit('.', 1)[1]
+        scanarium = self.new_Scanarium()
+        actual_format = scanarium.guess_image_format(file)
+        self.assertEqual(actual_format, expected_format)
         return cv2.imread(file, cv2.IMREAD_UNCHANGED)
 
 
