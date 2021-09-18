@@ -562,6 +562,10 @@ permit_file_type_heic = False
 [mask]
 
 
+# The dots-per-inch to export masks with.
+dpi = 96
+
+
 # Value to add to stroke-width of Mask layer's elements, when generating masks
 #
 # Increasing this value cuts off from the outside of the image. This helps with

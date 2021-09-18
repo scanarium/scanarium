@@ -227,6 +227,7 @@ def regenerate_mask(scanarium, dir, scene, name, decoration_version, force):
         generate_adapted_mask_source(scanarium, tree, adapted_source)
 
     if scanarium.file_needs_update(target, [adapted_source], force):
+        dpi = scanarium.get_config('mask', 'dpi', kind='int')
         contour_area = get_svg_export_area_param_contour_inner(
             scanarium, adapted_source)
         inkscape_args = [
@@ -234,6 +235,7 @@ def regenerate_mask(scanarium, dir, scene, name, decoration_version, force):
             '--export-id-only',
             f'--export-area={contour_area}',
             '--export-background=black',
+            f'--export-dpi={dpi}',
             '--export-png=%s' % (target),
             adapted_source,
         ]
