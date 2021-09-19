@@ -205,17 +205,12 @@ def generate_adapted_mask_source(scanarium, tree, target):
     tree.write(target)
 
 
-def get_mask_name(dir, file, suffix='png'):
-    basename = os.path.basename(file).rsplit('.', 1)[0]
-    return os.path.join(dir, f'{basename}-mask-d-1.{suffix}')
-
-
 def regenerate_mask(scanarium, dir, scene, name, decoration_version, force):
     (tree, sources) = generate_full_svg_tree(
         scanarium, dir, name, decoration_version)
 
-    adapted_source = get_mask_name(dir, name, 'svg')
-    target = get_mask_name(dir, name)
+    target = os.path.join(dir, f'{name}-mask-d-{decoration_version}.png')
+    adapted_source = target[:-4] + '.svg'
 
     if scanarium.file_needs_update(adapted_source, sources, force):
         variant = ''
