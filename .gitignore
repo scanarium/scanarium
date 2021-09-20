@@ -15,7 +15,9 @@ __pycache__
 /images/book.png
 /scenes/*/actors/*/*.svg
 !/scenes/*/actors/*/*-undecorated-d-[1-9].svg
-/scenes/*/actors/*/*-mask-d-[1-9].png
+/scenes/*/actors/*/*-mask-effective-*.json
+/scenes/*/actors/*/*-mask-effective-*.png
+/scenes/*/actors/*/*-mask-unadapted-*.png
 /scenes/*/actors/*/*-thumb.jpg
 /scenes/*/actors/*/*.pdf
 /scenes/*/actors/*/pdfs

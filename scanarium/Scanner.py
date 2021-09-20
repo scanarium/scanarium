@@ -145,18 +145,18 @@ def mask(scanarium, image, qr_parsed, visualized_alpha=None):
         decoration_version = int(qr_parsed.get('d', 1))
     except Exception:
         raise create_error_unknown_qr()
-    masked_file_path = scanarium.get_versioned_filename(
-        actor_dir, f'{actor}-mask', 'png', decoration_version)
-    if not os.path.isfile(masked_file_path):
+    mask_png_file_path = scanarium.get_versioned_filename(
+        actor_dir, f'{actor}-mask-effective', 'png', decoration_version)
+    if not os.path.isfile(mask_png_file_path):
         if scanarium.get_config('debug', 'fine_grained_errors',
                                 kind='boolean'):
-            raise ScanariumError('SE_SCAN_NO_MASK',
-                                 'Failed to find mask {file_name}',
-                                 {'file_name': masked_file_path})
+            raise ScanariumError('SE_SCAN_NO_MASK_PNG',
+                                 'Failed to find mask png {file_name}',
+                                 {'file_name': mask_png_file_path})
         else:
             raise create_error_unknown_qr()
 
-    mask = cv2.imread(masked_file_path, 0)
+    mask = cv2.imread(mask_png_file_path, 0)
 
     image = align_aspect_ratio(scanarium, image, mask)
 
@@ -170,18 +170,32 @@ def mask(scanarium, image, qr_parsed, visualized_alpha=None):
 
     channels.append(mask)
     masked = cv2.merge(channels)
-    return masked
+
+    return (masked, mask_png_file_path)
 
 
-def crop(image):
-    # todo: make up for mask.stroke_offset / mask.stroke_color
-    y, x = image[:, :, 3].nonzero()
-    x_min = np.min(x)
-    x_max = np.max(x)
-    y_min = np.min(y)
-    y_max = np.max(y)
+def crop(scanarium, image, mask_png_file_path):
+    mask_json_file_path = mask_png_file_path.split('.', 1)[0] + '.json'
+    try:
+        with open(mask_json_file_path, 'r') as file:
+            data = json.load(file)
+    except Exception:
+        if scanarium.get_config('debug', 'fine_grained_errors',
+                                kind='boolean'):
+            raise ScanariumError('SE_SCAN_NO_MASK_JSON',
+                                 'Failed to read mask json {file_name}',
+                                 {'file_name': mask_json_file_path})
+        else:
+            raise create_error_unknown_qr()
 
-    cropped = image[y_min:y_max, x_min:x_max]
+    factor_x = image.shape[1] / data["width"]
+    factor_y = image.shape[0] / data["height"]
+    x_min = round(data["x_min"] * factor_x)
+    x_max_inc = round(data["x_max_inc"] * factor_x)
+    y_min = round(data["y_min"] * factor_y)
+    y_max_inc = round(data["y_max_inc"] * factor_y)
+
+    cropped = image[y_min:y_max_inc, x_min:x_max_inc]
 
     return cropped
 
@@ -258,9 +272,9 @@ def actor_image_pipeline(scanarium, image, qr_rect, qr_parsed,
                          visualized_alpha=None):
     image = rectify_to_qr_parent_rect(scanarium, image, qr_rect)
     image = orient_image(scanarium, image)
-    image = mask(scanarium, image, qr_parsed,
-                 visualized_alpha=visualized_alpha)
-    image = crop(image)
+    (image, mask_file) = mask(scanarium, image, qr_parsed,
+                              visualized_alpha=visualized_alpha)
+    image = crop(scanarium, image, mask_file)
     image = balance(scanarium, image)
 
     # Finally the image is rectified, landscape, and the QR code is in the

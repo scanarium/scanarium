@@ -141,7 +141,7 @@ class ScanDataCanaryTestCase(CanaryTestCase):
             'png', pipeline='native', variant='skew',
             expected_dimension=[434, 298],
             expected_markers=[
-                [4, 149, 5, 'red'],
+                [3, 149, 5, 'red'],
                 [431, 3, 5, 'green'],
                 [431, 295, 5, 'blue'],
                 ])

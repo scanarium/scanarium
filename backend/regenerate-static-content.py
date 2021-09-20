@@ -14,6 +14,9 @@ import sys
 import xml.etree.ElementTree as ET
 import qrcode
 
+import cv2
+import numpy as np
+
 SCANARIUM_DIR_ABS = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, SCANARIUM_DIR_ABS)
 from scanarium import Scanarium, ScanariumError
@@ -175,8 +178,10 @@ def get_svg_export_area_param_contour_inner(scanarium, svg_path):
     ))
 
 
-def generate_adapted_mask_source(scanarium, tree, target):
-    offset = scanarium.get_config('mask', 'stroke_offset', 'float')
+def generate_adapted_mask_source(scanarium, tree, target, adapt_stroke_width):
+    offset = 0
+    if adapt_stroke_width:
+        offset = scanarium.get_config('mask', 'stroke_offset', 'float')
     color = scanarium.get_config('mask', 'stroke_color', allow_empty=True)
 
     def adapt_style_element(style_element):
@@ -205,11 +210,14 @@ def generate_adapted_mask_source(scanarium, tree, target):
     tree.write(target)
 
 
-def regenerate_mask(scanarium, dir, scene, name, decoration_version, force):
+def regenerate_mask_variant(
+        scanarium, dir, scene, name, decoration_version, force,
+        variant_name='', adapt_stroke_width=True):
     (tree, sources) = generate_full_svg_tree(
         scanarium, dir, name, decoration_version)
 
-    target = os.path.join(dir, f'{name}-mask-d-{decoration_version}.png')
+    target = scanarium.get_versioned_filename(
+        dir, f'{name}-mask-{variant_name}', 'png', decoration_version)
     adapted_source = target[:-4] + '.svg'
 
     if scanarium.file_needs_update(adapted_source, sources, force):
@@ -219,7 +227,8 @@ def regenerate_mask(scanarium, dir, scene, name, decoration_version, force):
         filter_svg_tree(scanarium, tree, scene, name, variant,
                         localizer, COMMAND_LABEL_SCENE, PARAMETER_LABEL_ACTOR,
                         decoration_version, '../..')
-        generate_adapted_mask_source(scanarium, tree, adapted_source)
+        generate_adapted_mask_source(scanarium, tree, adapted_source,
+                                     adapt_stroke_width)
 
     if scanarium.file_needs_update(target, [adapted_source], force):
         dpi = scanarium.get_config('mask', 'dpi', kind='int')
@@ -235,6 +244,36 @@ def regenerate_mask(scanarium, dir, scene, name, decoration_version, force):
             adapted_source,
         ]
         run_inkscape(scanarium, inkscape_args)
+    return target
+
+
+def crop(file):
+    image = cv2.imread(file, 0)
+    y, x = image.nonzero()
+
+    return {
+        "x_min": int(np.min(x)),
+        "x_max_inc": int(np.max(x)) + 1,
+        "y_min": int(np.min(y)),
+        "y_max_inc": int(np.max(y)) + 1,
+        "width": image.shape[1],
+        "height": image.shape[0],
+        }
+
+
+def regenerate_mask(scanarium, dir, scene, name, decoration_version, force):
+    unadapted_mask_png = regenerate_mask_variant(
+        scanarium, dir, scene, name, decoration_version, force,
+        variant_name='unadapted', adapt_stroke_width=False)
+
+    effective_mask_png = regenerate_mask_variant(
+        scanarium, dir, scene, name, decoration_version, force,
+        variant_name='effective', adapt_stroke_width=True)
+
+    effective_mask_json = effective_mask_png.rsplit('.', 1)[0] + '.json'
+    if scanarium.file_needs_update(
+            effective_mask_json, [unadapted_mask_png], force):
+        scanarium.dump_json(effective_mask_json, crop(unadapted_mask_png))
 
 
 def embed_metadata(scanarium, file, metadata):

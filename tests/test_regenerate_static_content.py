@@ -17,7 +17,7 @@ class RegenerateStaticContentTestCase(CanaryTestCase):
         actor = 'RoundBug'
         self.run_scan_data([scene, actor])
         mask_file = os.path.join('scenes', scene, 'actors', actor,
-                                 actor + '-mask-d-1.png')
+                                 actor + '-mask-effective-d-1.png')
         image = self.readImage(mask_file)
         self.assertColor(image, 352, 348, 'white')
         self.assertColor(image, 820, 334, 'white')
@@ -33,7 +33,7 @@ class RegenerateStaticContentTestCase(CanaryTestCase):
         actor = 'Star'
         self.run_scan_data([scene, actor])
         mask_file = os.path.join('scenes', scene, 'actors', actor,
-                                 actor + '-mask-d-1.png')
+                                 actor + '-mask-effective-d-1.png')
         image = self.readImage(mask_file)
         self.assertColor(image, 645, 355, 'white')
         self.assertColor(image, 641, 258, 'white')
@@ -42,6 +42,24 @@ class RegenerateStaticContentTestCase(CanaryTestCase):
         self.assertColor(image, 606, 313, 'black')
         self.assertColor(image, 644, 420, 'black')
         self.assertColor(image, 677, 309, 'black')
+
+    def test_mask_json_version_1(self):
+        scene = 'fairies'
+        actor = 'RoundBug'
+        self.run_scan_data([scene, actor])
+        mask_file = os.path.join('scenes', scene, 'actors', actor,
+                                 actor + '-mask-effective-d-1.json')
+
+        expected = {
+            "height": 703,
+            "width": 994,
+            "x_max_inc": 827,
+            "x_min": 341,
+            "y_max_inc": 556,
+            "y_min": 221,
+            }
+
+        self.assertFileJsonContents(mask_file, expected)
 
     def test_generated_jpg(self):
         scene = 'space'
