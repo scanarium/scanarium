@@ -7,6 +7,8 @@ source "$(dirname "$0")/common.inc"
 
 ERRORS=0
 
+DECORATION_VERSION="$(ls -1 conf/decoration-d-*.svg | sed -e 's@^.*/decoration-d-0*\([1-9][0-9]*\)\.svg@\1@' | sort -n | tail -n 1)"
+
 error() {
     echo "ERROR:" "$@" >&2
     ERRORS=$((ERRORS+1))
@@ -25,7 +27,12 @@ list_qr_codes() {
         commands/* scenes/*/actors \
         -mindepth 1 -maxdepth 1 \
         ! -name 'extra-decoration-*.svg' \
-        | sed -e 's@^\(commands\|scenes\)/@@' -e 's@actors/@@' -e 's@/@:@'
+        | sed \
+          -e 's@^\(commands\|scenes\)/@@' \
+          -e 's@actors/@@' \
+          -e 's@/@:@' \
+          -e 's@$@:d_'"${DECORATION_VERSION}"'@' \
+
 }
 
 assert_all_qr_codes_are_mapped() {
