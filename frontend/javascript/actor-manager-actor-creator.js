@@ -15,7 +15,7 @@ class ActorManagerActorCreator {
         this.registeredActors[clazz.name] = clazz;
     }
 
-    addActorIfFullyLoaded(actor, flavor, onCreated) {
+    createAndAddActorIfFullyLoaded(actor, flavor, onCreated) {
         if (!(actor in this.registeredActors)) {
             // JavaScript for actor not yet fully loaded.
             return;
@@ -25,11 +25,13 @@ class ActorManagerActorCreator {
             return;
         }
 
-        // Everything's fully loaded, so we're creating and adding the actor
-        this.addFullyLoadedActor(actor, flavor, onCreated);
+        // Everything's fully loaded, so we're creating ...
+        var actor = this.createFullyLoadedActor(actor, flavor, onCreated);
+        // ... and adding the actor
+        this.addActor(actor);
     }
 
-    addFullyLoadedActor(actor, flavor, onCreated) {
+    createFullyLoadedActor(actor, flavor, onCreated) {
         var x = scanariumConfig.width * (Math.random() * 0.6 + 0.2);
         var y = scanariumConfig.height * (Math.random() * 0.6 + 0.2);
 
@@ -43,6 +45,10 @@ class ActorManagerActorCreator {
         if (onCreated) {
             onCreated(actor);
         }
+        return actor;
+    }
+
+    addActor(actor) {
         game.add.existing(actor);
         this.statsTracker.trackCreation();
         this.actorManager.actors.push(actor);
@@ -100,7 +106,9 @@ class ActorManagerActorCreator {
         return this.getNextFlavoredActorNameFromConfig(config, forceUntried);
     }
 
-    addActor(actor_name, flavor, onCreated) {
+    // If actor_name is falsy, it's actor_name and flavor get chosen
+    // automatically.
+    loadCreateAndAddActor(actor_name, flavor, onCreated) {
         if (!actor_name) {
             var actor_spec = this.getNextFlavoredActorName();
             if (actor_spec === null) {
@@ -131,17 +139,17 @@ class ActorManagerActorCreator {
                     game.events.off('filecomplete', onLoaded);
                 }
 
-                that.addActorIfFullyLoaded(actor_name, flavor, onCreated);
+                that.createAndAddActorIfFullyLoaded(actor_name, flavor, onCreated);
             }
         };
 
         if (actor_name in this.registeredActors) {
-            this.addActorIfFullyLoaded(actor_name, flavor, onCreated);
+            this.createAndAddActorIfFullyLoaded(actor_name, flavor, onCreated);
         } else {
             var actor_url = scene_dir + '/actors/' + actor_name;
             var actor_js_url = actor_url + '/' + actor_name + '.js';
             loadJs(actor_js_url, () => {
-                this.addActorIfFullyLoaded(actor_name, flavor, onCreated);
+                this.createAndAddActorIfFullyLoaded(actor_name, flavor, onCreated);
             });
         }
 

@@ -15,7 +15,7 @@ function scene_preload() {
 
 function spawnCloud(onCreated) {
     var flavor = tunnel(Math.floor(Math.random()*3) + 1, 1, 3)
-    actorManager.addActor('Cloud', flavor, onCreated);
+    actorManager.loadCreateAndAddActor('Cloud', flavor, onCreated);
 }
 
 function spawnClouds(immediate = false) {

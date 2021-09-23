@@ -29,7 +29,7 @@ class ActorManager {
             // Add new actors only, if the tab is visible.
             // Otherwise, background tabs amass actors.
             if (document.visibilityState === 'visible') {
-                this.addActor();
+                this.loadCreateAndAddActor();
             }
             this.nextSpawn = time + getConfig('spawnPeriod');
         }
@@ -52,8 +52,8 @@ class ActorManager {
       return ret;
     }
 
-    addActor(actor_name, flavor, onCreated) {
-        this.actorCreator.addActor(actor_name, flavor, onCreated);
+    loadCreateAndAddActor(actor_name, flavor, onCreated) {
+        this.actorCreator.loadCreateAndAddActor(actor_name, flavor, onCreated);
     }
 
     deleteActor(actor) {
