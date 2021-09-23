@@ -15,7 +15,7 @@ class ActorManagerActorCreator {
         this.registeredActors[clazz.name] = clazz;
     }
 
-    createAndAddActorIfFullyLoaded(actor, flavor, onCreated) {
+    createAndAddActorIfFullyLoaded(actor, flavor, parameters) {
         if (!(actor in this.registeredActors)) {
             // JavaScript for actor not yet fully loaded.
             return;
@@ -26,12 +26,12 @@ class ActorManagerActorCreator {
         }
 
         // Everything's fully loaded, so we're creating ...
-        var actor = this.createFullyLoadedActor(actor, flavor, onCreated);
+        var actor = this.createFullyLoadedActor(actor, flavor, parameters);
         // ... and adding the actor
         this.addActor(actor);
     }
 
-    createFullyLoadedActor(actor, flavor, onCreated) {
+    createFullyLoadedActor(actor, flavor, parameters) {
         var x = scanariumConfig.width * (Math.random() * 0.6 + 0.2);
         var y = scanariumConfig.height * (Math.random() * 0.6 + 0.2);
 
@@ -42,8 +42,8 @@ class ActorManagerActorCreator {
         }
         actor.actorName = actorName;
         actor.actorFlavor = flavor;
-        if (onCreated) {
-            onCreated(actor);
+        if (parameters && parameters.onCreated) {
+            parameters.onCreated(actor);
         }
         return actor;
     }

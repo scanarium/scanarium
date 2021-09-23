@@ -52,8 +52,8 @@ class ActorManager {
       return ret;
     }
 
-    loadCreateAndAddActor(actor_name, flavor, onCreated) {
-        this.actorCreator.loadCreateAndAddActor(actor_name, flavor, onCreated);
+    loadCreateAndAddActor(actor_name, flavor, parameters) {
+        this.actorCreator.loadCreateAndAddActor(actor_name, flavor, parameters);
     }
 
     deleteActor(actor) {
