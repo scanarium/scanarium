@@ -59,6 +59,10 @@ function computedPxLength(element, property) {
   return parseFloat(lengthStr.substring(0, lengthStr.length - 2));
 }
 
+function mergeIntoObject(target, src) {
+    Object.keys(src).forEach(key => target[key] = src[key]);
+    return target;
+}
 
 // Graphics related functions -------------------------------------------------
 

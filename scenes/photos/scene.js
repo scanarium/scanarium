@@ -23,21 +23,22 @@ var BLOCK_Y_START=0;
 var BLOCK_Y_END=0;
 
 class Photo extends Phaser.GameObjects.Container {
-    /* flavor - actor's flavor
+    /* parameters has the following key/values:
+       flavor - actor's flavor
        x - desired initial x position
        y - desired initial y position
        widthMm - The actor's reference width in mm
     */
-    constructor(flavor, x, y, widthMm) {
-        super(game, x, y);
+    constructor(parameters) {
+        super(game, parameters.x, parameters.y);
 
         const actor = this.constructor.name;
-        const texture_name = actor + '-' + flavor;
+        const texture_name = actor + '-' + parameters.flavor;
 
         var photo = game.add.image(0, 0, texture_name);
         const photo_unscaled_width = photo.width;
         const photo_unscaled_height = photo.height;
-        const width = widthMm * 1.8 * refToScreen;
+        const width = parameters.widthMm * 1.8 * refToScreen;
         const height = photo_unscaled_height / photo_unscaled_width * width;
 
         photo.setOrigin(0.5, 0.5);
@@ -47,7 +48,7 @@ class Photo extends Phaser.GameObjects.Container {
         this.photo = photo;
         this.add(photo);
 
-        this.addStrips(widthMm < 60);
+        this.addStrips(parameters.widthMm < 60);
 
         this.setPosition(scanariumConfig.width + width / 2 * 1.2, this.computeY(height));
         this.depth = -this.y;

@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 class Parrot extends Bird {
-    constructor(x, y, flavor) {
-        const body = {
+    constructor(parameters) {
+        const bodySpec = {
             wing: {
                 shape: [
                     [100, 300],
@@ -38,7 +38,14 @@ class Parrot extends Bird {
             width: 1000,
             height: 688,
         };
-        super(flavor, 200, x, y, body, 0.4, 1, 550);
+        mergeIntoObject(parameters, {
+            width: 200,
+            bodySpec: bodySpec,
+            minScale: 0.4,
+            maxScale: 1,
+            startSpeed: 550,
+        });
+        super(parameters);
     }
 }
 

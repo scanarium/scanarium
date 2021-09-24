@@ -3,11 +3,13 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 class SimpleRocket extends SpaceshipBase {
-    constructor(x, y, flavor) {
-        var lengthMin = 50;
-        var lengthMax = 350;
-
-        super(flavor, x, y, 180, lengthMin, lengthMax);
+    constructor(parameters) {
+        mergeIntoObject(parameters, {
+            angle: 180,
+            widthMin: 50,
+            widthMax: 350,
+        });
+        super(parameters);
 
         var thrustScale = scaleBetween(0.08, 0.7, this.base_scale);
 

@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 class Tit extends Bird {
-    constructor(x, y, flavor) {
-        const body = {
+    constructor(parameters) {
+        const bodySpec = {
             wing: {
                 shape: [
                     [0, 300],
@@ -31,7 +31,14 @@ class Tit extends Bird {
             width: 690,
             height: 582,
         };
-        super(flavor, 100, x, y, body, 0.4, 1, 550);
+        mergeIntoObject(parameters, {
+            width: 100,
+            bodySpec: bodySpec,
+            minScale: 0.4,
+            maxScale: 1,
+            startSpeed: 550,
+        });
+        super(parameters);
     }
 }
 

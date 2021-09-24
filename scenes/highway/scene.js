@@ -77,7 +77,7 @@ class Vehicle extends Phaser.GameObjects.Container {
      *   scale_extra_y: A scale factor to apply to the flare in y direction (on
      *     top of `scale`).
      */
-    constructor(flavor, x, y, initialMinSpeed, initialMaxSpeed, widthRef, tires, undercarriage, angularShake, yShake, decal, beacon) {
+    constructor(parameters) {
         var lane = lanes[tunnel(Math.floor(Math.random()*lanes.length), 0, lanes.length-1)];
         var x = lane.leftToRight ? 0 : scanariumConfig.width;
 
@@ -85,13 +85,13 @@ class Vehicle extends Phaser.GameObjects.Container {
 
         this.setDepth(lane.scale*100);
         const actor = this.constructor.name;
-        var image_name = actor + '-' + flavor;
-        this.createTextures(image_name, tires, undercarriage, decal, beacon);
+        var image_name = actor + '-' + parameters.flavor;
+        this.createTextures(image_name, parameters.tires, parameters.undercarriage, parameters.decal, parameters.beacon);
         var body = game.add.image(0, 0, image_name + '-body');
         const body_unscaled_width = body.width;
         const body_unscaled_height = body.height;
 
-        var width = widthRef * lane.scale * refToScreen;
+        var width = parameters.widthRef * lane.scale * refToScreen;
         var base_scale = width / body.width;
         var height = body.height * base_scale;
         body.setFlipX(lane.leftToRight);
@@ -102,18 +102,18 @@ class Vehicle extends Phaser.GameObjects.Container {
         this.add([body]);
         this.vehicle_body = body;
         this.tires = [];
-        this.angularShake = angularShake;
-        this.yShake = yShake * lane.scale * refToScreen;
+        this.angularShake = parameters.angularShake;
+        this.yShake = parameters.yShake * lane.scale * refToScreen;
 
         game.physics.world.enable(this);
 
-        if (decal && lane.leftToRight) {
+        if (parameters.decal && lane.leftToRight) {
             const decal_sprite = game.add.image(0, 0, image_name + '-decal');
             const decal_width = decal_sprite.width / body_unscaled_width * width;
             const decal_height = decal_sprite.height / body_unscaled_height * height;
             decal_sprite.setOrigin(
-                decal.x1 / decal.w * width / decal_width + 1,
-                decal.y1 / decal.h * height / decal_height,
+                parameters.decal.x1 / parameters.decal.w * width / decal_width + 1,
+                parameters.decal.y1 / parameters.decal.h * height / decal_height,
             );
             decal_sprite.setSize(decal_width, decal_height);
             decal_sprite.setDisplaySize(decal_width, decal_height);
@@ -122,7 +122,7 @@ class Vehicle extends Phaser.GameObjects.Container {
         }
 
         var that = this;
-        tires.forEach((tire, i) => {
+        parameters.tires.forEach((tire, i) => {
           const coords = this.getTireTextureCoordinates(tire, body_unscaled_width, body_unscaled_height);
           const cx = coords.cx * base_scale * (lane.leftToRight ? -1 : 1);
           const cy = coords.cy * base_scale - body.height;
@@ -140,6 +140,7 @@ class Vehicle extends Phaser.GameObjects.Container {
         lane.vehicles.push(this);
 
         var beaconSpeedFactor = 1;
+        var beacon = parameters.beacon;
         if (beacon && Math.random() <= beacon.chance) {
             const beacon_width = (beacon.x2 - beacon.x1) / beacon.w * width;
             const flare = game.add.image(0, 0, 'flare');
@@ -161,7 +162,7 @@ class Vehicle extends Phaser.GameObjects.Container {
         }
 
         // Setting velocity
-        this.desired_velocity = randomBetween(initialMinSpeed, initialMaxSpeed) * lane.scale * (lane.leftToRight ? 1 : -1) * refToScreen * beaconSpeedFactor;
+        this.desired_velocity = randomBetween(parameters.initialMinSpeed, parameters.initialMaxSpeed) * lane.scale * (lane.leftToRight ? 1 : -1) * refToScreen * beaconSpeedFactor;
         this.updateVelocity(this.desired_velocity);
 
         this.yRef = randomBetween(lane.yMinRef, lane.yMaxRef);

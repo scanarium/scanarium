@@ -32,11 +32,14 @@ class ActorManagerActorCreator {
     }
 
     createFullyLoadedActor(actor, flavor, parameters) {
-        var x = scanariumConfig.width * (Math.random() * 0.6 + 0.2);
-        var y = scanariumConfig.height * (Math.random() * 0.6 + 0.2);
-
         var actorName = actor;
-        var actor = new this.registeredActors[actor](x, y, flavor);
+        if (!parameters || (typeof parameters) != 'object') {
+            parameters = {}
+        }
+        parameters.x = scanariumConfig.width * (Math.random() * 0.6 + 0.2);
+        parameters.y = scanariumConfig.height * (Math.random() * 0.6 + 0.2);
+        parameters.flavor = flavor;
+        var actor = new this.registeredActors[actor](parameters);
         if (typeof actor.destroyOffset == 'undefined') {
             actor.destroyOffset = Math.sqrt(actor.displayWidth * actor.displayWidth + actor.displayHeight * actor.displayHeight);
         }

@@ -58,19 +58,19 @@ function depthCorrectionFactor(depth) {
 }
 
 class WindAffectedSprite extends Phaser.Physics.Arcade.Sprite {
-    constructor(x, y, flavor, width, minScale, maxScale) {
+    constructor(parameters) {
         super(game);
         const actor = this.constructor.name;
-        this.flavored_actor = actor + '-' + flavor
+        this.flavored_actor = actor + '-' + parameters.flavor;
         this.setTexture(this.flavored_actor, '__BASE');
-        this.setPosition(x, y);
+        this.setPosition(parameters.x, parameters.y);
         game.physics.world.enable(this);
         this.depth = Math.random();
-        var scale = scaleBetween(minScale, maxScale, this.depth) * refToScreen;
-        var height = this.height / this.width * width * scale;
-        var width = width * scale;
+        var scale = scaleBetween(parameters.minScale, parameters.maxScale, this.depth) * refToScreen;
+        var height = this.height / this.width * parameters.width * scale;
+        var width = parameters.width * scale;
         this.setDisplaySize(width, height);
-        // Setting collission size to half width, so we only collid if we're
+        // Setting collision size to half width, so we only collide if we're
         // already a bit into the balloon.
         this.setSize(this.width / 2, this.height);
         this.setFlipX(Math.random() > 0.5);
@@ -84,8 +84,13 @@ class WindAffectedSprite extends Phaser.Physics.Arcade.Sprite {
 }
 
 class Cloud extends WindAffectedSprite {
-    constructor(x, y, flavor) {
-        super(x, y, flavor, 400, 0.2, 0.8);
+    constructor(parameters) {
+        mergeIntoObject(parameters, {
+            width: 400,
+            minScale: 0.2,
+            maxScale: 0.8,
+        });
+        super(parameters);
         this.y = Math.random() * scanariumConfig.height;
         this.x = Math.random() * scanariumConfig.width/2;
         var force = Wind.getForce(this.y);
@@ -154,9 +159,13 @@ class Shred extends Phaser.Physics.Arcade.Sprite {
 }
 
 class BaseBalloon extends WindAffectedSprite {
-    constructor(flavor, width, x, y, spec) {
-        super(x, y, flavor, width, 0.4, 1);
-        this.spec = spec;
+    constructor(parameters) {
+        mergeIntoObject(parameters, {
+            minScale: 0.4,
+            maxScale: 1,
+        });
+        super(parameters);
+        this.spec = parameters.spec;
         this.y = scanariumConfig.height + this.displayHeight/2;
         this.setVelocityY(-20 * depthCorrectionFactor(this.depth) * refToScreen);
         groupBalloons.add(this);
@@ -427,23 +436,23 @@ class Beak extends Phaser.GameObjects.Rectangle {
 }
 
 class Bird extends Phaser.GameObjects.Container {
-  constructor(flavor, width, x, y, bodySpec, minScale, maxScale, startSpeed) {
+  constructor(parameters) {
     super(game);
 
     const actor = this.constructor.name;
-    var flavored_actor = actor + '-' + flavor;
-    this.createTextures(flavored_actor, bodySpec);
+    var flavored_actor = actor + '-' + parameters.flavor;
+    this.createTextures(flavored_actor, parameters.bodySpec);
     this.depth = Math.random();
     this.flipped = Math.random() > 0.5;
     this.flippedFactor = this.flipped ? -1 : 1;
-    this.rotationFactor = bodySpec.rotationFactor || 1;
+    this.rotationFactor = parameters.bodySpec.rotationFactor || 1;
 
     var body = game.add.image(0, 0, flavored_actor + '-body');
 
-    var scale = scaleBetween(minScale, maxScale, this.depth) * refToScreen;
-    var height = body.height / body.width * width * scale;
-    var width = width * scale;
-    body.setOrigin((this.flipped ? bodySpec.width - bodySpec.center[0] : bodySpec.center[0]) / bodySpec.width, bodySpec.center[1] / bodySpec.height);
+    var scale = scaleBetween(parameters.minScale, parameters.maxScale, this.depth) * refToScreen;
+    var height = body.height / body.width * parameters.width * scale;
+    var width = parameters.width * scale;
+    body.setOrigin((this.flipped ? parameters.bodySpec.width - parameters.bodySpec.center[0] : parameters.bodySpec.center[0]) / parameters.bodySpec.width, parameters.bodySpec.center[1] / parameters.bodySpec.height);
     body.setFlipX(this.flipped);
     body.setDisplaySize(width, height);
 
@@ -458,7 +467,7 @@ class Bird extends Phaser.GameObjects.Container {
 
     this.coordinateCorrectionFactor = depthCorrectionFactor(this.depth) * refToScreen;
 
-    var wing = new Wings(0, 0, flavored_actor + '-wing', this, body, bodySpec);
+    var wing = new Wings(0, 0, flavored_actor + '-wing', this, body, parameters.bodySpec);
     wing.setFlipX(this.flipped);
     this.add(wing);
     this.wing = wing;
@@ -467,12 +476,12 @@ class Bird extends Phaser.GameObjects.Container {
 
     this.body.setGravityX(5 * this.flippedFactor);
     this.body.setGravityY(140);
-    this.body.setVelocityX(-startSpeed * randomBetween(0.9, 1.1) * this.coordinateCorrectionFactor * this.flippedFactor);
-    this.body.setVelocityY(randomBetween(-0.2, 0.1) * startSpeed * randomBetween(0.9, 1.1) * this.coordinateCorrectionFactor);
+    this.body.setVelocityX(-parameters.startSpeed * randomBetween(0.9, 1.1) * this.coordinateCorrectionFactor * this.flippedFactor);
+    this.body.setVelocityY(randomBetween(-0.2, 0.1) * parameters.startSpeed * randomBetween(0.9, 1.1) * this.coordinateCorrectionFactor);
     this.x = this.flipped ? 0 : scanariumConfig.width;
     this.y = scanariumConfig.height * randomBetween(0.1, 0.9);
 
-    var beak = new Beak(bodySpec, body.displayWidth, body.displayHeight, this.flippedFactor, this.depth);
+    var beak = new Beak(parameters.bodySpec, body.displayWidth, body.displayHeight, this.flippedFactor, this.depth);
     game.physics.world.enable(beak);
     beak.body.syncBounds=true;
     this.add(beak);

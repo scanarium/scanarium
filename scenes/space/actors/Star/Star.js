@@ -3,11 +3,13 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 class Star extends SpaceshipBase {
-  constructor(x, y, flavor) {
-    var lengthMin = 50;
-    var lengthMax = 200;
-
-    super(flavor, x, y, 90, lengthMin, lengthMax);
+  constructor(parameters) {
+    mergeIntoObject(parameters, {
+      angle: 90,
+      widthMin: 50,
+      widthMax: 200,
+    });
+    super(parameters);
 
     this.body.setVelocityX(0);
     this.body.setVelocityY(0);

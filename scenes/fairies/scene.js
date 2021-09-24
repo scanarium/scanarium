@@ -109,21 +109,21 @@ class WiggleWing extends Wing {
 }
 
 class Creature extends Phaser.GameObjects.Container {
-  constructor(flavor, x, y, minWidthRef, maxWidthRef, bodySpec, wiggleX, wiggleY, wiggleAngle, minFlapCycleLength, maxFlapCycleLength) {
+  constructor(parameters) {
     super(game, 0, 0);
-    this.wiggleX = wiggleX / 2;
-    this.wiggleY = wiggleY / 2;
-    this.wiggleAngle = wiggleAngle / 2;
+    this.wiggleX = parameters.wiggleX / 2;
+    this.wiggleY = parameters.wiggleY / 2;
+    this.wiggleAngle = parameters.wiggleAngle / 2;
 
     const actor = this.constructor.name;
-    var flavored_actor = actor + '-' + flavor;
-    this.createTextures(flavored_actor, bodySpec);
+    var flavored_actor = actor + '-' + parameters.flavor;
+    this.createTextures(flavored_actor, parameters.bodySpec);
 
     var body = game.add.image(0, 0, flavored_actor + '-body');
-    var width = randomBetween(minWidthRef, maxWidthRef) * refToScreen;
+    var width = randomBetween(parameters.minWidthRef, parameters.maxWidthRef) * refToScreen;
     var base_scale = width / body.width;
     var height = body.height * base_scale;
-    body.setOrigin(0.5, bodySpec.centerY / bodySpec.height);
+    body.setOrigin(0.5, parameters.bodySpec.centerY / parameters.bodySpec.height);
     body.setSize(width, height);
     body.setDisplaySize(width, height);
     this.destroyOffset = Math.max(width, height) + 20;
@@ -138,7 +138,7 @@ class Creature extends Phaser.GameObjects.Container {
 
     var that = this;
     this.wings = [];
-    this.addWings(flavored_actor, body, bodySpec, minFlapCycleLength, maxFlapCycleLength);
+    this.addWings(flavored_actor, body, parameters.bodySpec, parameters.minFlapCycleLength, parameters.maxFlapCycleLength);
     this.wings.forEach(wing => that.add(wing));
 
     this.add(body);

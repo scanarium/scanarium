@@ -3,11 +3,13 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 class FlyingSaucer extends SpaceshipBase {
-    constructor(x, y, flavor) {
-        var lengthMin = 50;
-        var lengthMax = 350;
-
-        super(flavor, x, y, 90, lengthMin, lengthMax);
+    constructor(parameters) {
+        mergeIntoObject(parameters, {
+            angle: 90,
+            widthMin: 50,
+            widthMax: 350,
+        });
+        super(parameters);
 
         var thrustScale = scaleBetween(0.06, 0.4, this.base_scale);
 

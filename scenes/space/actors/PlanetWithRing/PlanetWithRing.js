@@ -3,11 +3,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 class PlanetWithRing extends PlanetBase {
-    constructor(x, y, flavor) {
-        var lengthMin = 107;
-        var lengthMax = 320;
-
-        super(flavor, x, y, lengthMin, lengthMax);
+    constructor(parameters) {
+        mergeIntoObject(parameters, {
+            widthMin: 107,
+            widthMax: 320,
+        });
+        super(parameters);
 
         // Resetting angular velocity, as it looks off, if the planet has a
         // ring.

@@ -3,19 +3,20 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 class PlanetWithMoon extends PlanetBase {
-    constructor(x, y, flavor) {
-        var lengthMin = 50;
-        var lengthMax = 150;
-
-        const frames = {
-            main: {x: 50, y: 0, width: 50, height: 100},
-            moon: {x: 0, y: 25, width: 25, height: 50},
-        };
-
-        super(flavor, x, y, lengthMin, lengthMax, frames, "main");
+    constructor(parameters) {
+        mergeIntoObject(parameters, {
+            widthMin: 50,
+            widthMax: 150,
+            frames: {
+                main: {x: 50, y: 0, width: 50, height: 100},
+                moon: {x: 0, y: 25, width: 25, height: 50},
+            },
+            mainFrame: 'main',
+        });
+        super(parameters);
 
         const actor = this.constructor.name;
-        const image_name = actor + '-' + flavor;
+        const image_name = actor + '-' + parameters.flavor;
 
         var moon = game.add.image(0, 0, image_name, "moon");
         this.moonWidth = moon.width * this.textureScaleFactor;

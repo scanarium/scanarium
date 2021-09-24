@@ -3,11 +3,12 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 class Planet extends PlanetBase {
-    constructor(x, y, flavor) {
-        var lengthMin = 50;
-        var lengthMax = 150;
-
-        super(flavor, x, y, lengthMin, lengthMax);
+    constructor(parameters) {
+        mergeIntoObject(parameters, {
+            widthMin: 50,
+            widthMax: 150,
+        });
+        super(parameters);
     }
 }
 

@@ -3,9 +3,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 class PlainPhoto13x19cm extends Photo {
-    constructor(x, y, flavor) {
-        const widthMm = 190; // mm
-        super(flavor, x, y, widthMm);
+    constructor(parameters) {
+        super(mergeIntoObject(parameters, {
+            widthMm: 190, // mm
+        }));
     }
 }
 

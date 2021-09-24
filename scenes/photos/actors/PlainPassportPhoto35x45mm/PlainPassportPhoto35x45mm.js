@@ -3,9 +3,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 class PlainPassportPhoto35x45mm extends Photo {
-    constructor(x, y, flavor) {
-        const widthMm = 35; // mm
-        super(flavor, x, y, widthMm);
+    constructor(parameters) {
+        super(mergeIntoObject(parameters, {
+            widthMm: 35, // mm
+        }));
     }
 }
 

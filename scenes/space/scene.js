@@ -23,24 +23,24 @@ function scene_update(time, delta) {
 }
 
 class SpaceObject extends Phaser.GameObjects.Container {
-    constructor(flavor, x, y, angle, widthMin, widthMax, frames, mainFrame) {
-        super(game, x, y);
+    constructor(parameters) {
+        super(game, parameters.x, parameters.y);
 
         const actor = this.constructor.name;
-        const image_name = actor + '-' + flavor;
+        const image_name = actor + '-' + parameters.flavor;
 
-        if (frames) {
-            this.createFrames(image_name, frames);
+        if (parameters.frames) {
+            this.createFrames(image_name, parameters.frames);
         }
 
         this.base_scale = Math.pow(Math.random(), 5);
-        var mainSprite = game.add.image(0, 0, image_name, mainFrame);
-        var width = scaleBetween(widthMin, widthMax, this.base_scale) * refToScreen;
+        var mainSprite = game.add.image(0, 0, image_name, parameters.mainFrame);
+        var width = scaleBetween(parameters.widthMin, parameters.widthMax, this.base_scale) * refToScreen;
         this.textureScaleFactor =  width / mainSprite.width;
         var height = mainSprite.height * this.textureScaleFactor;
         mainSprite.setSize(width, height);
         mainSprite.setDisplaySize(width, height);
-        mainSprite.angle = angle;
+        mainSprite.angle = parameters.angle;
         this.destroyOffset = 2 * (width + height);
         this.add([mainSprite]);
         this.mainSprite = mainSprite;
@@ -113,8 +113,8 @@ class Thruster extends Phaser.Physics.Arcade.Sprite {
 }
 
 class SpaceshipBase extends SpaceObject {
-    constructor(flavor, x, y, angle, widthMin, widthMax) {
-        super(flavor, x, y, angle, widthMin, widthMax);
+    constructor(parameters) {
+        super(parameters);
 
         this.thrusters = [];
         this.nextMotionPlanningUpdate = 0;
@@ -168,8 +168,11 @@ class SpaceshipBase extends SpaceObject {
 }
 
 class PlanetBase extends SpaceObject {
-    constructor(flavor, x, y, widthMin, widthMax, frames, mainFrame) {
-        super(flavor, x, y, randomBetween(0, 360), widthMin, widthMax, frames, mainFrame);
+    constructor(parameters) {
+        mergeIntoObject(parameters, {
+            angle: randomBetween(0, 360),
+        });
+        super(parameters);
         this.setDepth(-10);
 
         const startOffset = Math.random() * 2 * (scanariumConfig.width + scanariumConfig.height);

@@ -3,8 +3,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 class DragonBalloon extends BaseBalloon {
-    constructor(x, y, flavor) {
-        var spec = {
+    constructor(parameters) {
+        mergeIntoObject(parameters, {
+            width: 220,
+            spec: {
             shreds : [
                 {x: 90, y: 59, r: 25},
                 {x: 135, y: 168, r: 25},
@@ -13,8 +15,9 @@ class DragonBalloon extends BaseBalloon {
             ],
             width: 206,
             height: 226,
-        };
-        super(flavor, 220, x, y, spec);
+            },
+        });
+        super(parameters);
     }
 }
 
