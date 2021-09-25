@@ -52,9 +52,19 @@ class ActorManagerActorCreator {
     }
 
     addActor(actor) {
-        game.add.existing(actor);
-        this.statsTracker.trackCreation();
-        this.actorManager.actors.push(actor);
+        var managedActor = actor;
+        if (typeof actor.managedActor === 'object') {
+            managedActor = actor.managedActor;
+        }
+        if (managedActor) {
+            game.add.existing(managedActor);
+            this.statsTracker.trackCreation();
+            this.actorManager.actors.push(managedActor);
+        } else {
+            if (actor) {
+                actor.destroy();
+            }
+        }
     }
 
     getNextFlavoredActorNameFromConfig(config, forceUntried) {
