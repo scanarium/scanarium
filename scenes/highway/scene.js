@@ -372,10 +372,19 @@ class Vehicle extends Phaser.GameObjects.Container {
 
     destroy() {
       // Remove the vehicle reference from the vehicle's lane
-      var lane_vehicles = this.lane.vehicles;
-      lane_vehicles.splice(lane_vehicles.indexOf(this), 1);
+      if (typeof this.lane !== 'undefined') {
+          var lane_vehicles = this.lane.vehicles;
+          lane_vehicles.splice(lane_vehicles.indexOf(this), 1);
+      }
 
       super.destroy();
+    }
+}
+
+class SemiTrailer extends Vehicle {
+    constructor(parameters) {
+        super(parameters);
+        this.managedActor = null;
     }
 }
 

@@ -2,7 +2,7 @@
 // GNU Affero General Public License v3.0 (See LICENSE.md)
 // SPDX-License-Identifier: AGPL-3.0-only
 
-class SemiTrailerBox extends Vehicle {
+class SemiTrailerBox extends SemiTrailer {
     constructor(parameters) {
         super(mergeIntoObject(parameters, {
             initialMinSpeed: 400,
