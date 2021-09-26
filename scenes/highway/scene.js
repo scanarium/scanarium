@@ -165,7 +165,6 @@ class Vehicle extends Phaser.GameObjects.Container {
 
         // Setting velocity
         this.desired_velocity = randomBetween(parameters.initialMinSpeed, parameters.initialMaxSpeed) * lane.scale * (lane.leftToRight ? 1 : -1) * refToScreen * beaconSpeedFactor;
-        this.updateVelocity(this.desired_velocity);
 
         this.yRef = randomBetween(lane.yMinRef, lane.yMaxRef);
         this.relayout();
