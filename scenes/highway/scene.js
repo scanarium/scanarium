@@ -137,7 +137,6 @@ class Vehicle extends Phaser.GameObjects.Container {
 
         // Assigning lane
         this.lane = lane;
-        lane.vehicles.push(this);
 
         var beaconSpeedFactor = 1;
         var beacon = parameters.beacon;
@@ -167,6 +166,10 @@ class Vehicle extends Phaser.GameObjects.Container {
 
         this.yRef = randomBetween(lane.yMinRef, lane.yMaxRef);
         this.relayout();
+    }
+
+    onAddToScene() {
+        this.lane.vehicles.push(this);
     }
 
     relayout() {

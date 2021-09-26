@@ -64,6 +64,9 @@ class ActorManagerActorCreator {
             managedActor = actor.managedActor;
         }
         if (managedActor) {
+            if (typeof managedActor.onAddToScene === 'function') {
+                managedActor.onAddToScene();
+            }
             game.add.existing(managedActor);
             this.statsTracker.trackCreation();
             this.actorManager.actors.push(managedActor);
