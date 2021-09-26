@@ -48,6 +48,13 @@ class ActorManagerActorCreator {
         if (parameters && parameters.onCreated) {
             parameters.onCreated(actor);
         }
+
+        if(Array.isArray(actor.actorQueues)) {
+            actor.actorQueues.forEach(queue => {
+                actorManager.addToQueue(queue, actor);
+            });
+        }
+
         return actor;
     }
 

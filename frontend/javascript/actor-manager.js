@@ -13,6 +13,7 @@ class ActorManager {
         var that = this;
         this.configLoader = new ActorManagerConfigLoader(this, () => that.nextSpawn = 0);
         this.actorCreator = new ActorManagerActorCreator(this, this.configLoader, this.statsTracker);
+        this.queues = {}
     }
 
     preload() {
@@ -66,6 +67,33 @@ class ActorManager {
 
     registerActor(clazz) {
         this.actorCreator.registerActor(clazz);
+    }
+
+    addToQueue(queue, actor) {
+        var entries = this.getQueue(queue);
+        if (entries.length > 10) {
+            entries.shift();
+        }
+        entries.push({name: actor.actorName, flavor: actor.actorFlavor});
+        this.queues[queue] = entries;
+    }
+
+    getQueue(queue) {
+        var entries = [];
+        if (queue in this.queues) {
+            entries = this.queues[queue];
+        }
+        return entries;
+    }
+
+    createFromQueue(queue, parameters) {
+        var entries = this.getQueue(queue);
+        var ret = null;
+        if (entries.length > 0) {
+            var entry = entries[chooseInt(0, entries.length - 1)];
+            ret = this.actorCreator.createFullyLoadedActor(entry.name, entry.flavor, parameters);
+        }
+        return ret;
     }
 };
 var actorManager = new ActorManager();
