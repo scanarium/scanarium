@@ -78,7 +78,10 @@ class Vehicle extends Phaser.GameObjects.Container {
      *     top of `scale`).
      */
     constructor(parameters) {
-        var lane = lanes[tunnel(Math.floor(Math.random()*lanes.length), 0, lanes.length-1)];
+        var lane = parameters.lane;
+        if (typeof lane === 'undefined') {
+            lane = lanes[tunnel(Math.floor(Math.random()*lanes.length), 0, lanes.length-1)];
+        }
         var x = lane.leftToRight ? 0 : scanariumConfig.width;
 
         super(game, x, 0);
