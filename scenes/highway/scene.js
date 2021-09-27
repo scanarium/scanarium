@@ -171,7 +171,7 @@ class Vehicle extends Phaser.GameObjects.Container {
         this.yRef = randomBetween(lane.yMinRef, lane.yMaxRef);
         this.relayout();
 
-        this.setTrailers(parameters.trailerCouplers || []);
+        this.setTrailers(parameters.trailerCouplers, parameters.trailers);
         this.tractorCouplingPoint = parameters.tractorCouplingPoint;
 
         if (!this.isSelfDriver) {
@@ -179,15 +179,25 @@ class Vehicle extends Phaser.GameObjects.Container {
         }
     }
 
-    setTrailers(couplers) {
+    setTrailers(couplers, offeredTrailers) {
         var trailers = [];
         var that = this;
-        couplers.forEach(coupler => {
+        couplers = couplers || {};
+        offeredTrailers = offeredTrailers || {};
+        Object.keys(couplers).forEach(key => {
+            var coupler = couplers[key];
             var trailer;
-            if (Math.random() <= firstDefined(coupler.chance, 1) ) {
-                trailer = actorManager.createFromQueue(coupler.queue, {
-                    lane: that.lane,
-                });
+            if (key in offeredTrailers) {
+                // Use offered trailers
+                trailer = offeredTrailers[key];
+            } else {
+                // No offered trailer. So we're optionally picking a queued one
+                if (Math.random() <= firstDefined(coupler.chance, 1) ) {
+                    trailer = actorManager.createFromQueue(coupler.queue, {
+                        lane: that.lane,
+                        tractor: that,
+                    });
+                }
             }
             if (trailer) {
                 trailers.push(trailer);
@@ -454,6 +464,13 @@ class SemiTrailer extends Vehicle {
             isSelfDriver: false,
         }));
         this.actorQueues = ['SemiTrailer'];
+
+        if (!parameters.tractor) {
+            var tractor = actorManager.createFromQueue('SemiTruck', {
+                lane: this.lane,
+                trailers: {'SemiTrailer': this},
+            });
+        }
     }
 }
 
