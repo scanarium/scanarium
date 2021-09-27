@@ -2,7 +2,7 @@
 // GNU Affero General Public License v3.0 (See LICENSE.md)
 // SPDX-License-Identifier: AGPL-3.0-only
 
-class SemiTruckCabOver extends Vehicle {
+class SemiTruckCabOver extends SemiTruck {
     constructor(parameters) {
         super(mergeIntoObject(parameters, {
             initialMinSpeed: 400,
@@ -17,6 +17,9 @@ class SemiTruckCabOver extends Vehicle {
             ],
             angularShake: 0.2,
             yShake: 0.5,
+            trailerCouplers: [
+                {queue: 'SemiTrailer', chance: 1, point: {x: 254, y: 194, width: 349, height: 288}},
+            ]
         }));
     }
 }
