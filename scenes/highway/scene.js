@@ -86,6 +86,8 @@ class Vehicle extends Phaser.GameObjects.Container {
 
         super(game, x, 0);
 
+        this.isSelfDriver = (typeof parameters.isSelfDriver === 'undefined') || parameters.isSelfDriver;
+
         this.setDepth(lane.scale*100);
         const actor = this.constructor.name;
         var image_name = actor + '-' + parameters.flavor;
@@ -168,6 +170,48 @@ class Vehicle extends Phaser.GameObjects.Container {
 
         this.yRef = randomBetween(lane.yMinRef, lane.yMaxRef);
         this.relayout();
+
+        this.setTrailers(parameters.trailerCouplers || []);
+        this.tractorCouplingPoint = parameters.tractorCouplingPoint;
+
+        if (!this.isSelfDriver) {
+            this.managedActor = null;
+        }
+    }
+
+    setTrailers(couplers) {
+        var trailers = [];
+        var that = this;
+        couplers.forEach(coupler => {
+            var trailer;
+            if (Math.random() <= firstDefined(coupler.chance, 1) ) {
+                trailer = actorManager.createFromQueue(coupler.queue, {
+                    lane: that.lane,
+                });
+            }
+            if (trailer) {
+                trailers.push(trailer);
+                that.add(trailer);
+
+                var offsetX = 0;
+                var offsetY = 0;
+
+                // Set offset coming from tractor's coupling.
+                var percent = pointToPercentCoordinates(coupler.point);
+                offsetX = percent.x * that.vehicle_body.displayWidth * (that.lane.leftToRight ? -1 : 1);
+                offsetY = (percent.y - 1) * that.vehicle_body.displayHeight;
+
+                // Set offset coming from trailer's coupling.
+                var percent = pointToPercentCoordinates(trailer.tractorCouplingPoint);
+                offsetX -= percent.x * trailer.vehicle_body.displayWidth * (that.lane.leftToRight ? -1 : 1);
+                offsetY -= (percent.y - 1) * trailer.vehicle_body.displayHeight;
+
+                trailer.setPosition(offsetX, offsetY);
+                that.destroyOffset += trailer.vehicle_body.displayWidth;
+                trailer.addedAsTrailer(this);
+            }
+        });
+        this.trailers = trailers;
     }
 
     onAddToScene() {
@@ -175,7 +219,9 @@ class Vehicle extends Phaser.GameObjects.Container {
     }
 
     relayout() {
-      this.y = this.yRef / refHeight * scanariumConfig.height;
+      if (this.isSelfDriver) {
+        this.y = this.yRef / refHeight * scanariumConfig.height;
+      }
     }
 
     createTextures(image_name, tires, undercarriage, decal, beacon) {
@@ -337,7 +383,11 @@ class Vehicle extends Phaser.GameObjects.Container {
       }
     }
 
-    updateVelocity() {
+    addedAsTrailer(tractor) {
+        this.managedActor = tractor;
+    }
+
+    getPossibleVelocity() {
       var velocity = this.desired_velocity;
       const prevVehicleIdx = this.lane.vehicles.indexOf(this) - 1;
       if (prevVehicleIdx >= 0) {
@@ -346,14 +396,23 @@ class Vehicle extends Phaser.GameObjects.Container {
         const prevVehicle = this.lane.vehicles[prevVehicleIdx];
 
         // The unbounded velocity based on proximity to the previous vehicle
-        velocity = (Math.abs(this.x - prevVehicle.x) / prevVehicle.vehicle_body.width - 1) * this.desired_velocity;
+        velocity = (Math.abs(this.x - prevVehicle.x) / prevVehicle.destroyOffset - 1) * this.desired_velocity;
 
         // Applying bounds to the velocity
         velocity = tunnel(velocity, Math.min(0, this.desired_velocity), Math.max(0, this.desired_velocity));
       }
+      return velocity;
+    }
 
-      // Finally, we apply the velocity to the vehicles components
+    updateVelocity() {
+      var velocity = this.isSelfDriver ? this.getPossibleVelocity() : 0;
       this.body.setVelocityX(velocity);
+
+      this.setTireVelocity(velocity);
+      this.trailers.forEach(trailer => trailer.setTireVelocity(velocity));
+    }
+
+    setTireVelocity(velocity) {
       this.tires.forEach((tire) => {
         tire.setAngularVelocity(velocity * 360 / 2 / Math.PI / tire.r);
       });
@@ -379,7 +438,10 @@ class Vehicle extends Phaser.GameObjects.Container {
       // Remove the vehicle reference from the vehicle's lane
       if (typeof this.lane !== 'undefined') {
           var lane_vehicles = this.lane.vehicles;
-          lane_vehicles.splice(lane_vehicles.indexOf(this), 1);
+          var index = lane_vehicles.indexOf(this);
+          if (index >= 0) {
+              lane_vehicles.splice(lane_vehicles.indexOf(this), 1);
+          }
       }
 
       super.destroy();
@@ -388,8 +450,17 @@ class Vehicle extends Phaser.GameObjects.Container {
 
 class SemiTrailer extends Vehicle {
     constructor(parameters) {
+        super(mergeIntoObject(parameters, {
+            isSelfDriver: false,
+        }));
+        this.actorQueues = ['SemiTrailer'];
+    }
+}
+
+class SemiTruck extends Vehicle {
+    constructor(parameters) {
         super(parameters);
-        this.managedActor = null;
+        this.actorQueues = ['SemiTruck'];
     }
 }
 

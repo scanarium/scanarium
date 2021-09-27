@@ -64,6 +64,16 @@ function mergeIntoObject(target, src) {
     return target;
 }
 
+function firstDefined() {
+        for (var i=0; i < arguments.length; i++) {
+        var item = arguments[i];
+        if (typeof item != 'undefined') {
+            return item;
+        }
+    }
+    return undefined;
+}
+
 // Graphics related functions -------------------------------------------------
 
 
@@ -127,3 +137,6 @@ function extractTexture(source, appendix, points, points_width, points_height, e
     extracted.saveTexture(source + '-' + appendix);
 }
 
+function pointToPercentCoordinates(object) {
+    return {x: object.x / object.width, y: object.y / object.height};
+}
