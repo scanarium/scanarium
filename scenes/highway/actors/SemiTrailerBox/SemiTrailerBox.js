@@ -17,6 +17,7 @@ class SemiTrailerBox extends SemiTrailer {
             ],
             angularShake: 0.2,
             yShake: 0.5,
+            tractorCouplingPoint: {x: 44, y: 134, width: 500, height: 194},
         }));
     }
 }
