@@ -128,4 +128,5 @@ class ScannerTest(BasicTestCase):
             self.assertEqual(parse_qr(scanarium, data), {
                     'command': 'highway',
                     'parameter': 'Bus',
+                    'd': '1',
                     })
