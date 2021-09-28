@@ -14,7 +14,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.92.3 (2405546, 2018-03-11)"
-   sodipodi:docname="SemiTrailerBox-undecorated.svg"
+   sodipodi:docname="SemiTrailerBox-undecorated-d-1.svg"
    inkscape:export-filename="/home/christian/SportsCar.svg.png"
    inkscape:export-xdpi="138.06"
    inkscape:export-ydpi="138.06">
@@ -27,9 +27,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.90509668"
-     inkscape:cx="899.20131"
-     inkscape:cy="437.98887"
+     inkscape:zoom="2.56"
+     inkscape:cx="775.66478"
+     inkscape:cy="352.62659"
      inkscape:document-units="mm"
      inkscape:current-layer="Mask"
      showgrid="false"
@@ -72,10 +72,10 @@
        r="39.233658" />
     <path
        style="display:inline;opacity:1;fill:#ffffff;fill-opacity:1;stroke:#808080;stroke-width:0.75590551;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 695.41766,851.46709 c 0.29491,-31.54098 16.85365,-48.46306 46,-48.39038 h 88.76076 c 47.30682,1.02481 47.93262,48.43126 47.64641,48.39038 h 6.1902 107.20133 v -31.95867 l 3.8464,-0.17678 c 1.7176,-5.68439 1.8412,-10.72255 -0.036,-14.94945 h -3.8104 V 545.34637 h -878.9091 v 238.73034 h 252.58887 v 97.49589 l -4.99987,7.7456 h 24.334 l -5.00044,-7.7456 0.58355,-78.49589 h 41.18477 v 48.39038 z"
+       d="m 693.07391,851.46709 c 0.29491,-31.54098 19.1974,-48.46306 48.34375,-48.39038 h 88.76076 c 47.30682,1.02481 47.93262,48.43126 47.64641,48.39038 37.79718,0 75.59435,0 113.39153,0 v -31.95867 l 3.8464,-0.17678 c 1.7176,-5.68439 1.8412,-10.72255 -0.036,-14.94945 h -3.8104 V 545.34637 h -878.9091 v 238.73034 h 252.58887 v 97.49589 l -4.99987,7.7456 h 24.334 l -5.00044,-7.7456 0.58355,-78.49589 h 41.18477 v 48.39038 z"
        id="path919-5"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cccccccccccccccccccccc" />
+       sodipodi:nodetypes="ccccccccccccccccccccc" />
   </g>
   <g
      inkscape:groupmode="layer"
