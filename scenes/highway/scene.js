@@ -91,7 +91,7 @@ class Vehicle extends Phaser.GameObjects.Container {
         this.setDepth(lane.scale*100);
         const actor = this.constructor.name;
         var image_name = actor + '-' + parameters.flavor;
-        this.createTextures(image_name, parameters.tires, parameters.undercarriage, parameters.decal, parameters.beacon);
+        this.createTextures(image_name, parameters.tires, parameters.undercarriage, parameters.decal, parameters.beacon, parameters.pillar);
         var body = game.add.image(0, 0, image_name + '-body');
         const body_unscaled_width = body.width;
         const body_unscaled_height = body.height;
@@ -234,9 +234,9 @@ class Vehicle extends Phaser.GameObjects.Container {
       }
     }
 
-    createTextures(image_name, tires, undercarriage, decal, beacon) {
+    createTextures(image_name, tires, undercarriage, decal, beacon, pillar) {
       if (!game.textures.exists(image_name + '-body')) {
-        this.createTexturesForce(image_name, tires, undercarriage, decal, beacon);
+        this.createTexturesForce(image_name, tires, undercarriage, decal, beacon, pillar);
       }
     }
 
@@ -270,7 +270,7 @@ class Vehicle extends Phaser.GameObjects.Container {
         };
     }
 
-    createTexturesForce(image_name, tires, undercarriage, decal, beacon) {
+    createTexturesForce(image_name, tires, undercarriage, decal, beacon, pillar) {
       const that = this;
       const full_texture = game.textures.get(image_name);
       const full_texture_source_index = 0;
@@ -351,6 +351,11 @@ class Vehicle extends Phaser.GameObjects.Container {
         body.draw(graph);
       });
       body.draw(platform);
+
+      if (typeof (this.createTextureBeforeSavingBody) == 'function') {
+          this.createTextureBeforeSavingBody(image_name, body, pillar);
+      }
+
       body.saveTexture(image_name + '-body');
 
       if (decal) {
@@ -471,6 +476,28 @@ class SemiTrailer extends Vehicle {
                 trailers: {'SemiTrailer': this},
             });
         }
+    }
+
+    createTextureBeforeSavingBody(image_name, body, pillar) {
+        var points = [[pillar.x1, pillar.y1], [pillar.x1, pillar.y2], [pillar.x2, pillar.y2], [pillar.x2, pillar.y1]];
+        extractTexture(image_name, 'pillar', points, pillar.width, pillar.height, body);
+
+        const full_texture = game.textures.get(image_name);
+        const full_texture_source_index = 0;
+        const full_source = full_texture.source[full_texture_source_index];
+        const full_width = full_source.width;
+        const full_height = full_source.height;
+
+        var x = pillar.x1 / pillar.width * full_width;
+        var y = pillar.y1 / pillar.height * full_height;
+        var width = pillar.x2 / pillar.width * full_width - x + 1;
+        var height = pillar.y2 / pillar.height * full_height - y + 1;
+        full_texture.add(
+            'pillar', 0,
+            x, y,
+            width, height)
+
+        body.drawFrame(image_name, 'pillar', x, y + pillar.translate / pillar.height * full_height);
     }
 }
 

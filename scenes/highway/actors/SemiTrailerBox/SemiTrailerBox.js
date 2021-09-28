@@ -15,6 +15,11 @@ class SemiTrailerBox extends SemiTrailer {
             undercarriage: [
                 {points: [[325, 168], [440, 168], [440, 140], [325, 140]], w: 500, h: 194},
             ],
+            pillar: {
+                x1: 138, x2: 154, y1: 166, y2: 194,
+                width: 500, height:194,
+                translate: -22,
+            },
             angularShake: 0.2,
             yShake: 0.5,
             tractorCouplingPoint: {x: 44, y: 134, width: 500, height: 194},
