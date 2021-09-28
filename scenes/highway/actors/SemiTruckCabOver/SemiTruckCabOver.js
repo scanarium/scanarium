@@ -18,7 +18,7 @@ class SemiTruckCabOver extends SemiTruck {
             angularShake: 0.2,
             yShake: 0.5,
             trailerCouplers: {
-                'SemiTrailer': {queue: 'SemiTrailer', chance: 1, point: {x: 254, y: 194, width: 349, height: 288}},
+                'SemiTrailer': {queue: 'SemiTrailer', chance: 0.8, point: {x: 254, y: 194, width: 349, height: 288}},
             },
         }));
     }
