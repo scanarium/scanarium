@@ -20,6 +20,7 @@ class SemiTrailerBox extends SemiTrailer {
                 width: 500, height:194,
                 translate: -22,
             },
+            decal: {x1: 0, y1: 0, x2: 496, y2: 134, w: 500, h: 194},
             angularShake: 0.2,
             yShake: 0.5,
             tractorCouplingPoint: {x: 44, y: 134, width: 500, height: 194},
