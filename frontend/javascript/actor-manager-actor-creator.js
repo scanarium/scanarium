@@ -131,7 +131,7 @@ class ActorManagerActorCreator {
 
     // If actor_name is falsy, it's actor_name and flavor get chosen
     // automatically.
-    loadCreateAndAddActor(actor_name, flavor, onCreated) {
+    loadCreateAndAddActor(actor_name, flavor, parameters) {
         if (!actor_name) {
             var actor_spec = this.getNextFlavoredActorName();
             if (actor_spec === null) {
@@ -162,17 +162,17 @@ class ActorManagerActorCreator {
                     game.events.off('filecomplete', onLoaded);
                 }
 
-                that.createAndAddActorIfFullyLoaded(actor_name, flavor, onCreated);
+                that.createAndAddActorIfFullyLoaded(actor_name, flavor, parameters);
             }
         };
 
         if (actor_name in this.registeredActors) {
-            this.createAndAddActorIfFullyLoaded(actor_name, flavor, onCreated);
+            this.createAndAddActorIfFullyLoaded(actor_name, flavor, parameters);
         } else {
             var actor_url = scene_dir + '/actors/' + actor_name;
             var actor_js_url = actor_url + '/' + actor_name + '.js';
             loadJs(actor_js_url, () => {
-                this.createAndAddActorIfFullyLoaded(actor_name, flavor, onCreated);
+                this.createAndAddActorIfFullyLoaded(actor_name, flavor, parameters);
             });
         }
 
