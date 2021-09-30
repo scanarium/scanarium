@@ -34,6 +34,12 @@ class SpaceObject extends Phaser.GameObjects.Container {
         }
 
         this.base_scale = Math.pow(Math.random(), 5);
+        if (parameters.isNewScan) {
+            // For new scans, the base scale gets tipped towards showing them
+            // bigger, so we get to embrace all detais of the new scan.
+            MessageManager.addMessage('New scan');
+            this.base_scale = Math.random() * 0.3 + 0.7;
+        }
         var mainSprite = game.add.image(0, 0, image_name, parameters.mainFrame);
         var width = scaleBetween(parameters.widthMin, parameters.widthMax, this.base_scale) * refToScreen;
         this.textureScaleFactor =  width / mainSprite.width;
