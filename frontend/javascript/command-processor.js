@@ -29,8 +29,11 @@ var CommandProcessor = {
                 if (typeof actorManager !== 'undefined') {
                     // We add the actor, even if `replay` is true, as
                     // this will help showing a recently scanned actor
-                    // more quickly.
-                    actorManager.loadCreateAndAddActor(parameters[0], flavor);
+                    // more quickly. But we mark them as `isNewScan` only
+                    // when not replaying.
+                    actorManager.loadCreateAndAddActor(parameters[0], flavor, {
+                      isNewScan: !replay,
+                    });
                 }
             }
             if (PageInsertionHint != null && getConfig('drop_page_insertion_hint_after_scan')) {
