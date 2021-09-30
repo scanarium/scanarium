@@ -80,7 +80,12 @@ class Vehicle extends Phaser.GameObjects.Container {
     constructor(parameters) {
         var lane = parameters.lane;
         if (typeof lane === 'undefined') {
-            lane = lanes[tunnel(Math.floor(Math.random()*lanes.length), 0, lanes.length-1)];
+            var minLane = 0;
+            if (parameters.isNewScan) {
+                // It's a new scan, so we skip the lanes that are farther back.
+                minLane = Math.round(lanes.length / 3);
+            }
+            lane = lanes[chooseInt(minLane, lanes.length-1)];
         }
         var x = lane.leftToRight ? 0 : scanariumConfig.width;
 
