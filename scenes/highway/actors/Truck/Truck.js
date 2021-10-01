@@ -16,6 +16,7 @@ class Truck extends Vehicle {
             undercarriage: [
                 {points: [[24, 206], [420, 206], [420, 164], [24, 164]], w: 474, h: 234},
             ],
+            decal: {x1: 191, y1: 0, x2: 990, y2: 370, w: 1000, h: 499},
             angularShake: 0.2,
             yShake: 1.5,
         }));
