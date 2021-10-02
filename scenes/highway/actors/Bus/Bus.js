@@ -7,7 +7,7 @@ class Bus extends Vehicle {
         super(mergeIntoObject(parameters, {
             initialMinSpeed: 400,
             initialMaxSpeed: 750,
-            widthRef: 1000,
+            lengthCm: 1000,
             tires: [
                 {x1: 73, x2: 116, y1: 116, y2: 159, w: 460, h: 160},
                 {x1: 347, x2: 390, y1: 116, y2: 159, w: 460, h: 160},

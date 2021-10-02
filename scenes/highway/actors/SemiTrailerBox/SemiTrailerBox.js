@@ -7,7 +7,7 @@ class SemiTrailerBox extends SemiTrailer {
         super(mergeIntoObject(parameters, {
             initialMinSpeed: 400,
             initialMaxSpeed: 750,
-            widthRef: 1700,
+            lengthCm: 1020,
             tires: [
                 {x1: 334, x2: 377, y1: 151, y2: 194, w: 500, h: 194},
                 {x1: 385, x2: 428, y1: 151, y2: 194, w: 500, h: 194},

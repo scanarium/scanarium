@@ -7,7 +7,7 @@ class Ambulance extends Vehicle {
         super(mergeIntoObject(parameters, {
             initialMinSpeed: 400,
             initialMaxSpeed: 750,
-            widthRef: 750,
+            lengthCm: 491,
             tires: [
                 {x1: 94, x2: 224, y1: 407, y2: 537, w: 927, h: 539},
                 {x1: 716, x2: 846, y1: 407, y2: 537, w: 927, h: 539},

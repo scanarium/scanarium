@@ -7,7 +7,7 @@ class OldFamilyCar extends Vehicle {
         super(mergeIntoObject(parameters, {
             initialMinSpeed: 300,
             initialMaxSpeed: 600,
-            widthRef: 500,
+            lengthCm: 425,
             tires: [
                 {x1: 46, x2: 104, y1: 92, y2: 150, w: 398, h: 151},
                 {x1: 285, x2: 343, y1: 92, y2: 150, w: 398, h: 151},

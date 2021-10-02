@@ -7,7 +7,7 @@ class SubcompactCar extends Vehicle {
         super(mergeIntoObject(parameters, {
             initialMinSpeed: 400,
             initialMaxSpeed: 750,
-            widthRef: 550,
+            lengthCm: 385,
             tires: [
                 {x1: 64, x2: 148, y1: 154, y2: 238, w: 500, h: 239},
                 {x1: 371, x2: 455, y1: 154, y2: 238, w: 500, h: 239},

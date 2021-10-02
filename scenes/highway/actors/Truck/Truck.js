@@ -7,7 +7,7 @@ class Truck extends Vehicle {
         super(mergeIntoObject(parameters, {
             initialMinSpeed: 400,
             initialMaxSpeed: 750,
-            widthRef: 1000,
+            lengthCm: 720,
             tires: [
                 {x1: 42, x2: 94, y1: 182, y2: 233, w: 474, h: 234},
                 {x1: 291, x2: 343, y1: 182, y2: 233, w: 474, h: 234},

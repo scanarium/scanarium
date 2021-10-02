@@ -7,7 +7,7 @@ class PoliceCar extends Vehicle {
         super(mergeIntoObject(parameters, {
             initialMinSpeed: 400,
             initialMaxSpeed: 750,
-            widthRef: 650,
+            lengthCm: 460,
             tires: [
                 {x1: 134, x2: 275, y1: 330, y2: 472, w: 1000, h: 473},
                 {x1: 751, x2: 892, y1: 330, y2: 472, w: 1000, h: 473},

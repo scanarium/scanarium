@@ -7,7 +7,7 @@ class CompactMpv extends Vehicle {
         super(mergeIntoObject(parameters, {
             initialMinSpeed: 400,
             initialMaxSpeed: 750,
-            widthRef: 650,
+            lengthCm: 460,
             tires: [
                 {x1: 127, x2: 263, y1: 271, y2: 407, w: 951, h: 408},
                 {x1: 714, x2: 849, y1: 271, y2: 407, w: 951, h: 408},

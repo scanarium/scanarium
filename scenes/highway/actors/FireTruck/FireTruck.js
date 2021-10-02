@@ -7,7 +7,7 @@ class FireTruck extends Vehicle {
         super(mergeIntoObject(parameters, {
             initialMinSpeed: 500,
             initialMaxSpeed: 850,
-            widthRef: 1000,
+            lengthCm: 650,
             tires: [
                 {x1: 131, x2: 261, y1: 344, y2: 474, w: 942, h: 474},
                 {x1: 608, x2: 738, y1: 344, y2: 474, w: 942, h: 474},

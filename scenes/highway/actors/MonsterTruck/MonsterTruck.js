@@ -7,7 +7,7 @@ class MonsterTruck extends Vehicle {
         super(mergeIntoObject(parameters, {
             initialMinSpeed: 500,
             initialMaxSpeed: 900,
-            widthRef: 600,
+            lengthCm: 530,
             tires: [
                 {x1: 1, x2: 168, y1: 101, y2: 267, w: 451, h: 268},
                 {x1: 283, x2: 450, y1: 101, y2: 267, w: 451, h: 268},

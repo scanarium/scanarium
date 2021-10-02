@@ -101,7 +101,8 @@ class Vehicle extends Phaser.GameObjects.Container {
         const body_unscaled_width = body.width;
         const body_unscaled_height = body.height;
 
-        var width = parameters.widthRef * lane.scale * refToScreen;
+        var widthRef = parameters.lengthCm * 1.4;
+        var width = widthRef * lane.scale * refToScreen;
         var base_scale = width / body.width;
         var height = body.height * base_scale;
         body.setFlipX(lane.leftToRight);

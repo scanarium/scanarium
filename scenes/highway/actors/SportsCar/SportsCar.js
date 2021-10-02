@@ -7,7 +7,7 @@ class SportsCar extends Vehicle {
         super(mergeIntoObject(parameters, {
             initialMinSpeed: 600,
             initialMaxSpeed: 1300,
-            widthRef: 650,
+            lengthCm: 470,
             tires: [
                 {x1: 82, x2: 150, y1: 66, y2: 133, w: 473, h: 134},
                 {x1: 366, x2: 433, y1: 66, y2: 133, w: 473, h: 134},

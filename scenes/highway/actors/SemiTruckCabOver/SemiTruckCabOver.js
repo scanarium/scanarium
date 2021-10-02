@@ -7,7 +7,7 @@ class SemiTruckCabOver extends SemiTruck {
         super(mergeIntoObject(parameters, {
             initialMinSpeed: 400,
             initialMaxSpeed: 750,
-            widthRef: 750,
+            lengthCm: 450,
             tires: [
                 {x1: 49, x2: 118, y1: 219, y2: 288, w: 349, h: 288},
                 {x1: 261, x2: 330, y1: 219, y2: 288, w: 349, h: 288},

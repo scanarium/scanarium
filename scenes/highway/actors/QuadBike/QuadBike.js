@@ -7,7 +7,7 @@ class QuadBike extends Vehicle {
         super(mergeIntoObject(parameters, {
             initialMinSpeed: 500,
             initialMaxSpeed: 900,
-            widthRef: 350,
+            lengthCm: 210,
             tires: [
                 {x1: 2, x2: 62, y1: 129, y2: 189, w: 232, h: 190},
                 {x1: 171, x2: 231, y1: 129, y2: 189, w: 232, h: 190},
