@@ -259,7 +259,9 @@ class WingWiggleCreature extends Creature {
         extractTexture(flavored_actor, 'wing-' + i, wing.points, bodySpec.width, bodySpec.height, body);
     });
 
-    extractTexture(flavored_actor, 'background', bodySpec.background_points, bodySpec.width, bodySpec.height, body);
+    if (bodySpec.background_points) {
+        extractTexture(flavored_actor, 'background', bodySpec.background_points, bodySpec.width, bodySpec.height, body);
+    }
 
     body.saveTexture(flavored_actor + '-body');
   }
