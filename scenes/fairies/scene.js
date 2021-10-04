@@ -86,12 +86,12 @@ class BackFlapWings extends Wing {
 }
 
 class WiggleWing extends Wing {
-  constructor(x, y, image_name, body, centerYPercent, minCycleLength, maxCycleLength, wing, points_width, points_height, syncToWing) {
+  constructor(x, y, image_name, body, centerYPercent, minCycleLength, maxCycleLength, wing, syncToWing) {
     super(x, y, image_name, body, minCycleLength, maxCycleLength, syncToWing);
 
-    this.x += ((wing.axis[0] + wing.shift[0])/points_width - 0.5) * body.width;
-    this.y += ((wing.axis[1] + wing.shift[1])/points_height - centerYPercent) * body.height;
-    this.setOrigin(wing.axis[0]/points_width, wing.axis[1]/points_height);
+    this.x += ((wing.axis[0] + wing.shift[0])/wing.width - 0.5) * body.width;
+    this.y += ((wing.axis[1] + wing.shift[1])/wing.height - centerYPercent) * body.height;
+    this.setOrigin(wing.axis[0]/wing.width, wing.axis[1]/wing.height);
 
     this.minAngle = wing.minAngle;
     this.angleWidth = wing.maxAngle - wing.minAngle;
@@ -245,7 +245,7 @@ class WingWiggleCreature extends Creature {
   addWings(flavored_actor, body, bodySpec, minFlapCycleLength, maxFlapCycleLength) {
     var last_wing = null;
     bodySpec.wings.forEach((wing, i) => {
-        var wing = new WiggleWing(0, 0, flavored_actor + '-wing-' + i, body, bodySpec.centerY / bodySpec.height, minFlapCycleLength, maxFlapCycleLength, wing, wing.width, wing.height, last_wing);
+        var wing = new WiggleWing(0, 0, flavored_actor + '-wing-' + i, body, bodySpec.centerY / bodySpec.height, minFlapCycleLength, maxFlapCycleLength, wing, last_wing);
         this.wings.push(wing);
 
         last_wing = wing;
