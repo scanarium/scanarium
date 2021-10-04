@@ -24,6 +24,8 @@ class LongBug extends WingWiggleCreature {
                         shift: [3, 0],
                         minAngle: 2,
                         maxAngle: 32,
+                        width: 500,
+                        height: 378,
                     },
                     {
                         points: [
@@ -39,6 +41,8 @@ class LongBug extends WingWiggleCreature {
                         shift: [-3, 0],
                         minAngle: -2,
                         maxAngle: -32,
+                        width: 500,
+                        height: 378,
                     },
                 ],
                 background_points: [

@@ -245,7 +245,7 @@ class WingWiggleCreature extends Creature {
   addWings(flavored_actor, body, bodySpec, minFlapCycleLength, maxFlapCycleLength) {
     var last_wing = null;
     bodySpec.wings.forEach((wing, i) => {
-        var wing = new WiggleWing(0, 0, flavored_actor + '-wing-' + i, body, bodySpec.centerY / bodySpec.height, minFlapCycleLength, maxFlapCycleLength, wing, bodySpec.width, bodySpec.height, last_wing);
+        var wing = new WiggleWing(0, 0, flavored_actor + '-wing-' + i, body, bodySpec.centerY / bodySpec.height, minFlapCycleLength, maxFlapCycleLength, wing, wing.width, wing.height, last_wing);
         this.wings.push(wing);
 
         last_wing = wing;

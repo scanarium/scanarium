@@ -29,6 +29,8 @@ class BroadBug extends WingWiggleCreature {
                         shift: [5, 5],
                         minAngle: 2,
                         maxAngle: 32,
+                        width: 868,
+                        height: 690,
                     },
                     {
                         points: [
@@ -51,6 +53,8 @@ class BroadBug extends WingWiggleCreature {
                         shift: [-5, 5],
                         minAngle: -2,
                         maxAngle: -32,
+                        width: 868,
+                        height: 690,
                     },
                     {
                         points: [
@@ -67,6 +71,8 @@ class BroadBug extends WingWiggleCreature {
                         shift: [5, 0],
                         minAngle: -30,
                         maxAngle: 30,
+                        width: 868,
+                        height: 690,
                     },
                     {
                         points: [
@@ -82,6 +88,8 @@ class BroadBug extends WingWiggleCreature {
                         shift: [-5, 0],
                         minAngle: 30,
                         maxAngle: -30,
+                        width: 868,
+                        height: 690,
                     },
                 ],
                 centerY: 265,
