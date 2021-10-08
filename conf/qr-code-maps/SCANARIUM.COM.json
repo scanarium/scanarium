@@ -68,5 +68,6 @@
   "068": "fairies:BroadBug:d_1",
   "069": "highway:SemiTruckConventionalCab:d_1",
   "070": "photos:PhotoBirthdayCake:d_1",
+  "071": "highway:SemiTrailerTank:d_1",
   "ZZZ": "undefined-placeholder-to-get-better-diffs"
 }
