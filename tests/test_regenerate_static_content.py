@@ -71,7 +71,7 @@ class RegenerateStaticContentTestCase(CanaryTestCase):
         image = self.readImage(file)
 
         self.assertColor(image, 13, 15, 'white')
-        self.assertColor(image, 95, 65, 'black')
+        self.assertColor(image, 95, 124, 'black')
         self.assertColor(image, 540, 336, 'white')
         self.assertColor(image, 1036, 616, 'white')
 
@@ -85,7 +85,7 @@ class RegenerateStaticContentTestCase(CanaryTestCase):
         image = self.readImage(file)
 
         self.assertColor(image, 13, 15, 'white')
-        self.assertColor(image, 95, 65, 'black')
+        self.assertColor(image, 95, 124, 'black')
         self.assertColor(image, 540, 336, 'white')
         self.assertColor(image, 1036, 616, 'white')
 
