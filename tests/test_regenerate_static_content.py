@@ -8,14 +8,14 @@ from .environment import CanaryTestCase
 
 
 class RegenerateStaticContentTestCase(CanaryTestCase):
-    def run_scan_data(self, args=[], expected_returncode=0):
+    def run_regenerate_static_content(self, args=[], expected_returncode=0):
         return self.run_cgi(None, 'regenerate-static-content', args,
                             expected_returncode=expected_returncode)
 
     def test_mask_svg_unfilled_version_1(self):
         scene = 'fairies'
         actor = 'RoundBug'
-        self.run_scan_data([scene, actor])
+        self.run_regenerate_static_content([scene, actor])
         mask_file = os.path.join('scenes', scene, 'actors', actor,
                                  actor + '-mask-effective-d-1.png')
         image = self.readImage(mask_file)
@@ -31,7 +31,7 @@ class RegenerateStaticContentTestCase(CanaryTestCase):
     def test_mask_svg_filled_version_1(self):
         scene = 'space'
         actor = 'Star'
-        self.run_scan_data([scene, actor])
+        self.run_regenerate_static_content([scene, actor])
         mask_file = os.path.join('scenes', scene, 'actors', actor,
                                  actor + '-mask-effective-d-1.png')
         image = self.readImage(mask_file)
@@ -46,7 +46,7 @@ class RegenerateStaticContentTestCase(CanaryTestCase):
     def test_mask_json_version_1(self):
         scene = 'fairies'
         actor = 'RoundBug'
-        self.run_scan_data([scene, actor])
+        self.run_regenerate_static_content([scene, actor])
         mask_file = os.path.join('scenes', scene, 'actors', actor,
                                  actor + '-mask-effective-d-1.json')
 
