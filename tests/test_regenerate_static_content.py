@@ -43,6 +43,34 @@ class RegenerateStaticContentTestCase(CanaryTestCase):
         self.assertColor(image, 644, 420, 'black')
         self.assertColor(image, 677, 309, 'black')
 
+    def test_mask_svg_version_1(self):
+        scene = 'balloons'
+        actor = 'BunnyBalloon'
+        self.run_regenerate_static_content([scene, actor])
+        mask_file = os.path.join('scenes', scene, 'actors', actor,
+                                 actor + '-mask-effective-d-1.png')
+        image = self.readImage(mask_file)
+        self.assertColor(image, 660, 283, 'black')
+        self.assertColor(image, 696, 270, 'white')
+        self.assertColor(image, 729, 261, 'black')
+        self.assertColor(image, 765, 273, 'white')
+        self.assertColor(image, 796, 282, 'black')
+        self.assertColor(image, 726, 548, 'white')
+
+    def test_mask_svg_version_2(self):
+        scene = 'balloons'
+        actor = 'BunnyBalloon'
+        self.run_regenerate_static_content([scene, actor])
+        mask_file = os.path.join('scenes', scene, 'actors', actor,
+                                 actor + '-mask-effective-d-2.png')
+        image = self.readImage(mask_file)
+        self.assertColor(image, 428, 261, 'black')
+        self.assertColor(image, 462, 233, 'white')
+        self.assertColor(image, 501, 234, 'black')
+        self.assertColor(image, 538, 248, 'white')
+        self.assertColor(image, 572, 261, 'black')
+        self.assertColor(image, 496, 524, 'white')
+
     def test_mask_json_version_1(self):
         scene = 'fairies'
         actor = 'RoundBug'
