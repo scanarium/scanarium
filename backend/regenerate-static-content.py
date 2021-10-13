@@ -809,7 +809,13 @@ def regenerate_pdf_actor_books(scanarium, dir, scene, pdfs_by_language, force):
 def regenerate_masks(scanarium, dir, scene, name, force):
     latest_decoration_version = get_latest_decoration_version(scanarium)
     for decoration_version in range(1, latest_decoration_version + 1):
-        regenerate_mask(scanarium, dir, scene, name, decoration_version, force)
+        build_version = decoration_version == latest_decoration_version
+        if not build_version:
+            undecorated_name = scanarium.get_versioned_filename(
+                dir, name + '-undecorated', 'svg', decoration_version)
+            build_version = os.path.isfile(undecorated_name)
+        if build_version:
+            regenerate_mask(scanarium, dir, scene, name, decoration_version, force)
 
 
 def regenerate_static_content_command_parameter(
