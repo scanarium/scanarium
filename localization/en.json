@@ -29,6 +29,7 @@
       "PhotoChild": "Photo Child",
       "PhotoChildWithSchoolCone": "Photo Child with school cone",
       "PhotoFace": "Photo Face",
+      "PhotoGhostCostume": "Photo Ghost Costume",
       "PhotoMan": "Photo Man",
       "PhotoManAndChild": "Photo Man and Child",
       "PhotoPumpkin": "Photo Pumpkin",
@@ -58,8 +59,8 @@
       "SimpleRocket": "Simple Rocket",
       "SportsCar": "Sports Car",
       "Star": "Star",
+      "SteerableBob": "Steerable Bob",
       "SubcompactCar": "Subcompact Car",
-      "PhotoGhostCostume": "Photo Ghost Costume",
       "TailedButterfly": "Tailed Butterfly",
       "Tractor": "Tractor",
       "Truck": "Truck",
@@ -127,6 +128,7 @@
       "fairies": "Fairies",
       "highway": "Highway",
       "photos": "Photos",
+      "piste": "Piste",
       "space": "Space"
     }
   }

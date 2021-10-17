@@ -218,11 +218,11 @@
       "PhotoChild": "Foto Kind",
       "PhotoChildWithSchoolCone": "Foto Kind mit Schultüte",
       "PhotoFace": "Foto Gesicht",
+      "PhotoGhostCostume": "Foto Geist-Verkleidung",
       "PhotoMan": "Foto Mann",
       "PhotoManAndChild": "Foto Mann und Kind",
       "PhotoPumpkin": "Foto Kürbis",
       "PhotoRacingCar": "Foto Rennauto",
-      "PhotoGhostCostume": "Foto Geist-Verkleidung",
       "PhotoTwoChildren": "Foto zwei Kinder",
       "PhotoUnicorn": "Foto Einhorn",
       "PhotoWoman": "Foto Frau",
@@ -248,6 +248,7 @@
       "SimpleRocket": "Einfache Rakete",
       "SportsCar": "Sportwagen",
       "Star": "Stern",
+      "SteerableBob": "Lenkbob",
       "SubcompactCar": "Kleinwagen",
       "TailedButterfly": "Geschweifter Schmetterling",
       "Tit": "Meise",
@@ -328,6 +329,7 @@
       "fairies": "Feenwelt",
       "highway": "Landstraße",
       "photos": "Fotos",
+      "piste": "Skipiste",
       "space": "Weltall"
     },
     "site": {
