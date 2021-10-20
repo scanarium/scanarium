@@ -38,14 +38,14 @@ class Rider extends Phaser.Physics.Arcade.Sprite {
         this.setDepth(position * 100);
 
         game.physics.world.enable(this);
-
-        const width = parameters.lengthCm * 2 * (0.4 + Math.pow(position, 3) * 0.6) * refToScreen;
+        const scale = (0.4 + Math.pow(position, 3) * 0.6);
+        const width = parameters.lengthCm * 2 * scale * refToScreen;
         const height = this.height * width / this.width;
         this.setSize(width, height);
         this.setDisplaySize(width, height);
 
         this.rotation=Math.atan2(-scanariumConfig.height, scanariumConfig.width);
-        const speed=450 * refToScreen;
+        const speed= scale * 450 * refToScreen;
         this.body.setVelocityX(-speed*Math.cos(this.rotation));
         this.body.setVelocityY(-speed*Math.sin(this.rotation));
     }
