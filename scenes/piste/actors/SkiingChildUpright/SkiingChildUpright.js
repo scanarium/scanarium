@@ -6,6 +6,7 @@ class SkiingChildUpright extends Rider {
     constructor(parameters) {
         mergeIntoObject(parameters, {
             lengthCm: 120,
+            topSpeedKmH: 30,
         });
         super(parameters);
     }

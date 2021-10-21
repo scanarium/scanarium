@@ -21,6 +21,7 @@ class Rider extends Phaser.Physics.Arcade.Sprite {
        x - desired initial x position
        y - desired initial y position
        lengthCm - The actor's reference length in cm
+       topSpeedKmH- The actor's top speed in km/h
     */
     constructor(parameters) {
         super(game);
@@ -45,7 +46,7 @@ class Rider extends Phaser.Physics.Arcade.Sprite {
         this.setDisplaySize(width, height);
 
         this.rotation=Math.atan2(-scanariumConfig.height, scanariumConfig.width);
-        const speed= scale * 450 * refToScreen;
+        const speed= scale * 20 * parameters.topSpeedKmH * refToScreen;
         this.body.setVelocityX(-speed*Math.cos(this.rotation));
         this.body.setVelocityY(-speed*Math.sin(this.rotation));
     }

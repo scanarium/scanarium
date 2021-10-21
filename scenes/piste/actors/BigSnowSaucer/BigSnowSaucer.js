@@ -6,6 +6,7 @@ class BigSnowSaucer extends Rider {
     constructor(parameters) {
         mergeIntoObject(parameters, {
             lengthCm: 115,
+            topSpeedKmH: 40,
         });
         super(parameters);
     }

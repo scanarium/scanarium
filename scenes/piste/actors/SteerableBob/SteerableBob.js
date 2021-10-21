@@ -6,6 +6,7 @@ class SteerableBob extends Rider {
     constructor(parameters) {
         mergeIntoObject(parameters, {
             lengthCm: 120,
+            topSpeedKmH: 25,
         });
         super(parameters);
     }
