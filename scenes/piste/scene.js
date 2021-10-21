@@ -46,7 +46,7 @@ class Rider extends Phaser.Physics.Arcade.Sprite {
         this.setDisplaySize(width, height);
 
         this.rotation=Math.atan2(-scanariumConfig.height, scanariumConfig.width);
-        const speed= scale * 20 * parameters.topSpeedKmH * refToScreen;
+        const speed= scale * 20 * parameters.topSpeedKmH * randomBetween(0.75, 1) * refToScreen;
         this.body.setVelocityX(-speed*Math.cos(this.rotation));
         this.body.setVelocityY(-speed*Math.sin(this.rotation));
     }
