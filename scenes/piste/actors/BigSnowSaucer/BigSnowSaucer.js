@@ -7,6 +7,7 @@ class BigSnowSaucer extends Rider {
         mergeIntoObject(parameters, {
             lengthCm: 115,
             topSpeedKmH: 40,
+            rotationJitter: 0.01,
         });
         super(parameters);
     }

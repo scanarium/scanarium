@@ -7,6 +7,7 @@ class SteerableBob extends Rider {
         mergeIntoObject(parameters, {
             lengthCm: 120,
             topSpeedKmH: 25,
+            rotationJitter: 0.01,
         });
         super(parameters);
     }

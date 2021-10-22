@@ -22,6 +22,7 @@ class Rider extends Phaser.Physics.Arcade.Sprite {
        y - desired initial y position
        lengthCm - The actor's reference length in cm
        topSpeedKmH- The actor's top speed in km/h
+       rotationJitter - The jitter around the general rotation
     */
     constructor(parameters) {
         super(game);
@@ -45,12 +46,14 @@ class Rider extends Phaser.Physics.Arcade.Sprite {
         this.setSize(width, height);
         this.setDisplaySize(width, height);
 
-        this.rotation=Math.atan2(-scanariumConfig.height, scanariumConfig.width);
+        this.unjitteredRotation=Math.atan2(-scanariumConfig.height, scanariumConfig.width);
+        this.rotationJitter = parameters.rotationJitter;
         const speed= scale * 20 * parameters.topSpeedKmH * randomBetween(0.75, 1) * refToScreen;
-        this.body.setVelocityX(-speed*Math.cos(this.rotation));
-        this.body.setVelocityY(-speed*Math.sin(this.rotation));
+        this.body.setVelocityX(-speed*Math.cos(this.unjitteredRotation));
+        this.body.setVelocityY(-speed*Math.sin(this.unjitteredRotation));
     }
 
     update(time, delta) {
+        this.rotation = this.unjitteredRotation + randomPlusMinus(this.rotationJitter);
     }
 }

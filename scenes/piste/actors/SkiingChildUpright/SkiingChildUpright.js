@@ -7,6 +7,7 @@ class SkiingChildUpright extends Rider {
         mergeIntoObject(parameters, {
             lengthCm: 120,
             topSpeedKmH: 30,
+            rotationJitter: 0.001,
         });
         super(parameters);
     }
