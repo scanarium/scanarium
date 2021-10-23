@@ -40,20 +40,29 @@ class Rider extends Phaser.Physics.Arcade.Sprite {
         this.setDepth(position * 100);
 
         game.physics.world.enable(this);
+        this.lengthCm = parameters.lengthCm;
+        this.speedFactor = 20 * parameters.topSpeedKmH * randomBetween(0.75, 1) * refToScreen;
+
+        this.unjitteredRotation=Math.atan2(-scanariumConfig.height, scanariumConfig.width);
+        this.rotationJitter = parameters.rotationJitter;
+
+        this.update(0, 0);
+    }
+
+    update(time, delta) {
+        // position is 0 on the top left edge between snow and
+        // horizon, and is 1 in the bottom right corner.
+        const position = ((this.y + this.x * scanariumConfig.height / scanariumConfig.width) / scanariumConfig.height - 0.5) / 1.5;
         const scale = (0.4 + Math.pow(position, 3) * 0.6);
-        const width = parameters.lengthCm * 2 * scale * refToScreen;
+        const width = this.lengthCm * 2 * scale * refToScreen;
         const height = this.height * width / this.width;
         this.setSize(width, height);
         this.setDisplaySize(width, height);
 
-        this.unjitteredRotation=Math.atan2(-scanariumConfig.height, scanariumConfig.width);
-        this.rotationJitter = parameters.rotationJitter;
-        const speed= scale * 20 * parameters.topSpeedKmH * randomBetween(0.75, 1) * refToScreen;
+        const speed= scale * this.speedFactor;
         this.body.setVelocityX(-speed*Math.cos(this.unjitteredRotation));
         this.body.setVelocityY(-speed*Math.sin(this.unjitteredRotation));
-    }
 
-    update(time, delta) {
         this.rotation = this.unjitteredRotation + randomPlusMinus(this.rotationJitter);
     }
 }
