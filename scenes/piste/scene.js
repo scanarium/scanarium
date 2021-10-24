@@ -53,7 +53,7 @@ class Rider extends Phaser.Physics.Arcade.Sprite {
         // position is 0 on the top left edge between snow and
         // horizon, and is 1 in the bottom right corner.
         const position = ((this.y + this.x * scanariumConfig.height / scanariumConfig.width) / scanariumConfig.height - 0.5) / 1.5;
-        const scale = (0.4 + Math.pow(position, 3) * 0.6);
+        const scale = 0.4 + position; // linear is good enough. And this can go above 1 in the bottom right corner.
         const width = this.lengthCm * 2 * scale * refToScreen;
         const height = this.height * width / this.width;
         this.setSize(width, height);
