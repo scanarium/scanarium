@@ -8,6 +8,7 @@ class SkiingChildUpright extends Rider {
             lengthCm: 120,
             topSpeedKmH: 30,
             rotationJitter: 0.001,
+            centerOfMassX: 0.6,
         });
         super(parameters);
     }

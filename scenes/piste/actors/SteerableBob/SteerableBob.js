@@ -8,6 +8,7 @@ class SteerableBob extends Rider {
             lengthCm: 120,
             topSpeedKmH: 25,
             rotationJitter: 0.01,
+            centerOfMassX: 0.6,
         });
         super(parameters);
     }

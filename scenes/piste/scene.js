@@ -23,6 +23,7 @@ class Rider extends Phaser.Physics.Arcade.Sprite {
        lengthCm - The actor's reference length in cm
        topSpeedKmH- The actor's top speed in km/h
        rotationJitter - The jitter around the general rotation
+       centerOfMassX - Value between 0 and 1. 0 center of mass is on the left. 1 center of mass is on the right
     */
     constructor(parameters) {
         super(game);
@@ -36,7 +37,7 @@ class Rider extends Phaser.Physics.Arcade.Sprite {
         const targetY = scanariumConfig.height * (position < 0.5 ? 0.5 + position : 1);
         this.setTexture(flavored_actor, '__BASE');
         this.setPosition(startX, startY);
-        this.setOrigin(0, 1);
+        this.setOrigin(parameters.centerOfMassX, 1);
         this.setDepth(position * 100);
 
         game.physics.world.enable(this);

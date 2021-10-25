@@ -8,6 +8,7 @@ class BigSnowSaucer extends Rider {
             lengthCm: 115,
             topSpeedKmH: 40,
             rotationJitter: 0.01,
+            centerOfMassX: 0.6,
         });
         super(parameters);
     }
