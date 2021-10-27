@@ -55,7 +55,6 @@ class Rider extends Phaser.Physics.Arcade.Sprite {
         this.setTexture(flavored_actor, '__BASE');
         this.setPosition(startX, startY);
         this.setOrigin(this.centerOfMassX, 1);
-        this.setDepth(position * 100);
         this.originalWidth = this.width;
         this.originalHeight = this.height;
 
@@ -83,6 +82,7 @@ class Rider extends Phaser.Physics.Arcade.Sprite {
         this.setDisplaySize(width, height);
         this.setSize(oWidth * 1.5, oWidth * 1.5, false);
         this.setOffset(oWidth * (this.centerOfMassX - 1), oHeight - oWidth / 2);
+        this.setDepth(position * 100);
 
         const speed= scale * this.speedFactor;
 
