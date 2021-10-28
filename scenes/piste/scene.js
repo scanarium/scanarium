@@ -6,7 +6,7 @@
 
 var riders = [];
 var slopeRotation = Math.atan2(-scanariumConfig.height, scanariumConfig.width); // radian
-const maxSlopeDeviation = 0.15; // radian
+const maxSlopeDeviation = 0.2; // radian
 const evadeSpeed = 0.005; // radian / frame
 
 function scene_preload()
@@ -87,7 +87,7 @@ class Rider extends Phaser.Physics.Arcade.Sprite {
         const speed= scale * this.speedFactor;
 
         const minRotation = slopeRotation - maxSlopeDeviation;
-        const maxRotation = slopeRotation + maxSlopeDeviation * Math.min(1, position * 10) - 0.1;
+        const maxRotation = slopeRotation + maxSlopeDeviation * Math.min(1, position * 10 - 0.3);
         this.unjitteredRotation = tunnel(this.unjitteredRotation, minRotation, maxRotation);
         this.body.setVelocityX(-speed*Math.cos(this.unjitteredRotation));
         this.body.setVelocityY(-speed*Math.sin(this.unjitteredRotation));
