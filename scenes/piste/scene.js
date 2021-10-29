@@ -7,19 +7,18 @@
 var riders = [];
 var slopeRotation = Math.atan2(-scanariumConfig.height, scanariumConfig.width); // radian
 const maxSlopeDeviation = 0.2; // radian
-const evadeSpeed = 0.005; // radian / frame
 
 function scene_preload()
 {
 }
 
 function riderCollision(rider1, rider2) {
-    var evadeDirection = 1
+    var evadeDirection = 1;
     if (rider1.depth > rider2.depth) {
         evadeDirection = -1;
     }
-    rider1.unjitteredRotation += evadeDirection * evadeSpeed;
-    rider2.unjitteredRotation -= evadeDirection * evadeSpeed;
+    rider1.unjitteredRotation += evadeDirection * rider1.speedFactor / 200000;
+    rider2.unjitteredRotation -= evadeDirection * rider2.speedFactor / 200000;
 }
 
 function scene_create()
@@ -60,7 +59,7 @@ class Rider extends Phaser.Physics.Arcade.Sprite {
 
         game.physics.world.enable(this);
         this.lengthCm = parameters.lengthCm;
-        this.speedFactor = 20 * parameters.topSpeedKmH * randomBetween(0.75, 1) * refToScreen;
+        this.speedFactor = 20 * parameters.topSpeedKmH * randomBetween(0.75, 1);
 
         this.unjitteredRotation = slopeRotation;
         this.rotationJitter = parameters.rotationJitter;
@@ -84,7 +83,7 @@ class Rider extends Phaser.Physics.Arcade.Sprite {
         this.setOffset(oWidth * (this.centerOfMassX - 1), oHeight - oWidth / 2);
         this.setDepth(position * 100);
 
-        const speed= scale * this.speedFactor;
+        const speed= scale * this.speedFactor * refToScreen;
 
         const minRotation = slopeRotation - maxSlopeDeviation;
         const maxRotation = slopeRotation + maxSlopeDeviation * Math.min(1, position * 10 - 0.3);
