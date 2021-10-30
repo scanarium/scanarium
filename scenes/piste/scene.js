@@ -48,8 +48,6 @@ class Rider extends Phaser.Physics.Arcade.Sprite {
         const position = Math.random();
         const startX = scanariumConfig.width * (position < 0.7 ? 0.5 + position / 0.7 / 2 : 1);
         const startY = scanariumConfig.height * (position < 0.7 ? 0 : position - 0.7);
-        const targetX = scanariumConfig.width * (position < 0.5 ? 0 : position - 0.5);
-        const targetY = scanariumConfig.height * (position < 0.5 ? 0.5 + position : 1);
         this.centerOfMassX = parameters.centerOfMassX;
         this.setTexture(flavored_actor, '__BASE');
         this.setPosition(startX, startY);
