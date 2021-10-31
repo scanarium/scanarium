@@ -85,6 +85,16 @@ var scanariumConfig = {
     height: 0,
     physics: {
         default: 'arcade',
+/*        arcade: {
+            debug: true,
+            debugShowBody: true,
+            debugShowStaticBody: true,
+            debugShowVelocity: true,
+            debugVelocityColor: 0xffff00,
+            debugBodyColor: 0x0000ff,
+            debugStaticBodyColor: 0xff0000,
+        },
+// */
     },
     scale: {
         mode: Phaser.Scale.RESIZE,
