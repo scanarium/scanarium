@@ -46,8 +46,8 @@ class Rider extends Phaser.Physics.Arcade.Sprite {
         const actor = this.constructor.name;
         const flavored_actor = actor + '-' + parameters.flavor;
         const position = Math.random();
-        const startX = scanariumConfig.width * (position < 0.7 ? 0.5 + position / 0.7 / 2 : 1);
-        const startY = scanariumConfig.height * (position < 0.7 ? 0 : position - 0.7);
+        var startX = scanariumConfig.width * (position < 0.7 ? 0.5 + position / 0.7 / 2 : 1);
+        var startY = scanariumConfig.height * (position < 0.7 ? 0 : position - 0.7);
         this.centerOfMassX = parameters.centerOfMassX;
         this.setTexture(flavored_actor, '__BASE');
         this.setPosition(startX, startY);
@@ -63,6 +63,12 @@ class Rider extends Phaser.Physics.Arcade.Sprite {
         this.rotationJitter = parameters.rotationJitter;
 
         this.update(0, 0);
+
+        // Shift back the actor until it is no longer on-screen, to give smooth start
+        startX += this.displayWidth * Math.cos(this.unjitteredRotation) * this.centerOfMassX;
+        startY += this.displayHeight * Math.sin(this.unjitteredRotation);
+        this.setPosition(startX, startY);
+
         riders.add(this);
     }
 
