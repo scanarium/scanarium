@@ -5,7 +5,11 @@
 // Scene: piste
 
 var riders = [];
-var slopeRotation = Math.atan2(-scanariumConfig.height, scanariumConfig.width); // radian
+var slopeRotation; // radian
+
+var screenWidth;
+var screenHeight;
+
 const maxSlopeDeviation = 0.2; // radian
 
 function scene_preload()
@@ -30,6 +34,18 @@ function scene_create()
 function scene_update(time, delta) {
 }
 
+function relayout(width, height) {
+  slopeRotation = Math.atan2(-height, width);
+  actorManager.actors.forEach(actor => {
+      const x = screenWidth ? (actor.x / screenWidth * width) : actor.x;
+      const y = screenHeight ? (actor.y / screenHeight * height) : actor.y;
+      actor.setPosition(x, y);
+  });
+  screenWidth = width;
+  screenHeight = height;
+};
+LayoutManager.register(relayout);
+
 class Rider extends Phaser.Physics.Arcade.Sprite {
     /* parameters has the following key/values:
        flavor - actor's flavor
@@ -46,8 +62,8 @@ class Rider extends Phaser.Physics.Arcade.Sprite {
         const actor = this.constructor.name;
         const flavored_actor = actor + '-' + parameters.flavor;
         const position = Math.random();
-        var startX = scanariumConfig.width * (position < 0.7 ? 0.5 + position / 0.7 / 2 : 1);
-        var startY = scanariumConfig.height * (position < 0.7 ? 0 : position - 0.7);
+        var startX = screenWidth * (position < 0.7 ? 0.5 + position / 0.7 / 2 : 1);
+        var startY = screenHeight * (position < 0.7 ? 0 : position - 0.7);
         this.centerOfMassX = parameters.centerOfMassX;
         this.setTexture(flavored_actor, '__BASE');
         this.setPosition(startX, startY);
@@ -75,7 +91,7 @@ class Rider extends Phaser.Physics.Arcade.Sprite {
     update(time, delta)  {
         // position is 0 on the top left edge between snow and
         // horizon, and is 1 in the bottom right corner.
-        const position = ((this.y + this.x * scanariumConfig.height / scanariumConfig.width) / scanariumConfig.height - 0.5) / 1.5;
+        const position = tunnel(((this.y + this.x * screenHeight / screenWidth) / screenHeight - 0.5) / 1.5, 0, 1);
         const scale = 0.4 + position; // linear is good enough. And this can go above 1 in the bottom right corner.
         const oWidth = this.originalWidth;
         const oHeight = this.originalHeight;
