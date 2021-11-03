@@ -12,8 +12,14 @@ var screenHeight;
 
 const maxSlopeDeviation = 0.2; // radian
 
+var drawableBackground;
+var skids;
+const SKID_WIDTH = 16;
+const SKID_HEIGHT = 16;
+
 function scene_preload()
 {
+  skids = game.load.image('skids', scene_dir + '/skids.png');
 }
 
 function riderCollision(rider1, rider2) {
@@ -27,11 +33,31 @@ function riderCollision(rider1, rider2) {
 
 function scene_create()
 {
+    drawableBackground = createRenderTextureFromTexture('background');
+    game.textures.get('background').destroy();
+    drawableBackground.saveTexture('background');
+    background.setTexture('background', '__BASE');
+
+    skidTexture = game.textures.get('skids');
+    for (var j=0; j < skidTexture.source[0].height / SKID_HEIGHT; j++) {
+        for (var i=0; i < skidTexture.source[0].width / SKID_WIDTH; i++) {
+            var frameName = 'skid-' + (j ? 'dark' : 'light') + '-' + i;
+            skidTexture.add(frameName, 0, i * SKID_WIDTH, j * SKID_HEIGHT, SKID_WIDTH, SKID_HEIGHT);
+        }
+    }
     riders = game.add.group();
     game.physics.add.overlap(riders, riders, riderCollision);
 }
 
 function scene_update(time, delta) {
+    drawableBackground.beginDraw();
+    actorManager.actors.forEach(actor => {
+        //const last = parameters.lastUnjitteredRotation;
+        const skid = 'skid-' + (actor.isTurning ? 'dark' : 'light') + '-' + chooseInt(0, 3);
+        drawableBackground.batchDrawFrame('skids', skid, actor.x / screenWidth * refWidth - SKID_WIDTH / 2, actor.y / screenHeight * refHeight - SKID_WIDTH / 2);
+        actor.isColliding = false;
+    });
+    drawableBackground.endDraw();
 }
 
 function relayout(width, height) {
@@ -76,6 +102,7 @@ class Rider extends Phaser.Physics.Arcade.Sprite {
         this.speedFactor = 20 * parameters.topSpeedKmH * randomBetween(0.75, 1);
 
         this.unjitteredRotation = slopeRotation;
+        this.lastUnjitteredRotation = this.unjitteredRotation;
         this.rotationJitter = parameters.rotationJitter;
 
         this.update(0, 0);
@@ -112,5 +139,9 @@ class Rider extends Phaser.Physics.Arcade.Sprite {
         this.body.setVelocityY(-speed*Math.sin(this.unjitteredRotation));
 
         this.rotation = this.unjitteredRotation + randomPlusMinus(this.rotationJitter);
+        this.isTurning = (this.lastUnjitteredRotation != this.unjitteredRotation);
+        if (this.isTurning) {
+            this.lastUnjitteredRotation = this.unjitteredRotation;
+        }
     }
 }

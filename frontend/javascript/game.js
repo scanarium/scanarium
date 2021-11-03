@@ -22,6 +22,7 @@ function preload() {
 }
 scanariumConfig.scene["preload"] = preload;
 
+var background;
 var webgl_context_got_lost = false;
 function create() {
     // Initing `game` to be save even if create happens to get called before
