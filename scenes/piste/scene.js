@@ -109,7 +109,7 @@ class Rider extends Phaser.Physics.Arcade.Sprite {
 
         // Shift back the actor until it is no longer on-screen, to give smooth start
         startX += this.displayWidth * Math.cos(this.unjitteredRotation) * this.centerOfMassX;
-        startY += this.displayHeight * Math.sin(this.unjitteredRotation);
+        startY += this.displayHeight * Math.sin(this.unjitteredRotation) * this.centerOfMassX;
         this.setPosition(startX, startY);
 
         riders.add(this);
