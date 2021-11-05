@@ -27,8 +27,10 @@ function riderCollision(rider1, rider2) {
     if (rider1.depth > rider2.depth) {
         evadeDirection = -1;
     }
-    rider1.unjitteredRotation += evadeDirection * rider1.speedFactor / 200000;
-    rider2.unjitteredRotation -= evadeDirection * rider2.speedFactor / 200000;
+    rider1.unjitteredRotation += evadeDirection * rider1.rotationSpeedFactor;
+    rider2.unjitteredRotation -= evadeDirection * rider2.rotationSpeedFactor;
+    rider1.isColliding = true;
+    rider1.isColliding = true;
 }
 
 function scene_create()
@@ -100,6 +102,7 @@ class Rider extends Phaser.Physics.Arcade.Sprite {
         game.physics.world.enable(this);
         this.lengthCm = parameters.lengthCm;
         this.speedFactor = 20 * parameters.topSpeedKmH * randomBetween(0.75, 1);
+        this.rotationSpeedFactor = this.speedFactor / 200000;
 
         this.unjitteredRotation = slopeRotation;
         this.lastUnjitteredRotation = this.unjitteredRotation;
@@ -131,6 +134,12 @@ class Rider extends Phaser.Physics.Arcade.Sprite {
         this.setDepth(position * 100);
 
         const speed= scale * this.speedFactor * refToScreen;
+
+        // Slowly steer back to slope direction, if not colliding.
+        if (!this.isColliding) {
+            this.unjitteredRotation += (this.unjitteredRotation > slopeRotation ? -1 : 1) * 0.6 * this.rotationSpeedFactor;
+        }
+        this.isColliding = false;
 
         const minRotation = slopeRotation - maxSlopeDeviation;
         const maxRotation = slopeRotation + maxSlopeDeviation * Math.min(1, position * 10 - 0.3);
