@@ -8,7 +8,7 @@ import cv2
 import numpy as np
 
 from .ScanariumError import ScanariumError
-from .scanner_util import scale_image
+from .scanner_util import prepare_image
 
 
 def get_cv_major_version():
@@ -89,40 +89,6 @@ def refine_corners(scanarium, prepared_image, points):
             prepared_image, points, search_window, (-1, -1), criteria)
 
     return points.reshape(4, 2)
-
-
-def correct_image_brightness(scanarium, image):
-    factor = scanarium.get_brightness_factor()
-    if factor is not None:
-        # This pipeline normalizes each pixel with respect to the maximal
-        # brightness allowed in the max image.
-        image = np.clip(image * factor, 0, 255).astype(np.uint8)
-
-    return image
-
-
-def prepare_image(scanarium, image, contrast=1):
-    # If the picture is too big (E.g.: from a proper photo camera), edge
-    # detection won't work reliably, as the sheet's contour will exhibit too
-    # much detail and would get broken down into more than 4 segments. So we
-    # scale too big images down. Note though that the scaled image is only
-    # used for edge detection. Rectification happens on the original picture.
-    (prepared_image, scale_factor) = scale_image(
-        scanarium, image, 'preparation', scaled_height=1000, trip_height=1300)
-
-    if contrast != 1:
-        shift = - 127.5 * (contrast - 1)
-        prepared_image = np.clip(
-            prepared_image.astype(np.float32) * contrast + shift, 0, 255
-        ).astype(np.uint8)
-
-    prepared_image = cv2.cvtColor(prepared_image, cv2.COLOR_BGR2GRAY)
-    prepared_image = correct_image_brightness(scanarium, prepared_image)
-
-    scanarium.debug_show_image(
-        f'Prepared for detection (contrast: {contrast})', prepared_image)
-
-    return (prepared_image, scale_factor)
 
 
 def find_rect_points(scanarium, image, decreasingArea=True,
