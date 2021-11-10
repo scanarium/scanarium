@@ -52,14 +52,14 @@ def prepare_image(scanarium, image, contrast=1):
     (prepared_image, scale_factor) = scale_image(
         scanarium, image, 'preparation', scaled_height=1000, trip_height=1300)
 
+    prepared_image = cv2.cvtColor(prepared_image, cv2.COLOR_BGR2GRAY)
+    prepared_image = correct_image_brightness(scanarium, prepared_image)
+
     if contrast != 1:
         shift = - 127.5 * (contrast - 1)
         prepared_image = np.clip(
             prepared_image.astype(np.float32) * contrast + shift, 0, 255
         ).astype(np.uint8)
-
-    prepared_image = cv2.cvtColor(prepared_image, cv2.COLOR_BGR2GRAY)
-    prepared_image = correct_image_brightness(scanarium, prepared_image)
 
     scanarium.debug_show_image(
         f'Prepared for detection (contrast: {contrast})', prepared_image)
