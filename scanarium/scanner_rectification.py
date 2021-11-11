@@ -8,7 +8,7 @@ import cv2
 import numpy as np
 
 from .ScanariumError import ScanariumError
-from .scanner_util import prepare_image
+from .scanner_util import prepare_image, apply_image_contrast
 
 
 def get_cv_major_version():
@@ -238,18 +238,24 @@ def rectify_by_rect_points(scanarium, image, points):
 def rectify(scanarium, image, decreasingArea=True, required_points=[],
             yield_only_points=False):
     found_points_scaled_list = []
+    (prepared_image, scale_factor) = prepare_image(scanarium, image)
+
     contrasts = [float(contrast.strip())
                  for contrast in
                  scanarium.get_config('scan', 'contrasts').split(',')]
     for contrast in contrasts:
-        (prepared_image, scale_factor) = prepare_image(scanarium, image,
-                                                       contrast)
+        fully_prepared_image = apply_image_contrast(prepared_image, contrast)
+
+        scanarium.debug_show_image(
+            f'Prepared for detection (contrast: {contrast})',
+            fully_prepared_image)
 
         required_points_scaled = [(int(point[0] * scale_factor),
                                    int(point[1] * scale_factor)
                                    ) for point in required_points]
         found_points_scaled = find_rect_points(
-            scanarium, prepared_image, decreasingArea, required_points_scaled)
+            scanarium, fully_prepared_image, decreasingArea,
+            required_points_scaled)
         if found_points_scaled is not None:
             found_points_scaled_list.append(found_points_scaled)
 
