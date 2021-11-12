@@ -6,10 +6,11 @@ import json
 import os
 import re
 
-import cv2
 from pyzbar import pyzbar
+from collections import namedtuple
 
 from .ScanariumError import ScanariumError
+from .scanner_util import prepare_image, apply_image_contrast
 
 
 def raise_error_misformed_qr_code(scanarium):
@@ -21,11 +22,8 @@ def raise_error_misformed_qr_code(scanarium):
 
 
 def extract_qr(scanarium, image):
-    # With low light images, the random noise in different color channels is
-    # typically in the way of robust detection. So we convert to
-    # grey to smoothen out the noise a bit.
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    codes = pyzbar.decode(image)
+    (scaled_image, scale_factor) = prepare_image(scanarium, image)
+    codes = pyzbar.decode(scaled_image)
     codes_len = len(codes)
     if codes_len < 1:
         raise ScanariumError('SE_SCAN_NO_QR_CODE',
@@ -39,8 +37,10 @@ def extract_qr(scanarium, image):
             {'qr_codes_count': codes_len})
 
     code = codes[0]
-
-    rect = code.rect
+    rect_scaled = code.rect
+    rect = namedtuple('Rect', ['left', 'top', 'width', 'height'])(
+        rect_scaled.left / scale_factor, rect_scaled.top / scale_factor,
+        rect_scaled.width / scale_factor, rect_scaled.height / scale_factor)
 
     try:
         data_bytes = code.data
