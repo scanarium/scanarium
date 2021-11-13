@@ -22,9 +22,18 @@ def raise_error_misformed_qr_code(scanarium):
 
 
 def extract_qr(scanarium, image):
-    (scaled_image, scale_factor) = prepare_image(scanarium, image)
-    codes = pyzbar.decode(scaled_image)
-    codes_len = len(codes)
+    (prepared_image, scale_factor) = prepare_image(scanarium, image)
+    codes_len = 0
+    contrasts = [float(contrast.strip())
+                 for contrast in
+                 scanarium.get_config('scan', 'contrasts').split(',')]
+    for contrast in contrasts:
+        if not codes_len:
+            fully_prepared_image = apply_image_contrast(
+                prepared_image, contrast)
+            codes = pyzbar.decode(fully_prepared_image)
+            codes_len = len(codes)
+
     if codes_len < 1:
         raise ScanariumError('SE_SCAN_NO_QR_CODE',
                              'Failed to find QR code in image')
