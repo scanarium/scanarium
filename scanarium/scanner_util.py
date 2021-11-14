@@ -52,7 +52,7 @@ def apply_image_contrast(image, contrast=1):
     return image
 
 
-def prepare_image(scanarium, image, contrast=1):
+def prepare_image(scanarium, image):
     # If the picture is too big (E.g.: from a proper photo camera), edge
     # detection won't work reliably, as the sheet's contour will exhibit too
     # much detail and would get broken down into more than 4 segments. So we
