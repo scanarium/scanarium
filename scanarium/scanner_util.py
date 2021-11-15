@@ -38,7 +38,8 @@ def correct_image_brightness(scanarium, image):
     if factor is not None:
         # This pipeline normalizes each pixel with respect to the maximal
         # brightness allowed in the max image.
-        image = np.clip(image * factor, 0, 255).astype(np.uint8)
+        if image.shape == factor.shape:
+            image = np.clip(image * factor, 0, 255).astype(np.uint8)
 
     return image
 
