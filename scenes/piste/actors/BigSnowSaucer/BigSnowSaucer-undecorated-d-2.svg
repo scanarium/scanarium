@@ -7,7 +7,6 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="297mm"
@@ -25,11 +24,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.40402243"
-     inkscape:cx="705.50515"
-     inkscape:cy="699.5036"
+     inkscape:zoom="0.1428435"
+     inkscape:cx="807.15386"
+     inkscape:cy="-447.16473"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="svg2"
      showgrid="false"
      units="mm"
      inkscape:window-width="1920"
@@ -53,28 +52,6 @@
       </cc:Work>
     </rdf:RDF>
   </metadata>
-  <g
-     inkscape:groupmode="layer"
-     id="layer2"
-     inkscape:label="Bild"
-     style="display:none;opacity:0.21100003">
-    <image
-       sodipodi:absref="/home/christian/tellerbob.png"
-       y="302.91174"
-       x="275.29013"
-       id="image899"
-       xlink:href="file:///home/christian/tellerbob.png"
-       preserveAspectRatio="none"
-       height="277.02011"
-       width="587.57422"
-       style="stroke:#c0c0c0;stroke-width:0.37795275;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       transform="rotate(0.08065936)" />
-    <path
-       style="opacity:1;vector-effect:none;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.75599998;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       d="M -127.7622,545.17705 H 1319.626"
-       id="path902"
-       inkscape:connector-curvature="0" />
-  </g>
   <g
      inkscape:label="Mask"
      inkscape:groupmode="layer"
