@@ -29,7 +29,8 @@ functionality. And for example [teamLab](https://www.teamlab.art) has
 [spirit](https://www.teamlab.art/w/sketchtown/).
 
 We've not invented it. We're not doing huge installations at museums. We're not
-even doing 3D models. But we try to bring it to your living room.
+even doing 3D models. But we try to bring it to your living room as free
+software that you can self-host without having to install any proprietary apps.
 
 
 
