@@ -20,8 +20,11 @@ There is [much](https://workinman.com/virtual-aquarium-design-museum)
 [museums](https://digitalmoo.com/products/virtual-aquarium/) around the world
 when it comes to coloring and animating. It's not clear, who first allowed to
 animate user-generated content and when. But there are many
-[groups](https://www.youtube.com/watch?v=-tmd1hjkhIs) that offer this
-functionality. And for example [teamLab](https://www.teamlab.art) has
+[groups](https://www.youtube.com/watch?v=-tmd1hjkhIs),
+[efforts](https://www.youtube.com/watch?v=SWzurBQ81CM), or
+[apps](https://play.google.com/store/apps/details?id=com.pl4d.color4d&hl=en_US&gl=US)
+that offer this functionality. And for example
+[teamLab](https://www.teamlab.art) has
 [many](https://www.teamlab.art/w/sketch_ocean/)
 [installations](https://borderless.teamlab.art/ew/aquarium/)
 [in](https://www.teamlab.art/w/sketch_animals/)
