@@ -12,12 +12,13 @@ Table of contents
 
 ## Software setup
 
-First, install `inkscape`, `imagemagick`, Python >= 3.6, `opencv-python`,
-`numpy`, `pyzbar`, and `qrcode`. For example on Linux Mint Tricia, run:
+First, install `inkscape`, `imagemagick`, Python >= 3.6,
+`opencv-python`, `numpy`, `pyzbar`, and `qrcode` (with PIL). For
+example on Linux Mint Tricia, run:
 
 ```
 sudo apt-get install inkscape imagemagick python3-pip python3-setuptools
-pip3 install opencv-contrib-python pyzbar qrcode
+pip3 install opencv-contrib-python pyzbar qrcode[PIL]
 ```
 
 Then run the `setup.sh` script to download the [Phaser](https://phaser.io/) and
