@@ -815,7 +815,8 @@ def regenerate_masks(scanarium, dir, scene, name, force):
                 dir, name + '-undecorated', 'svg', decoration_version)
             build_version = os.path.isfile(undecorated_name)
         if build_version:
-            regenerate_mask(scanarium, dir, scene, name, decoration_version, force)
+            regenerate_mask(scanarium, dir, scene, name, decoration_version,
+                            force)
 
 
 def regenerate_static_content_command_parameter(
