@@ -1,0 +1,36 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.6
+
+      - name: Install system package dependencies
+        run: sudo apt-get install -y inkscape imagemagick python3-pip python3-setuptools libzbar0 libimage-exiftool-perl poppler-utils
+
+      - name: Install pip dependencies
+        run: pip3 install opencv-contrib-python pyzbar qrcode[pil] tox
+
+      - name: Configure ImageMagick
+        run: 'sudo sed -e "s@\\(<policy domain=\"coder\" *rights=\"none\" *pattern=\"[^\"]*PDF[^\"]*\" */>\\)@<!-- \1 -->@" -i /etc/ImageMagick-6/policy.xml'
+
+      - name: Prepare config
+        run: 'echo -e "[general]\nexternal_program_timeout=30\n[debug]\nenable_debug_config_override_command_line_argument = True\n[cgi:regenerate-static-content]\ngenerate_png = True\ngenerate_jpg = True\n\n[mask]\nstroke_offset=1\nstroke_color=#000000" >> conf/scanarium.conf'
+
+      - name: Prepare environment
+        run: ./regenerate-static-content.sh space SimpleRocket
+
+      - name: Run tox
+        run: 'TEST_SKIP_HEIC=yes tox'
