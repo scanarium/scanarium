@@ -126,7 +126,11 @@ def find_rect_points(scanarium, image, decreasingArea=True,
                         points=required_points)
 
     good_approx = None
-    contours.sort(key=cv2.contourArea, reverse=decreasingArea)
+    # With OpenCV 4.2.0 `contours` would be a list and we could use
+    # `contours.sort` directly. But at least since OpenCV 4.5.5, `contours` is
+    # an array and hence lacks a `sort` method. So we resort to `sorted` to
+    # support both OpenCV versions
+    contours = sorted(contours, key=cv2.contourArea, reverse=decreasingArea)
     ratings = []
     approximations = []
     for contour in contours:

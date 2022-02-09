@@ -167,6 +167,11 @@ def mask(scanarium, image, qr_parsed, visualized_alpha=None):
         factor = np.clip(mask.astype(np.float32) / 255, visualized_alpha, 1)
         channels = [(channel * factor).astype(np.uint8)
                     for channel in channels]
+    else:
+        # We want to append the mask as alpha channel. With OpenCV 4.2.0
+        # `channels` is a list. With OpenCV 4.5.5 it is a tuple, and hence
+        # lacks an `append` method. So we explicitly convert to a list.
+        channels = list(channels)
 
     channels.append(mask)
     masked = cv2.merge(channels)
