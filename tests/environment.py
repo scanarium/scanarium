@@ -263,7 +263,7 @@ class BasicTestCase(unittest.TestCase):
 
     def assertColor(self, image, x, y, expected):
         self.assertColorApproximately(
-            image, x, y, expected, allowed_deviation=0)
+            image, x, y, expected, allowed_deviation=0.01)
 
     def readImage(self, file):
         expected_format = file.rsplit('.', 1)[1]
