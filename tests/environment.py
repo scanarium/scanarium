@@ -120,8 +120,13 @@ class BasicTestCase(unittest.TestCase):
                 },
             'scan': {
                 'source': '/dev/null',
+                'corner_refinement_size': 3,
+                'corner_refinement_iteration_bound': 60,
+                'corner_refinement_accuracy': 0.03,
                 'max_raw_width': 1000,
                 'max_raw_height': 1000,
+                'max_raw_width_trip': 1300,
+                'max_raw_height_trip': 1300,
                 'max_final_width': 1000,
                 'max_final_height': 1000,
             },
