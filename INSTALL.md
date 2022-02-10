@@ -13,11 +13,11 @@ Table of contents
 ## Software setup
 
 First, install `inkscape`, `imagemagick`, Python >= 3.6,
-`opencv-python`, `numpy`, `pyzbar`, and `qrcode` (with PIL). For
-example on Linux Mint Tricia, run:
+`opencv-python`, `numpy`, `pyzbar`, `qrcode` (with PIL), and
+`exiftool`. For example on Linux Mint Tricia, run:
 
 ```
-sudo apt-get install inkscape imagemagick python3-pip python3-setuptools
+sudo apt-get install inkscape imagemagick python3-pip python3-setuptools libzbar0 libimage-exiftool-perl poppler-utils
 pip3 install opencv-contrib-python pyzbar qrcode[PIL]
 ```
 
