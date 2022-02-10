@@ -2,6 +2,8 @@
 
 [Documentation Index](docs/index.md)
 
+[![Build Status](https://github.com/scanarium/scanarium/actions/workflows/ci.yml/badge.svg)](https://github.com/scanarium/scanarium/actions/workflows/ci.yml)
+
 ![](docs/images/bait.gif)
 
 Scanarium takes your filled in coloring pages and lets them come to life, by
