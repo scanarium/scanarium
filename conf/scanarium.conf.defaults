@@ -7,6 +7,10 @@
 debug = False
 
 
+# After how many seconds to consider an external program hanging.
+external_program_timeout = 10
+
+
 
 #-------------------------------------------------------------------------------
 # General configuration
@@ -766,6 +770,10 @@ bailout_period = 0
 # out with mode `FOO,BAR` would first trigger bailing out `FOO` and upon
 # success `BAR`.
 bailout_mode = exit
+
+
+# How many seconds to wait for service restarts to finish during bailout
+bailout_service_restart_timeout = 60
 
 
 # How long to wait after a bailout before allowing to trigger a new bailout

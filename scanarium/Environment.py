@@ -54,7 +54,13 @@ class Environment(object):
             # reset already.
             pass
 
-    def run(self, command, check=True, timeout=10, input=None):
+    # `timeout`: Either a number in seconds, or the string `default` to pick
+    #   the default timeout from configuration files.
+    def run(self, command, check=True, timeout='default', input=None):
+        if timeout == 'default':
+            timeout = self._config.get('general', 'external_program_timeout',
+                                       kind='int')
+
         sep = "\" \""
         logger.debug(f'Running external command with check={check}, '
                      f'timeout={timeout}: "{sep.join(command)}"')

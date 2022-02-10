@@ -355,7 +355,7 @@ def process_image_with_qr_code_unlogged(scanarium, qr_parsed, image, qr_rect):
     elif command == 'system':
         if parameter == 'poweroff':
             command = ['/usr/bin/sudo', '--non-interactive', '/sbin/poweroff']
-            scanarium.run(command, timeout=10)
+            scanarium.run(command)
             ret = {
                 'ok': True
             }

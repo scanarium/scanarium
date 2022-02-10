@@ -275,9 +275,12 @@ class BasicTestCase(unittest.TestCase):
 
 class CanaryTestCase(BasicTestCase):
     def run_command(self, command, expected_returncode=0):
+        timeout = self.new_Scanarium().get_config(
+            'general', 'external_program_timeout', kind='int')
+
         process = subprocess.run(command,
                                  check=False,
-                                 timeout=3,
+                                 timeout=timeout,
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE,
                                  universal_newlines=True)

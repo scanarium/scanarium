@@ -258,7 +258,10 @@ class Watchdog(object):
             service = re.sub('[^a-zA-Z0-9_-]', '-', mode[16:])
             command = ['/usr/bin/sudo', '--non-interactive',
                        '/usr/sbin/service', service, 'restart']
-            self.scanarium.run(command, timeout=60)
+            timeout = self.scanarium.get_config(
+                'service:continuous-scanning',
+                'bailout_service_restart_timeout', kind='int')
+            self.scanarium.run(command, timeout=timeout)
         else:
             raise ScanariumError('SE_CONT_SCAN_UNKNOW_BAILOUT',
                                  'Unknown bail out method')
