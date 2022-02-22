@@ -1,0 +1,5 @@
+Laster
+Lastwagen
+LKW
+Truck
+Anhänger
