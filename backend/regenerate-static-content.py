@@ -276,6 +276,15 @@ def regenerate_mask(scanarium, dir, scene, name, decoration_version, force):
         scanarium.dump_json(effective_mask_json, crop(unadapted_mask_png))
 
 
+def read_keywords(dir, language):
+    ret = []
+    keywords_filename = os.path.join(dir, 'keywords', language + '.txt')
+    if os.path.exists(keywords_filename):
+        with open(keywords_filename, 'r') as file:
+            ret = [word for word in re.split(r'\s*', file.read()) if word]
+    return ret
+
+
 def embed_metadata(scanarium, file, metadata):
     def get_conf(key):
         return scanarium.get_config('cgi:regenerate-static-content', key)
@@ -300,6 +309,7 @@ def embed_metadata(scanarium, file, metadata):
         if metadata[key]:
             keywords.append(metadata[key])
     keywords.reverse()
+    keywords.extend(metadata.get('keywords', []))
     description = ' '.join(keywords)
     keywords = ', '.join(keywords)
 
@@ -747,6 +757,8 @@ def svg_variant_pipeline(scanarium, dir, command, parameter, variant, tree,
                         decoration_version, '../..')
         tree.write(full_svg_name)
 
+    keywords = read_keywords(dir, language)
+
     pdf_name = generate_pdf(scanarium, dir, full_svg_name, force, metadata={
             'language': language,
             'coloring-page-l10n':
@@ -754,6 +766,7 @@ def svg_variant_pipeline(scanarium, dir, command, parameter, variant, tree,
             'localized_command': localized_command if is_actor else None,
             'localized_parameter_with_variant':
             localized_parameter_with_variant if is_actor else None,
+            'keywords': keywords,
             })
 
     if is_actor:
