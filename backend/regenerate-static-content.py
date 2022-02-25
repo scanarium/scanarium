@@ -281,7 +281,7 @@ def read_keywords(dir, language):
     keywords_filename = os.path.join(dir, 'keywords', language + '.txt')
     if os.path.exists(keywords_filename):
         with open(keywords_filename, 'r') as file:
-            ret = [word for word in re.split(r'\s*', file.read()) if word]
+            ret = [word for word in re.split(r'\s+', file.read()) if word]
     else:
         keywords_filename = None
     return (ret, keywords_filename)
