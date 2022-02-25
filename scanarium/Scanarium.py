@@ -196,5 +196,8 @@ class Scanarium(object):
         return self._util.get_versioned_filename(
             dir, file, suffix, decoration_version)
 
+    def update_dict(self, target, source, merge_lists=False):
+        return self._util.update_dict(target, source, merge_lists=merge_lists)
+
     def get_command_logger(self):
         return self._command_logger

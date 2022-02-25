@@ -28,6 +28,89 @@ HEIC_MAJOR_BRANDS = [bytes(brand, 'utf-8') for brand in [
 ]]
 
 
+EXIFTOOL_METADATA_GROUPING = {
+    'Copyright': {
+        '': '@copyright',
+        },
+    'ExifIFD': {
+        'UserComment': '@description',
+        },
+    'File': {
+        'Comment': '@description',
+        },
+    'IFD0': {
+        'Artist': '@attribution_name',
+        'Copyright': '@copyright',
+        'ImageDescription': '@description',
+        'XResolution': '@dpi',
+        'YResolution': '@dpi',
+        },
+    'IPTC': {
+        'By-line': '@attribution_name',
+        'Caption-Abstract': '@description',
+        'CopyrightNotice': '@copyright',
+        'Keywords': '@keywords',
+        'OriginatingProgram': '@attribution_name',
+        },
+    'PDF': {
+        'Keywords': '@keywords',
+        'Author': '@attribution_name',
+        'Producer': '@attribution_name',
+        'Creator': '@attribution_name',
+        'Title': '@title',
+        'Subject': '@description',
+        },
+    'XMP-cc': {
+        'attributionName': '@attribution_name',
+        'attributionURL': '@attribution_url',
+        'license': '@license_url',
+        'morePermissions': '@rights_url',
+        },
+    'XMP-dc': {
+        'creator': '@attribution_name',
+        'description': '@description',
+        'language': '@language',
+        'rights': '@copyright',
+        'title': '@title',
+        },
+    'XMP-exif': {
+        'UserComment': '@description',
+        },
+    'XMP-tiff': {
+        'Artist': '@attribution_name',
+        'ImageDescription': '@description',
+        'Software': '@attribution_name',
+        },
+    'XMP-photoshop': {
+        'Credit': '@attribution_name',
+        'Headline': '@description',
+        },
+    'XMP-plus': {
+        'LicensorName': '@attribution_name',
+        'LicensorURL': '@rights_url',
+        },
+    'XMP-pdf': {
+        'Keywords': '@keywords',
+        'Producer': '@attribution_name',
+        'Creator': '@attribution_name',
+        },
+    'XMP-x': {
+        'XMPToolkit': 'n/a',
+        },
+    'XMP-xmp': {
+        'CreatorTool': '@creator_tool',
+        'Label': '@label',
+        'CreateDate': '@now',
+        },
+    'XMP-xmpRights': {
+        'Marked': 'True',
+        'Owner': '@attribution_name',
+        'UsageTerms': '@copyright',
+        'WebStatement': '@rights_url',
+        },
+    }
+
+
 def file_needs_update(destination, sources, force=False):
     ret = True
     if os.path.isfile(destination) and not force:
@@ -106,31 +189,27 @@ def update_dict(target, source, merge_lists=False):
 
 
 def embed_metadata(scanarium, filename, metadata={}):
-    now = get_now()
+    metadata = update_dict({
+            'now': get_now().strftime('%Y:%m:%d %H:%M:%SZ')
+            }, metadata)
+
     command = [
         scanarium.get_config('programs', 'exiftool'),
         '-overwrite_original',
         '-all:all=',
         ]
 
-    gkvs = {
-        'XMP-x': {
-            'XMPToolkit': 'n/a',
-            },
-        'XMP-xmp': {
-            'CreateDate': now.strftime('%Y:%m:%d %H:%M:%SZ'),
-            },
-        }
-    gkvs = update_dict(gkvs, metadata)
-
-    for group, kvs in gkvs.items():
+    for group, kvs in EXIFTOOL_METADATA_GROUPING.items():
         for k, v in kvs.items():
             param = '-' + group
             if k:
                 param += ':' + k
 
             if v:
-                command.append(f'{param}={v}')
+                if v[0] == '@':
+                    v = metadata.get(v[1:], '')
+                if v:
+                    command.append(f'{param}={v}')
 
     command.append(filename)
     scanarium.run(command)
@@ -178,3 +257,6 @@ class Util(object):
 
     def get_versioned_filename(self, dir, file, suffix, decoration_version):
         return get_versioned_filename(dir, file, suffix, decoration_version)
+
+    def update_dict(self, target, source, merge_lists=False):
+        return update_dict(target, source, merge_lists=merge_lists)

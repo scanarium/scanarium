@@ -287,21 +287,28 @@ def read_keywords(dir, language):
     return (ret, keywords_filename)
 
 
-def embed_metadata(scanarium, file, metadata):
+def get_enriched_metadata(scanarium, metadata={}):
     def get_conf(key):
         return scanarium.get_config('cgi:regenerate-static-content', key)
 
-    attribution_name = get_conf('attribution_name')
-    attribution_url = get_conf('attribution_url')
-    rights_url = get_conf('rights_url')
-    license_name = get_conf('license_name')
-    license_url = get_conf('license_url')
-    copyright_year = get_conf('copyright_year')
+    ret = {
+        'attribution_name': get_conf('attribution_name'),
+        'attribution_url': get_conf('attribution_url'),
+        'rights_url': get_conf('rights_url'),
+        'license_name': get_conf('license_name'),
+        'license_url': get_conf('license_url'),
+        'copyright_year': get_conf('copyright_year'),
+        }
+    ret['copyright'] = f'Copyright (C) {ret["copyright_year"]}  ' \
+        f'{ret["attribution_name"]}. {ret["attribution_url"]} This work is ' \
+        f'licensed under {ret["license_name"]}. See {ret["license_url"]}'
+    ret['creator_tool'] = ret['attribution_name']
+    ret['label'] = ret['attribution_name']
 
-    copyright = f'Copyright (C) {copyright_year}  {attribution_name}. ' \
-        f'{attribution_url} This work is licensed under {license_name}. ' \
-        f'See {license_url}'
-    title = metadata['localized_parameter_with_variant']
+    ret = scanarium.update_dict(ret, metadata)
+
+    ret['title'] = ret['localized_parameter_with_variant']
+
     keywords = ['Scanarium']
     for key in [
             'localized_command',
@@ -311,89 +318,17 @@ def embed_metadata(scanarium, file, metadata):
         if metadata[key]:
             keywords.append(metadata[key])
     keywords.reverse()
-    keywords.extend(metadata.get('keywords', []))
-    description = ' '.join(keywords)
-    keywords = ', '.join(keywords)
+    keywords.extend(ret.get('keywords', []))
+    ret['description'] = ' '.join(keywords)
+    ret['keywords'] = ', '.join(keywords)
 
-    detailed_metadata = {
-        'Copyright': {
-            '': copyright,
-            },
-        'ExifIFD': {
-            'UserComment': description,
-            },
-        'File': {
-            'Comment': description,
-            },
-        'IFD0': {
-            'Artist': attribution_name,
-            'Copyright': copyright,
-            'ImageDescription': description,
-            'XResolution': metadata['dpi'],
-            'YResolution': metadata['dpi'],
-            },
-        'IPTC': {
-            'By-line': attribution_name,
-            'Caption-Abstract': description,
-            'CopyrightNotice': copyright,
-            'Keywords': keywords,
-            'OriginatingProgram': attribution_name,
-            },
-        'XMP-xmpRights': {
-            'Marked': 'True',
-            'Owner': attribution_name,
-            'UsageTerms': copyright,
-            'WebStatement': rights_url,
-            },
-        'XMP-cc': {
-            'attributionName': attribution_name,
-            'attributionURL': attribution_url,
-            'license': license_url,
-            'morePermissions': rights_url,
-            },
-        'XMP-dc': {
-            'creator': attribution_name,
-            'description': description,
-            'language': metadata['language'],
-            'rights': copyright,
-            'title': title,
-            },
-        'XMP-exif': {
-            'UserComment': description,
-            },
-        'XMP-tiff': {
-            'Artist': attribution_name,
-            'ImageDescription': description,
-            'Software': attribution_name,
-            },
-        'XMP-photoshop': {
-            'Credit': attribution_name,
-            'Headline': description,
-            },
-        'XMP-plus': {
-            'LicensorName': attribution_name,
-            'LicensorURL': rights_url,
-            },
-        'XMP-xmp': {
-            'CreatorTool': attribution_name,
-            'Label': 'Scanarium',
-            },
-        'XMP-pdf': {
-            'Keywords': keywords,
-            'Producer': attribution_name,
-            'Creator': attribution_name,
-            },
-        'PDF': {
-            'Keywords': keywords,
-            'Author': attribution_name,
-            'Producer': attribution_name,
-            'Creator': attribution_name,
-            'Title': title,
-            'Subject': description,
-            },
-        }
+    return ret
 
-    scanarium.embed_metadata(file, detailed_metadata)
+
+def embed_metadata(scanarium, file, metadata):
+    enriched_metadata = get_enriched_metadata(scanarium, metadata)
+
+    scanarium.embed_metadata(file, enriched_metadata)
 
 
 def generate_pdf(scanarium, dir, file, force, metadata={}):

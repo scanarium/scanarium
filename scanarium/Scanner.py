@@ -226,10 +226,8 @@ def balance(scanarium, image):
 def embed_metadata(scanarium, file, basename, scene, actor):
     scanarium.embed_metadata(
         file, {
-            'XMP-xmp': {
-                'CreatorTool': 'Scanarium',
-                'Label': f'scene:{scene}, actor:{actor}, v:1',
-                },
+            'creator_tool': 'Scanarium',
+            'label': f'scene:{scene}, actor:{actor}, v:1',
             },
         )
 
