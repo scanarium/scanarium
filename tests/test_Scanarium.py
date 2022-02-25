@@ -24,23 +24,23 @@ class ScanariumTest(BasicTestCase):
         self.assertEqual(actual, 'unnamed')
 
     def test_to_safe_filename_umlaut(self):
-        actual = Scanarium().to_safe_filename('FäoöoüoÄoÖoÜoßo')
-        self.assertEqual(actual, 'F-o-o-o-o-o-o-o')
+        actual = Scanarium().to_safe_filename('äöüÄÖÜß')
+        self.assertEqual(actual, 'aeoeueAeOeUess')
 
     def test_to_safe_filename_eo(self):
-        actual = Scanarium().to_safe_filename('FĝoĜo')
-        self.assertEqual(actual, 'F-o-o')
+        actual = Scanarium().to_safe_filename('ĉĝĥĵŝŭĈĜĤĴŜŬ')
+        self.assertEqual(actual, 'cxgxhxjxsxuxCxGxHxJxSxUx')
 
     def test_to_safe_filename_multiple(self):
-        actual = Scanarium().to_safe_filename('FäöüoÄÖÜo')
+        actual = Scanarium().to_safe_filename('F©o™o')
         self.assertEqual(actual, 'F-o-o')
 
     def test_to_safe_filename_start(self):
-        actual = Scanarium().to_safe_filename('Äöquux')
+        actual = Scanarium().to_safe_filename('©™quux')
         self.assertEqual(actual, 'quux')
 
     def test_to_safe_filename_end(self):
-        actual = Scanarium().to_safe_filename('quuxßĵ')
+        actual = Scanarium().to_safe_filename('quux©')
         self.assertEqual(actual, 'quux')
 
     def test_to_safe_filename_digits(self):

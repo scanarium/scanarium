@@ -207,9 +207,29 @@ class SettingsPageGeneral extends NamedPage {
     }
 
     toSaveFilename(name) {
-        var name = name.replace(/[^abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789]+/g, '-');
-        name = name.replace(/^-+/g, '');
-        name = name.replace(/-+$/g, '');
-        return name;
+        var ret = name;
+        ret = ret.replace(/Ä/g, 'Ae');
+        ret = ret.replace(/ä/g, 'ae');
+        ret = ret.replace(/Ö/g, 'Oe');
+        ret = ret.replace(/ö/g, 'oe');
+        ret = ret.replace(/Ü/g, 'Ue');
+        ret = ret.replace(/ü/g, 'ue');
+        ret = ret.replace(/ß/g, 'ss');
+        ret = ret.replace(/Ĉ/g, 'Cx');
+        ret = ret.replace(/ĉ/g, 'cx');
+        ret = ret.replace(/Ĝ/g, 'Gx');
+        ret = ret.replace(/ĝ/g, 'gx');
+        ret = ret.replace(/Ĥ/g, 'Hx');
+        ret = ret.replace(/ĥ/g, 'hx');
+        ret = ret.replace(/Ĵ/g, 'Jx');
+        ret = ret.replace(/ĵ/g, 'jx');
+        ret = ret.replace(/Ŝ/g, 'Sx');
+        ret = ret.replace(/ŝ/g, 'sx');
+        ret = ret.replace(/Ŭ/g, 'Ux');
+        ret = ret.replace(/ŭ/g, 'ux');
+        ret = ret.replace(/[^abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789]+/g, '-');
+        ret = ret.replace(/^-+/g, '');
+        ret = ret.replace(/-+$/g, '');
+        return ret;
     }
 }

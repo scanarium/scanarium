@@ -171,7 +171,28 @@ def guess_image_format(file_path):
 
 
 def to_safe_filename(name):
-    ret = re.sub('[^abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789]+', '-', name).strip('-')
+    ret = name
+    ret = ret.replace('Ä', 'Ae')
+    ret = ret.replace('ä', 'ae')
+    ret = ret.replace('Ö', 'Oe')
+    ret = ret.replace('ö', 'oe')
+    ret = ret.replace('Ü', 'Ue')
+    ret = ret.replace('ü', 'ue')
+    ret = ret.replace('ß', 'ss')
+    ret = ret.replace('Ĉ', 'Cx')
+    ret = ret.replace('ĉ', 'cx')
+    ret = ret.replace('Ĝ', 'Gx')
+    ret = ret.replace('ĝ', 'gx')
+    ret = ret.replace('Ĥ', 'Hx')
+    ret = ret.replace('ĥ', 'hx')
+    ret = ret.replace('Ĵ', 'Jx')
+    ret = ret.replace('ĵ', 'jx')
+    ret = ret.replace('Ŝ', 'Sx')
+    ret = ret.replace('ŝ', 'sx')
+    ret = ret.replace('Ŭ', 'Ux')
+    ret = ret.replace('ŭ', 'ux')
+    ret = re.sub('[^abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+                 '0123456789]+', '-', ret).strip('-')
     if not ret:
         ret = 'unnamed'
     return ret
