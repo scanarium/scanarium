@@ -171,7 +171,7 @@ def guess_image_format(file_path):
 
 
 def to_safe_filename(name):
-    ret = re.sub('[^a-zA-Z0-9]+', '-', name).strip('-')
+    ret = re.sub('[^abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789]+', '-', name).strip('-')
     if not ret:
         ret = 'unnamed'
     return ret

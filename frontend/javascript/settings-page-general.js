@@ -207,7 +207,7 @@ class SettingsPageGeneral extends NamedPage {
     }
 
     toSaveFilename(name) {
-        var name = name.replace(/[^a-zA-Z0-9]+/g, '-');
+        var name = name.replace(/[^abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789]+/g, '-');
         name = name.replace(/^-/g, '');
         name = name.replace(/-$/g, '');
         return name;
