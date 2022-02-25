@@ -282,7 +282,9 @@ def read_keywords(dir, language):
     if os.path.exists(keywords_filename):
         with open(keywords_filename, 'r') as file:
             ret = [word for word in re.split(r'\s*', file.read()) if word]
-    return ret
+    else:
+        keywords_filename = None
+    return (ret, keywords_filename)
 
 
 def embed_metadata(scanarium, file, metadata):
@@ -750,14 +752,16 @@ def svg_variant_pipeline(scanarium, dir, command, parameter, variant, tree,
     os.makedirs(pdf_dir, exist_ok=True)
     full_svg_name = os.path.join(pdf_dir, base_name)
 
+    (keywords, keywords_name) = read_keywords(dir, language)
+    if keywords_name is not None:
+        sources = sources + [keywords_name]
+
     if scanarium.file_needs_update(full_svg_name, sources, force):
         show_only_variant(tree, variant)
         filter_svg_tree(scanarium, tree, command, parameter, variant,
                         localizer, command_label, parameter_label,
                         decoration_version, '../..')
         tree.write(full_svg_name)
-
-    keywords = read_keywords(dir, language)
 
     pdf_name = generate_pdf(scanarium, dir, full_svg_name, force, metadata={
             'language': language,
