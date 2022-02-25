@@ -183,8 +183,8 @@ class Scanarium(object):
     def to_safe_filename(self, name):
         return self._util.to_safe_filename(name)
 
-    def embed_metadata(self, filename, metadata):
-        return self._util.embed_metadata(self, filename, metadata)
+    def embed_metadata(self, target, metadata):
+        return self._util.embed_metadata(self, target, metadata)
 
     def get_now(self):
         return self._util.get_now()

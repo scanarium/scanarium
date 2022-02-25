@@ -7,6 +7,7 @@ import datetime
 import logging
 import os
 import re
+import xml.etree.ElementTree as ET
 
 logger = logging.getLogger(__name__)
 
@@ -100,7 +101,7 @@ EXIFTOOL_METADATA_GROUPING = {
     'XMP-xmp': {
         'CreatorTool': '@creator_tool',
         'Label': '@label',
-        'CreateDate': '@now',
+        'CreateDate': '@now_exif',
         },
     'XMP-xmpRights': {
         'Marked': 'True',
@@ -188,11 +189,93 @@ def update_dict(target, source, merge_lists=False):
     return target
 
 
-def embed_metadata(scanarium, filename, metadata={}):
+def embed_metadata(scanarium, target, metadata={}):
     metadata = update_dict({
-            'now': get_now().strftime('%Y:%m:%d %H:%M:%SZ')
+            'now_exif': get_now().strftime('%Y:%m:%d %H:%M:%SZ'),
+            'now': get_now().strftime('%Y-%m-%dT%H:%M:%SZ')
             }, metadata)
+    if isinstance(target, ET.ElementTree):
+        embed_metadata_svg_element_tree(scanarium, target, metadata)
+    elif isinstance(target, str):
+        embed_metadata_exiftool(scanarium, target, metadata)
+    else:
+        raise NotImplementedError(
+            f'Unsupported type {type(target)} for metadata embedding')
 
+
+def embed_metadata_svg_element_tree(scanarium, tree, metadata={}):
+    def set_agent(element, kind, value):
+        if value:
+            child = ET.SubElement(element, f'dc:{kind}')
+            agent = ET.SubElement(child, 'cc:Agent')
+            title = ET.SubElement(agent, 'dc:title')
+            title.text = value
+
+    def add_subelement(element, kind, value):
+        if value:
+            child = ET.SubElement(element, kind)
+            child.text = value.strip()
+
+    def add_cc_resource(element, kind, what):
+        ET.SubElement(
+            element, f'cc:{kind}',
+            attrib={'rdf:resource': f'http://creativecommons.org/ns#{what}'})
+
+    for work in list(tree.iter("{http://creativecommons.org/ns#}Work")):
+        if 'title' in metadata:
+            for element in work.iter():
+                if element.tag == '{http://purl.org/dc/elements/1.1/}title':
+                    element.text = metadata['title']
+
+        if 'keywords' in metadata:
+            subject = ET.SubElement(work, 'dc:subject')
+            bag = ET.SubElement(subject, 'rdf:Bag')
+            for keyword in metadata['keywords'].split(','):
+                add_subelement(bag, 'rdf:li', keyword)
+
+        if 'license_url' in metadata:
+            license_url = metadata['license_url']
+            ET.SubElement(work, 'cc:license',
+                          attrib={'rdf:resource': license_url})
+
+            set_agent(work, 'rights', license_url)
+
+        if 'attribution_name' in metadata:
+            set_agent(work, 'creator', metadata['attribution_name'])
+
+        if 'now' in metadata:
+            add_subelement(work, 'dc:date', metadata['now'])
+
+        if 'creator_tool' in metadata:
+            set_agent(work, 'publisher', metadata['creator_tool'])
+
+        if 'attribution_url' in metadata:
+            add_subelement(work, 'dc:source', metadata['attribution_url'])
+
+        if 'language' in metadata:
+            add_subelement(work, 'dc:language', metadata['language'])
+
+        if 'description' in metadata:
+            add_subelement(work, 'dc:description', metadata['description'])
+
+    if 'license_url' in metadata:
+        license_url = metadata['license_url']
+        if license_url == 'https://creativecommons.org/licenses/by-nc-sa/4.0/':
+            for workParent in list(tree.iterfind(
+                    '{http://www.w3.org/2000/svg}metadata/'
+                    '{http://www.w3.org/1999/02/22-rdf-syntax-ns#}RDF')):
+                license = ET.SubElement(workParent, 'cc:License',
+                                        attrib={'rdf:about': license_url})
+                add_cc_resource(license, 'permits', 'Reproduction')
+                add_cc_resource(license, 'permits', 'Distribution')
+                add_cc_resource(license, 'permits', 'DerivativeWorks')
+                add_cc_resource(license, 'requires', 'Notice')
+                add_cc_resource(license, 'requires', 'Attribution')
+                add_cc_resource(license, 'requires', 'ShareAlike')
+                add_cc_resource(license, 'prohibits', 'CommercialUse')
+
+
+def embed_metadata_exiftool(scanarium, filename, metadata={}):
     command = [
         scanarium.get_config('programs', 'exiftool'),
         '-overwrite_original',
@@ -246,8 +329,8 @@ class Util(object):
     def to_safe_filename(self, name):
         return to_safe_filename(name)
 
-    def embed_metadata(self, scanarium, filename, metadata):
-        return embed_metadata(scanarium, filename, metadata)
+    def embed_metadata(self, scanarium, target, metadata):
+        return embed_metadata(scanarium, target, metadata)
 
     def get_now(self):
         return get_now()

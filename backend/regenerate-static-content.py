@@ -325,10 +325,12 @@ def get_enriched_metadata(scanarium, metadata={}):
     return ret
 
 
-def embed_metadata(scanarium, file, metadata):
-    enriched_metadata = get_enriched_metadata(scanarium, metadata)
+def embed_metadata(scanarium, target, metadata):
+    if scanarium.get_config('cgi:regenerate-static-content',
+                            'embed_metadata', kind='boolean'):
+        enriched_metadata = get_enriched_metadata(scanarium, metadata)
 
-    scanarium.embed_metadata(file, enriched_metadata)
+        scanarium.embed_metadata(target, enriched_metadata)
 
 
 def generate_pdf(scanarium, dir, file, force, metadata={}):
@@ -389,9 +391,7 @@ def generate_pdf(scanarium, dir, file, force, metadata={}):
                     ]
                 scanarium.run(command)
         if scanarium.file_needs_update(target, [source], force):
-            if scanarium.get_config('cgi:regenerate-static-content',
-                                    'embed_metadata', kind='boolean'):
-                embed_metadata(scanarium, target_tmp, metadata)
+            embed_metadata(scanarium, target_tmp, metadata)
             shutil.move(target_tmp, target)
     return pdf_name
 
@@ -691,22 +691,29 @@ def svg_variant_pipeline(scanarium, dir, command, parameter, variant, tree,
     if keywords_name is not None:
         sources = sources + [keywords_name]
 
+    metadata = {
+        'language': language,
+        'coloring-page-l10n':
+            localizer.localize('coloring page') if is_actor else None,
+        'command': command,
+        'parameter': parameter,
+        'variant': variant,
+        'localized_command': localized_command if is_actor else None,
+        'localized_parameter_with_variant':
+            localized_parameter_with_variant if is_actor else None,
+        'keywords': keywords,
+        }
+
     if scanarium.file_needs_update(full_svg_name, sources, force):
         show_only_variant(tree, variant)
         filter_svg_tree(scanarium, tree, command, parameter, variant,
                         localizer, command_label, parameter_label,
                         decoration_version, '../..')
+        embed_metadata(scanarium, tree, metadata)
         tree.write(full_svg_name)
 
-    pdf_name = generate_pdf(scanarium, dir, full_svg_name, force, metadata={
-            'language': language,
-            'coloring-page-l10n':
-            localizer.localize('coloring page') if is_actor else None,
-            'localized_command': localized_command if is_actor else None,
-            'localized_parameter_with_variant':
-            localized_parameter_with_variant if is_actor else None,
-            'keywords': keywords,
-            })
+    pdf_name = generate_pdf(scanarium, dir, full_svg_name, force,
+                            metadata=metadata)
 
     if is_actor:
         scanarium.generate_thumbnail(dir, full_svg_name, force,
