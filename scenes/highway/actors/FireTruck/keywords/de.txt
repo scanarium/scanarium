@@ -1,2 +1,6 @@
 Einsatzfahrzeug
 Einsatzwagen
+Feuerwehr
+Löschgruppenfahrzeug
+Tanklöschfahrzeug
+Rüstwagen

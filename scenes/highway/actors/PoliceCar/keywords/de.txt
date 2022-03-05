@@ -1,2 +1,6 @@
 Einsatzfahrzeug
 Einsatzwagen
+Polizei
+Polizeiwagen
+Streifenwagen
+

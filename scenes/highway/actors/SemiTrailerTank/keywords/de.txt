@@ -3,3 +3,5 @@ Lastwagen
 LKW
 Truck
 Anhänger
+Tanker
+Tankwagen
