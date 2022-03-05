@@ -1,6 +1,6 @@
-Raumfahrer
-Mann
+Dame
 Frau
 Herr
-Dame
 Kosmonaut
+Mann
+Raumfahrer

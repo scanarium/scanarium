@@ -1,5 +1,5 @@
-Mann
-Junge
+Bub
 Bursche
 Herr
-Bub
+Junge
+Mann

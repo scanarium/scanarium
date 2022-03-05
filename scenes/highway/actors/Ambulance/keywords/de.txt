@@ -1,5 +1,4 @@
 Einsatzfahrzeug
 Einsatzwagen
-Rettungswagen
 Rettung
-
+Rettungswagen

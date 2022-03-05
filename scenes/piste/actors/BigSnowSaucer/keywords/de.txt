@@ -1,7 +1,7 @@
-Mädchen
-Junge
-Bub
-Kind
 Bob
+Bub
+Junge
+Kind
+Mädchen
 Rutschteller
 Tellerbob
