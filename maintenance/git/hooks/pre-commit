@@ -30,9 +30,14 @@ check_qr_codes_are_mapped() {
   maintenance/qr-code-maps/check-qr-codes-are-mapped.sh
 }
 
+sanitize_keyword_files() {
+    maintenance/keywords/sanitize-keywords.sh
+}
+
 pre_commit() {
   sort_localizations && \
   sort_qr_code_maps && \
+  sanitize_keyword_files && \
   check_copyright_headers && \
   check_qr_codes_are_mapped && \
   true
